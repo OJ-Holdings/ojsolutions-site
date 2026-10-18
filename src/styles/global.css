@@ -1,0 +1,163 @@
+@import "tailwindcss";
+
+/*
+  Brand tokens. The default Tailwind palette is switched off on purpose,
+  so only brand colors can be used:
+    navy  #0B1F3A  primary
+    gold  #C4A452  accent. Never as text on white (fails contrast).
+    white #FFFFFF  background
+    muted #4A5568  secondary text
+    line  #E5E7EB  borders
+  Flat only: shadows and blurs are switched off, and corners top out at 8px.
+*/
+@theme {
+  --color-*: initial;
+  --color-navy: #0b1f3a;
+  --color-gold: #c4a452;
+  --color-white: #ffffff;
+  --color-muted: #4a5568;
+  --color-line: #e5e7eb;
+
+  --font-*: initial;
+  --font-sans: "Inter", "Inter Fallback", ui-sans-serif, system-ui, sans-serif;
+  --font-heading: "Montserrat", "Montserrat Fallback", ui-sans-serif, system-ui, sans-serif;
+
+  --radius-*: initial;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+
+  --shadow-*: initial;
+  --inset-shadow-*: initial;
+  --drop-shadow-*: initial;
+  --text-shadow-*: initial;
+  --blur-*: initial;
+}
+
+/*
+  Fallback fonts sized to match Inter and Montserrat, so the page doesn't
+  jump when the real fonts finish loading.
+*/
+@font-face {
+  font-family: "Inter Fallback";
+  src: local("Arial"), local("ArialMT");
+  font-weight: 100 500;
+  size-adjust: 107.41%;
+  ascent-override: 90.21%;
+  descent-override: 22.53%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "Inter Fallback";
+  src: local("Arial Bold"), local("Arial-BoldMT");
+  font-weight: 600 900;
+  size-adjust: 102.01%;
+  ascent-override: 94.99%;
+  descent-override: 23.72%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "Montserrat Fallback";
+  src: local("Arial"), local("ArialMT");
+  font-weight: 100 600;
+  size-adjust: 112.8%;
+  ascent-override: 85.81%;
+  descent-override: 22.25%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "Montserrat Fallback";
+  src: local("Arial Bold"), local("Arial-BoldMT");
+  font-weight: 700 900;
+  size-adjust: 108.99%;
+  ascent-override: 88.81%;
+  descent-override: 23.03%;
+  line-gap-override: 0%;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-padding-top: 5rem;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+  body {
+    @apply bg-white font-sans text-navy antialiased;
+    font-size: 1.0625rem;
+    line-height: 1.6;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-heading text-balance;
+    line-height: 1.15;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  ::selection {
+    @apply bg-gold text-navy;
+  }
+
+  /* Visible keyboard focus everywhere. Gold on navy sections. */
+  :focus-visible {
+    outline: 3px solid var(--color-navy);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+  .on-navy :focus-visible {
+    outline-color: var(--color-gold);
+  }
+
+  summary {
+    list-style: none;
+    cursor: pointer;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      transition-duration: 0.01ms !important;
+      animation-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  /* Page width with a 16px side gutter on phones. */
+  .container-page {
+    @apply mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8;
+  }
+
+  /* Body links: navy text with a gold underline. */
+  .link {
+    @apply font-semibold text-navy underline decoration-gold decoration-2 underline-offset-4 hover:decoration-navy;
+  }
+
+  /* Long-form text (privacy, terms). */
+  .prose-page h2 {
+    @apply mt-10 mb-3 text-xl font-bold sm:text-2xl;
+  }
+  .prose-page p,
+  .prose-page ul {
+    @apply mb-4 text-muted;
+  }
+  .prose-page ul {
+    @apply list-disc space-y-2 pl-6;
+  }
+  .prose-page strong {
+    @apply font-semibold text-navy;
+  }
+  .prose-page a {
+    @apply font-semibold text-navy underline decoration-gold decoration-2 underline-offset-4 hover:decoration-navy;
+  }
+}
