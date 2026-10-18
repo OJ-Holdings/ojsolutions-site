@@ -1,0 +1,34 @@
+# Build output
+dist/
+
+# Astro's generated types
+.astro/
+
+# Dependencies (npm install recreates these)
+node_modules/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Netlify local folder
+.netlify/
+
+# Editor and OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+
+# Python cache (scripts/brand-assets.py)
+__pycache__/
+
+# Claude Code personal settings
+.claude/settings.local.json
