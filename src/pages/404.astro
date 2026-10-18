@@ -1,0 +1,41 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import BookButton from "../components/BookButton.astro";
+import Icon from "../components/Icon.astro";
+import { SERVICES } from "../lib/site";
+---
+
+<BaseLayout
+  title="Page Not Found | OJ Solutions"
+  description="That page doesn't exist. Head back to the OJ Solutions home page or pick a service."
+  noindex
+>
+  <section class="container-page pt-12 pb-20 sm:pt-20 sm:pb-28">
+    <div class="max-w-2xl">
+      <span class="block h-1 w-10 rounded-sm bg-gold" aria-hidden="true"></span>
+      <h1 class="mt-4 text-[2.25rem] leading-[1.1] font-bold tracking-tight sm:text-5xl">This page doesn't exist.</h1>
+      <p class="mt-4 text-lg text-muted">The link may be old or mistyped. Here's where you can go instead.</p>
+      <ul role="list" class="mt-8 border-b border-line">
+        <li class="border-t border-line">
+          <a href="/" class="flex min-h-14 items-center justify-between gap-3 font-semibold text-navy hover:underline hover:decoration-gold hover:decoration-2 hover:underline-offset-4">
+            Home
+            <Icon name="arrow-right" class="size-4 text-muted" />
+          </a>
+        </li>
+        {
+          SERVICES.map((s) => (
+            <li class="border-t border-line">
+              <a href={s.href} class="flex min-h-14 items-center justify-between gap-3 font-semibold text-navy hover:underline hover:decoration-gold hover:decoration-2 hover:underline-offset-4">
+                {s.name}
+                <Icon name="arrow-right" class="size-4 text-muted" />
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <div class="mt-10">
+        <BookButton size="lg" />
+      </div>
+    </div>
+  </section>
+</BaseLayout>
