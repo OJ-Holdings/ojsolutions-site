@@ -2,7 +2,7 @@
 
 The website for OJ Solutions: a home page, one page per service (AI Receptionist, Websites, Commercials), a booking page, Privacy, Terms, and a "page not found" page.
 
-It's built with **Astro** (turns our files into a fast, plain website) and **Tailwind CSS** (the styling). There's no database and no login. Netlify hosts it for free and updates it every time we push changes to GitHub.
+It's built with **Astro** (turns our files into a fast, plain website) and **Tailwind CSS** (the styling). There's no database and no login. Vercel builds the production site from the `main` branch and creates preview deployments for other branches and pull requests.
 
 ---
 
@@ -121,24 +121,19 @@ Or just ask Claude Code: "Add a service page for X following CLAUDE.md."
 
 ## How deploys work
 
-The site lives on GitHub. Netlify watches the `main` branch.
+The GitHub repo is connected to the Vercel project `ojsolutions-site`.
 
-1. You make changes and check them with `npm run dev`.
-2. You commit and push to `main`.
-3. Netlify notices, runs `npm run build`, and about a minute later the live site is updated.
+1. Make changes and check them with `npm run dev` and `npm run build`.
+2. Push a branch or open a pull request to get a Vercel preview deployment.
+3. Merging to `main` creates a production deployment. Vercel builds with `npm run build` and publishes `dist`.
 
-If a build fails, Netlify keeps the last working version live and shows the error in its **Deploys** tab.
+Vercel uses Node.js 24. The project is configured for Astro, and `SITE_URL` in `src/config.ts` sets the canonical production URL to `https://ojsolutions.org` for search results, the sitemap, and share previews.
 
-### Netlify settings (one-time setup)
+### Custom domain DNS
 
-When connecting the GitHub repo in Netlify ("Add new site" then "Import an existing project"), use:
+The domain is registered outside Vercel. In the registrar's DNS settings, point the apex (`@`) to Vercel's current A record and `www` to Vercel's current CNAME target. Confirm the exact values in Vercel's **Domains** settings before changing DNS. Keep existing MX and mail-related TXT records so email continues to work. Vercel serves `www.ojsolutions.org` as a redirect to `ojsolutions.org`.
 
-- **Branch to deploy:** `main`
-- **Build command:** `npm run build`
-- **Publish directory:** `dist`
-- **Node version:** set automatically to 24 by `netlify.toml`
-
-Once you add your own domain in Netlify, put it in `SITE_URL` in `src/config.ts` too.
+The existing `netlify.toml` remains in the repo for the prior Netlify setup. Do not change DNS or disconnect any existing host until the Vercel domain status is valid and the production deployment has been checked.
 
 ---
 

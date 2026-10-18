@@ -19,7 +19,7 @@ Most visitors come from our cold calls, cold emails, Instagram and Facebook DMs,
 ## Tech
 
 - Astro (latest stable) + Tailwind CSS, fully static output. No backend, no database, no CMS.
-- Hosted on Netlify from GitHub. `netlify.toml` sets build command `npm run build` and publish dir `dist`.
+- Hosted on Vercel from GitHub. The `ojsolutions-site` project builds `main` with `npm run build`, publishes `dist`, and uses Node.js 24. `netlify.toml` remains for the prior Netlify setup.
 - Mobile-first. Design at 375px wide first, then scale up.
 - Fast: no animation libraries, minimal JS, optimized images. Target Lighthouse 95+ on mobile. This site is also our portfolio for the website service, so it has to be fast and clean.
 - Accessible: semantic HTML, alt text, visible focus states, WCAG AA contrast.
@@ -58,6 +58,6 @@ Most visitors come from our cold calls, cold emails, Instagram and Facebook DMs,
 ## Working in this repo
 
 - `npm run dev` starts the local site at http://localhost:4321. `npm run build` must finish with no errors before anything is pushed.
-- Pushing to `main` deploys to Netlify automatically. Don't push without being asked.
+- Pushing to `main` deploys to Vercel automatically. The prior Netlify integration may also deploy from `main`. Don't push without being asked.
 - Where things live: business info in `src/config.ts`; link and booking helpers in `src/lib/site.ts`; shared page pieces in `src/components/`; page frames in `src/layouts/` (`BaseLayout` for every page, `ServiceLayout` for service pages); pages in `src/pages/`.
 - To find everything still waiting on an answer: search the code for `TODO(Jacob)`.
