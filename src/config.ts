@@ -26,11 +26,8 @@ export const EMAIL: string = "ojsolutionshq@gmail.com";
 // TODO(Jacob): add the business phone number. Hidden until set.
 export const PHONE: string = "";
 
-// The full web address of the site, e.g. "https://ojsolutions.com".
-// Leave empty until you have a domain. Netlify fills in its own address
-// automatically, so the sitemap and share previews still work.
-// TODO(Jacob): add the domain once it's connected in Netlify.
-export const SITE_URL: string = "";
+// The canonical address used for the sitemap, search results, and share previews.
+export const SITE_URL: string = "https://ojsolutions.org";
 
 /* ---------- Booking ---------- */
 
