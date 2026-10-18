@@ -1,0 +1,149 @@
+---
+import { Image } from "astro:assets";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Hero from "../components/Hero.astro";
+import Section from "../components/Section.astro";
+import SectionHeading from "../components/SectionHeading.astro";
+import Steps from "../components/Steps.astro";
+import FaqSection from "../components/FaqSection.astro";
+import FinalCta from "../components/FinalCta.astro";
+import Icon from "../components/Icon.astro";
+import { BUSINESS_NAME, EMAIL, FAQ_ANSWERS, FOUNDERS_PHOTO, PHONE, SOCIAL_LINKS } from "../config";
+import { SERVICES, filled } from "../lib/site";
+
+// Optional "Why us" photo from src/assets/photos/ (set in src/config.ts).
+const photos = import.meta.glob<{ default: ImageMetadata }>("../assets/photos/*.{jpg,jpeg,png,webp,avif}");
+const photoKey = Object.keys(photos).find(
+  (key) => filled(FOUNDERS_PHOTO.file) && key.endsWith("/" + FOUNDERS_PHOTO.file.trim()),
+);
+const photo = photoKey && filled(FOUNDERS_PHOTO.alt) ? (await photos[photoKey]()).default : null;
+
+const site = Astro.site ?? new URL("http://localhost:4321");
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: BUSINESS_NAME,
+  url: new URL("/", site).href,
+  logo: new URL("/icon-512.png", site).href,
+  ...(filled(EMAIL) && { email: EMAIL }),
+  ...(filled(PHONE) && { telephone: PHONE }),
+  founder: [
+    { "@type": "Person", name: "Jacob" },
+    { "@type": "Person", name: "Oscar" },
+  ],
+  sameAs: Object.values(SOCIAL_LINKS).filter(filled),
+};
+
+const steps = [
+  {
+    title: "Book a call",
+    body: "Pick a time that works for you. It's a short call.",
+  },
+  {
+    title: "We find the biggest leak",
+    body: "We look at your business and find the one thing costing you the most.",
+  },
+  {
+    title: "We fix that first",
+    body: "Then you decide if you want more. No package you have to buy into.",
+  },
+];
+
+const faq = [
+  {
+    q: "Do I have to buy all three?",
+    a: "No. Most businesses should start with whichever one fixes their biggest problem. You can add more later if it makes sense.",
+  },
+  {
+    q: "How does it start?",
+    a: "With a short call. We look at your business and tell you what we'd fix first.",
+  },
+  {
+    q: "Where are you based?",
+    a: FAQ_ANSWERS.whereBased, // TODO(Jacob): answer in src/config.ts. Hidden until then.
+  },
+];
+---
+
+<BaseLayout
+  title="OJ Solutions | AI Receptionist, Websites, and Commercials"
+  description="We fix what's slowing your business down: missed calls, a website that doesn't bring in work, and marketing nobody watches. Built by business owners."
+  jsonLd={jsonLd}
+>
+  <Hero
+    title="Built by business owners, for business owners."
+    highlight="for business owners."
+    subhead="We fix what's slowing you down: missed calls, a website that doesn't bring in work, and marketing nobody watches."
+  />
+
+  <Section id="services" labelledby="services-title">
+    <SectionHeading
+      id="services-title"
+      title="What we fix"
+      intro="Three services, all done for you. Start with the one that fixes your biggest problem."
+    />
+    <ul role="list" class="mt-10 grid gap-4 md:grid-cols-3">
+      {
+        SERVICES.map((s) => (
+          <li class="group relative flex flex-col rounded-lg border border-line p-6 hover:border-navy sm:p-7">
+            <h3 class="text-xl font-bold">
+              <a href={s.href} class="after:absolute after:inset-0 after:rounded-lg">
+                {s.name}
+              </a>
+            </h3>
+            <p class="mt-2 flex-1 text-muted">{s.problem}</p>
+            <p
+              class="mt-6 inline-flex items-center gap-1.5 font-semibold text-navy group-hover:underline group-hover:decoration-gold group-hover:decoration-2 group-hover:underline-offset-4"
+              aria-hidden="true"
+            >
+              See how it works
+              <Icon name="arrow-right" class="size-4" />
+            </p>
+          </li>
+        ))
+      }
+    </ul>
+  </Section>
+
+  <Section id="how-we-work" labelledby="how-title">
+    <SectionHeading id="how-title" title="How we work" />
+    <Steps steps={steps} />
+  </Section>
+
+  <Section id="why-us" labelledby="why-title">
+    <div class:list={["grid gap-10", photo && "md:grid-cols-2 md:items-center md:gap-14"]}>
+      <div>
+        <SectionHeading id="why-title" title="We run businesses too" />
+        <div class="mt-6 max-w-2xl space-y-4 text-lg text-muted">
+          <p>
+            We're Jacob and Oscar. Besides OJ Solutions, we run our own businesses, including a pressure washing and
+            window cleaning company.
+          </p>
+          <p>
+            Everything we sell, we built for our own business first and tested it there before offering it to anyone
+            else. So when we talk about missed calls, websites, and getting seen online, we're talking about problems we
+            deal with ourselves.
+          </p>
+        </div>
+      </div>
+      {
+        photo && (
+          <Image
+            src={photo}
+            alt={FOUNDERS_PHOTO.alt}
+            widths={[400, 640, 960, 1280]}
+            sizes="(min-width: 768px) 50vw, 100vw"
+            class="h-auto w-full rounded-lg border border-line"
+          />
+        )
+      }
+    </div>
+  </Section>
+
+  <FaqSection items={faq} />
+
+  <FinalCta
+    heading="Let's find what's slowing you down"
+    line="A short call. We'll tell you what we'd fix first."
+  />
+</BaseLayout>
