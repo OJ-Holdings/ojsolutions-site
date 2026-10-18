@@ -69,9 +69,10 @@ export const DEMO_VIDEO_SRC: string = "";
 
 // Link to the 2025 CallRail survey (1,000 consumers: 78% abandoned a
 // business after an unanswered call, 82% would call a competitor).
-// The stats only show when this link is set.
-// TODO(Jacob): paste the link to the CallRail survey.
-export const STATS_SOURCE_URL: string = "";
+// The stats only show when this link is set. This is CallRail's own write-up
+// of the survey (published September 25, 2025), checked against the numbers.
+export const STATS_SOURCE_URL: string =
+  "https://www.callrail.com/blog/missed-calls-cost-businesses-more-than-ever";
 
 // Your guarantee, written exactly how you want it shown.
 // Hidden if empty. TODO(Jacob): decide on a guarantee, if any.
