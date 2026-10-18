@@ -33,6 +33,7 @@ Most visitors come from our cold calls, cold emails, Instagram and Facebook DMs,
 - Every "Book a call" button goes to /book when GHL_CALENDAR_EMBED is set, otherwise to BOOKING_URL. If neither is set, it links to mailto:EMAIL. (Logic: `bookingHref` in `src/lib/site.ts`.)
 - Buttons on service pages add ?service=receptionist, ?service=website, or ?service=commercial. Home page buttons add nothing.
 - /book shows the embedded GHL calendar and passes the page's full query string (service, src, rep, and any utm_ tags) through to the calendar embed URL, so those tags land on the contact in GHL.
+- Outreach links point at a service page and may carry src, rep, and utm_ tags (e.g. /ai-receptionist?src=ig&rep=jacob). A small script in BaseLayout remembers those tags for the visit and adds them to every Book a call link, so they still reach /book after the visitor clicks around.
 - If GHL_CHAT_WIDGET is set, that script is injected on every page.
 
 ## Brand

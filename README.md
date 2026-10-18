@@ -90,6 +90,21 @@ Only list real work of ours. The site must never imply we have clients we don't.
 
 Search the code for `TODO(Jacob)`. Each one is a fact the site needs from you. None of them show up on the live site.
 
+### Tracking where bookings come from
+
+Add tags to the links you send in outreach, and they'll show up on the contact in GoHighLevel when that person books:
+
+```
+https://yourdomain.com/ai-receptionist?src=ig&rep=jacob
+https://yourdomain.com/websites?src=email&rep=oscar&utm_campaign=fall
+```
+
+- `src` is where the lead came from (`ig`, `fb`, `email`, `call`, `group`, anything you like).
+- `rep` is who reached out (`jacob` or `oscar`).
+- Any `utm_` tags work too.
+
+The site remembers these while the person browses, and passes them to the calendar along with which service page they booked from (`service=receptionist`, `website`, or `commercial`). This only works once `GHL_CALENDAR_EMBED` (or `BOOKING_URL`) is set. With email booking there's nothing to pass them to.
+
 ---
 
 ## Add a new service page
