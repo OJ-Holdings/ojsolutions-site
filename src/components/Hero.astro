@@ -1,0 +1,50 @@
+---
+// Top of every main page: headline, subhead, and the Book a call button.
+import BookButton from "./BookButton.astro";
+import type { ServiceKey } from "../lib/site";
+
+interface Props {
+  title: string;
+  /** Part of the title to underline in gold. */
+  highlight?: string;
+  subhead: string;
+  /** Small label above the headline, e.g. the service name. */
+  eyebrow?: string;
+  service?: ServiceKey;
+}
+
+const { title, highlight, subhead, eyebrow, service } = Astro.props;
+const at = highlight ? title.lastIndexOf(highlight) : -1;
+const before = at >= 0 ? title.slice(0, at) : title;
+const marked = at >= 0 ? highlight : "";
+const after = at >= 0 ? title.slice(at + (highlight?.length ?? 0)) : "";
+---
+
+<section class="pt-12 pb-14 sm:pt-20 sm:pb-24">
+  <div class="container-page">
+    <div class="max-w-3xl">
+      {
+        eyebrow && (
+          <p class="mb-5 flex items-center gap-3 text-sm font-semibold tracking-wider text-navy uppercase">
+            <span class="block h-0.5 w-8 bg-gold" aria-hidden="true" />
+            {eyebrow}
+          </p>
+        )
+      }
+      <h1 class="text-[2.375rem] leading-[1.08] font-bold tracking-tight sm:text-6xl sm:leading-[1.05]">
+        {before}{
+          marked && (
+            <span class="underline decoration-gold decoration-[5px] underline-offset-[6px] [text-decoration-skip-ink:none] sm:decoration-[7px] sm:underline-offset-[10px]">
+              {marked}
+            </span>
+          )
+        }{after}
+      </h1>
+      <p class="mt-6 max-w-2xl text-lg text-muted sm:mt-8 sm:text-xl">{subhead}</p>
+      <div class="mt-8 flex flex-wrap items-center gap-x-7 gap-y-4">
+        <BookButton service={service} size="lg" />
+        <slot name="secondary" />
+      </div>
+    </div>
+  </div>
+</section>

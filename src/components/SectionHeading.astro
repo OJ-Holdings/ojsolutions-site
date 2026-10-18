@@ -1,0 +1,16 @@
+---
+// Gold rule + section title + optional intro line.
+interface Props {
+  title: string;
+  id?: string;
+  intro?: string;
+}
+
+const { title, id, intro } = Astro.props;
+---
+
+<div class="max-w-2xl">
+  <span class="block h-1 w-10 rounded-sm bg-gold" aria-hidden="true"></span>
+  <h2 id={id} class="mt-4 text-[1.75rem] font-bold tracking-tight sm:text-4xl">{title}</h2>
+  {intro && <p class="mt-4 text-lg text-muted">{intro}</p>}
+</div>

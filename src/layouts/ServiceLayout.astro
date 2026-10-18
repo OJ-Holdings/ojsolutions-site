@@ -1,0 +1,65 @@
+---
+// Shared layout for every service page. A service page is a landing page
+// on its own: hero, the problem, its own sections, FAQ, and a final call
+// to action. Every Book a call button on the page is tagged with the
+// service, e.g. /book?service=website.
+//
+// To add a service: copy src/pages/websites.astro, change the words,
+// and add the service to SERVICES in src/lib/site.ts.
+import BaseLayout from "./BaseLayout.astro";
+import Hero from "../components/Hero.astro";
+import Section from "../components/Section.astro";
+import SectionHeading from "../components/SectionHeading.astro";
+import FaqSection, { type FaqItem } from "../components/FaqSection.astro";
+import FinalCta from "../components/FinalCta.astro";
+import type { ServiceKey } from "../lib/site";
+
+interface Props {
+  service: ServiceKey;
+  /** Browser tab and search result title */
+  title: string;
+  /** Search result and link preview description */
+  description: string;
+  /** Service name shown above the headline */
+  eyebrow: string;
+  heading: string;
+  /** Part of the headline to underline in gold */
+  highlight?: string;
+  subhead: string;
+  problemHeading: string;
+  faq: FaqItem[];
+  ctaHeading: string;
+  ctaLine?: string;
+}
+
+const {
+  service,
+  title,
+  description,
+  eyebrow,
+  heading,
+  highlight,
+  subhead,
+  problemHeading,
+  faq,
+  ctaHeading,
+  ctaLine,
+} = Astro.props;
+---
+
+<BaseLayout title={title} description={description}>
+  <Hero title={heading} highlight={highlight} subhead={subhead} eyebrow={eyebrow} service={service}>
+    <slot name="hero-secondary" slot="secondary" />
+  </Hero>
+
+  <Section id="problem" labelledby="problem-title">
+    <SectionHeading id="problem-title" title={problemHeading} />
+    <slot name="problem" />
+  </Section>
+
+  <slot />
+
+  <FaqSection items={faq} />
+
+  <FinalCta heading={ctaHeading} line={ctaLine} service={service} />
+</BaseLayout>

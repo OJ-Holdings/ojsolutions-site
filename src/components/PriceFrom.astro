@@ -1,0 +1,34 @@
+---
+// "Starting at $X" when a price is set, otherwise "we quote after a call".
+import Section from "./Section.astro";
+import SectionHeading from "./SectionHeading.astro";
+import { filled, formatPrice } from "../lib/site";
+
+interface Props {
+  price: number | null;
+  /** What gets quoted, e.g. "site" or "project" */
+  noun: string;
+}
+
+const { price, noun } = Astro.props;
+const hasPrice = filled(price);
+---
+
+<Section id="pricing" labelledby="pricing-title">
+  <SectionHeading id="pricing-title" title="Pricing" />
+  <div class="mt-8 max-w-2xl rounded-lg border border-line p-6 sm:p-8">
+    {
+      hasPrice ? (
+        <>
+          <p class="text-muted">Starting at</p>
+          <p class="mt-1 font-heading text-4xl font-bold tracking-tight sm:text-5xl">{formatPrice(price as number)}</p>
+          <p class="mt-4 text-muted">
+            The exact price depends on what your {noun} needs. We'll give you a number after a quick call.
+          </p>
+        </>
+      ) : (
+        <p class="text-lg">Every {noun} is different, so we quote after a quick call.</p>
+      )
+    }
+  </div>
+</Section>

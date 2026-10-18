@@ -1,0 +1,86 @@
+---
+// Every page uses this: <head> tags for SEO and sharing, the header,
+// the footer, and the GHL chat widget (when set in src/config.ts).
+import "@fontsource/montserrat/latin-500.css";
+import "@fontsource/montserrat/latin-700.css";
+import "@fontsource/inter/latin-400.css";
+import "@fontsource/inter/latin-600.css";
+import "../styles/global.css";
+import montserrat700 from "@fontsource/montserrat/files/montserrat-latin-700-normal.woff2?url";
+import inter400 from "@fontsource/inter/files/inter-latin-400-normal.woff2?url";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import { BUSINESS_NAME, GHL_CHAT_WIDGET } from "../config";
+import { filled } from "../lib/site";
+
+interface Props {
+  /** Unique page title, shown in the browser tab and search results. */
+  title: string;
+  /** Unique description for search results and link previews. */
+  description: string;
+  /** Keep this page out of search results (404 page). */
+  noindex?: boolean;
+  /** Hide the header "Book a call" button. */
+  hideBookButton?: boolean;
+  /** Extra structured data for search engines. */
+  jsonLd?: Record<string, unknown>;
+}
+
+const { title, description, noindex = false, hideBookButton = false, jsonLd } = Astro.props;
+
+const site = Astro.site ?? new URL("http://localhost:4321");
+const path = Astro.url.pathname.replace(/\.html$/, "").replace(/(.)\/$/, "$1").replace(/\/index$/, "/");
+const canonical = new URL(path, site).href;
+const ogImage = new URL("/og-image.png", site).href;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {noindex ? <meta name="robots" content="noindex" /> : <link rel="canonical" href={canonical} />}
+
+    <link rel="preload" href={montserrat700} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={inter400} as="font" type="font/woff2" crossorigin />
+
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#FFFFFF" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={BUSINESS_NAME} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="OJ Solutions. Built by business owners, for business owners." />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+    <slot name="head" />
+  </head>
+  <body class="flex min-h-dvh flex-col">
+    <a
+      href="#main"
+      class="sr-only z-50 rounded-lg bg-navy px-4 py-3 font-semibold text-white focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
+    >
+      Skip to content
+    </a>
+    <Header hideBookButton={hideBookButton} />
+    <main id="main" tabindex="-1" class="flex-1 focus:outline-none">
+      <slot />
+    </main>
+    <Footer />
+    {filled(GHL_CHAT_WIDGET) && <Fragment set:html={GHL_CHAT_WIDGET} />}
+  </body>
+</html>

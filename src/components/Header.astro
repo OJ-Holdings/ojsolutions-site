@@ -1,0 +1,68 @@
+---
+import Logo from "./Logo.astro";
+import BookButton from "./BookButton.astro";
+import Icon from "./Icon.astro";
+import { SERVICES } from "../lib/site";
+
+interface Props {
+  /** Hide the header button (used on /book, where it would link to itself). */
+  hideBookButton?: boolean;
+}
+
+const { hideBookButton = false } = Astro.props;
+const path = Astro.url.pathname.replace(/\.html$/, "").replace(/\/$/, "") || "/";
+---
+
+<header class="sticky top-0 z-40 border-b border-line bg-white">
+  <div class="container-page relative flex h-16 items-center justify-between gap-2 md:static">
+    <Logo size="header" />
+    <div class="flex items-center gap-0.5 min-[400px]:gap-1 sm:gap-3">
+      <nav aria-label="Main">
+        <details class="group md:relative" data-menu>
+          <summary
+            class="flex min-h-11 items-center gap-0.5 rounded-lg px-1.5 text-[0.875rem] font-semibold whitespace-nowrap text-navy hover:underline hover:decoration-gold hover:decoration-2 hover:underline-offset-4 min-[400px]:gap-1 min-[400px]:px-2 min-[400px]:text-[0.9375rem] sm:px-3"
+          >
+            Services
+            <Icon name="chevron-down" class="hidden size-3.5 transition-transform group-open:rotate-180 min-[360px]:block min-[400px]:size-4" />
+          </summary>
+          <ul
+            class="absolute inset-x-0 top-full border-b border-line bg-white px-4 pb-3 sm:px-6 md:inset-x-auto md:right-0 md:mt-2 md:w-72 md:rounded-lg md:border md:p-2"
+          >
+            {
+              SERVICES.map((s) => (
+                <li class="border-t border-line first:border-t-0 md:border-t-0">
+                  <a
+                    href={s.href}
+                    aria-current={path === s.href ? "page" : undefined}
+                    class="flex min-h-12 items-center justify-between gap-3 py-2 font-semibold text-navy hover:underline hover:decoration-gold hover:decoration-2 hover:underline-offset-4 aria-[current=page]:underline aria-[current=page]:decoration-gold aria-[current=page]:decoration-2 aria-[current=page]:underline-offset-4 md:rounded-md md:px-3"
+                  >
+                    {s.name}
+                    <Icon name="arrow-right" class="size-4 text-muted" />
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </details>
+      </nav>
+      {!hideBookButton && <BookButton size="header" />}
+    </div>
+  </div>
+</header>
+
+<script is:inline>
+  // Close the Services menu on outside click or Escape.
+  (() => {
+    const menu = document.querySelector("details[data-menu]");
+    if (!menu) return;
+    document.addEventListener("click", (e) => {
+      if (menu.open && !menu.contains(e.target)) menu.open = false;
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && menu.open) {
+        menu.open = false;
+        menu.querySelector("summary").focus();
+      }
+    });
+  })();
+</script>

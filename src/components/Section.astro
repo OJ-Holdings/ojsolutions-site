@@ -1,0 +1,22 @@
+---
+// A page section. White sections are split by a 1px line.
+interface Props {
+  id?: string;
+  /** id of the heading that names this section */
+  labelledby?: string;
+  border?: boolean;
+  class?: string;
+}
+
+const { id, labelledby, border = true, class: className = "" } = Astro.props;
+---
+
+<section
+  id={id}
+  aria-labelledby={labelledby}
+  class:list={["py-14 sm:py-20", border && "border-t border-line", className]}
+>
+  <div class="container-page">
+    <slot />
+  </div>
+</section>

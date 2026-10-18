@@ -1,0 +1,42 @@
+---
+// "Our work" for websites. Hidden when WEBSITE_EXAMPLES is empty.
+import Section from "./Section.astro";
+import SectionHeading from "./SectionHeading.astro";
+import Icon from "./Icon.astro";
+import { WEBSITE_EXAMPLES } from "../config";
+import { filled } from "../lib/site";
+
+const examples = WEBSITE_EXAMPLES.filter((e) => filled(e.name) && /^https?:\/\//i.test(e.url.trim()));
+const host = (url: string) => {
+  try {
+    return new URL(url).hostname.replace(/^www\./, "");
+  } catch {
+    return url;
+  }
+};
+---
+
+{
+  examples.length > 0 && (
+    <Section id="our-work" labelledby="our-work-title">
+      <SectionHeading id="our-work-title" title="Our work" />
+      <ul role="list" class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {examples.map((e) => (
+          <li class="relative flex flex-col rounded-lg border border-line p-6 hover:border-navy">
+            <h3 class="text-lg font-bold">
+              <a href={e.url.trim()} target="_blank" rel="noopener" class="after:absolute after:inset-0 after:rounded-lg">
+                {e.name}
+                <span class="sr-only">(opens in a new tab)</span>
+              </a>
+            </h3>
+            {filled(e.description) && <p class="mt-1.5 text-muted">{e.description}</p>}
+            <p class="mt-4 inline-flex items-center gap-1.5 font-semibold text-navy" aria-hidden="true">
+              {host(e.url.trim())}
+              <Icon name="arrow-right" class="size-4" />
+            </p>
+          </li>
+        ))}
+      </ul>
+    </Section>
+  )
+}

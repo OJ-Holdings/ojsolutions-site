@@ -1,0 +1,42 @@
+---
+// FAQ built on <details>, so it works without JavaScript.
+// Questions with an empty answer are hidden. If none are left,
+// the whole section is hidden.
+import Section from "./Section.astro";
+import SectionHeading from "./SectionHeading.astro";
+import Icon from "./Icon.astro";
+import { filled } from "../lib/site";
+
+export type FaqItem = {
+  q: string;
+  /** Plain text or simple HTML (links). Empty hides the question. */
+  a: string;
+};
+
+interface Props {
+  items: FaqItem[];
+  title?: string;
+}
+
+const { items, title = "Questions" } = Astro.props;
+const shown = items.filter((item) => filled(item.a));
+---
+
+{
+  shown.length > 0 && (
+    <Section id="faq" labelledby="faq-title">
+      <SectionHeading id="faq-title" title={title} />
+      <div class="mt-8 max-w-3xl border-b border-line">
+        {shown.map((item) => (
+          <details class="group border-t border-line">
+            <summary class="flex min-h-14 items-center justify-between gap-4 py-4 font-heading text-lg font-bold hover:underline hover:decoration-gold hover:decoration-2 hover:underline-offset-4">
+              {item.q}
+              <Icon name="chevron-down" class="size-5 shrink-0 text-navy transition-transform group-open:rotate-180" />
+            </summary>
+            <div class="pb-5 text-muted [&_a]:font-semibold [&_a]:text-navy [&_a]:underline [&_a]:decoration-gold [&_a]:decoration-2 [&_a]:underline-offset-4" set:html={item.a} />
+          </details>
+        ))}
+      </div>
+    </Section>
+  )
+}

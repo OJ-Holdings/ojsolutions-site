@@ -1,0 +1,96 @@
+---
+import Logo from "./Logo.astro";
+import Icon from "./Icon.astro";
+import { BUSINESS_NAME, EMAIL, PHONE, SOCIAL_LINKS } from "../config";
+import { SERVICES, filled } from "../lib/site";
+
+const socials = [
+  { name: "YouTube", icon: "youtube", href: SOCIAL_LINKS.youtube },
+  { name: "Instagram", icon: "instagram", href: SOCIAL_LINKS.instagram },
+  { name: "TikTok", icon: "tiktok", href: SOCIAL_LINKS.tiktok },
+].filter((s) => filled(s.href)) as { name: string; icon: "youtube" | "instagram" | "tiktok"; href: string }[];
+
+const telHref = filled(PHONE) ? `tel:${PHONE.replace(/[^\d+]/g, "")}` : "";
+const linkClass =
+  "text-navy hover:underline hover:decoration-gold hover:decoration-2 hover:underline-offset-4";
+---
+
+<footer class="border-t border-line bg-white">
+  <div class="container-page grid gap-10 py-12 md:grid-cols-[1.4fr_1fr_1fr] md:py-16">
+    <div>
+      <Logo />
+      <p class="mt-4 max-w-xs text-muted">Built by business owners, for business owners.</p>
+      <ul class="mt-5 space-y-2">
+        {
+          filled(EMAIL) && (
+            <li>
+              <a href={`mailto:${EMAIL}`} class:list={["inline-flex min-h-11 items-center gap-2 font-semibold", linkClass]}>
+                <Icon name="mail" class="size-5 text-muted" />
+                {EMAIL}
+              </a>
+            </li>
+          )
+        }
+        {
+          telHref && (
+            <li>
+              <a href={telHref} class:list={["inline-flex min-h-11 items-center gap-2 font-semibold", linkClass]}>
+                <Icon name="phone" class="size-5 text-muted" />
+                {PHONE}
+              </a>
+            </li>
+          )
+        }
+      </ul>
+    </div>
+
+    <nav aria-labelledby="footer-services">
+      <h2 id="footer-services" class="font-heading text-sm font-bold tracking-wide text-navy uppercase">Services</h2>
+      <ul class="mt-3">
+        {
+          SERVICES.map((s) => (
+            <li>
+              <a href={s.href} class:list={["inline-flex min-h-11 items-center", linkClass]}>
+                {s.name}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    {
+      socials.length > 0 && (
+        <div>
+          <h2 class="font-heading text-sm font-bold tracking-wide text-navy uppercase">Follow us</h2>
+          <ul class="mt-3">
+            {socials.map((s) => (
+              <li>
+                <a
+                  href={s.href}
+                  rel="noopener"
+                  target="_blank"
+                  class:list={["inline-flex min-h-11 items-center gap-2.5", linkClass]}
+                >
+                  <Icon name={s.icon} class="size-5" />
+                  {s.name}
+                  <span class="sr-only">(opens in a new tab)</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )
+    }
+  </div>
+
+  <div class="border-t border-line">
+    <div class="container-page flex flex-col gap-3 py-6 text-[0.9375rem] text-muted sm:flex-row sm:items-center sm:justify-between">
+      <p>&copy; 2026 {BUSINESS_NAME}. All rights reserved.</p>
+      <ul class="flex gap-6">
+        <li><a href="/privacy" class="inline-flex min-h-11 items-center text-muted hover:text-navy hover:underline hover:decoration-gold hover:decoration-2 hover:underline-offset-4">Privacy</a></li>
+        <li><a href="/terms" class="inline-flex min-h-11 items-center text-muted hover:text-navy hover:underline hover:decoration-gold hover:decoration-2 hover:underline-offset-4">Terms</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>

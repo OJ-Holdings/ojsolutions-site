@@ -1,0 +1,25 @@
+---
+// The one conversion on every page. Where it goes is decided in
+// src/lib/site.ts (bookingHref) from the booking settings in src/config.ts.
+import Button from "./Button.astro";
+import { bookingHref, type ServiceKey } from "../lib/site";
+
+interface Props {
+  service?: ServiceKey;
+  variant?: "navy" | "gold";
+  size?: "header" | "sm" | "md" | "lg";
+  label?: string;
+  class?: string;
+}
+
+const { service, variant = "navy", size = "md", label = "Book a call", class: className } = Astro.props;
+const href = bookingHref(service);
+---
+
+{
+  href && (
+    <Button href={href} variant={variant} size={size} class={className}>
+      {label}
+    </Button>
+  )
+}

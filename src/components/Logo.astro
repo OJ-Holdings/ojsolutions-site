@@ -1,0 +1,35 @@
+---
+// The OJ mark (image) plus "OJ Solutions" as live text.
+// The mark has a navy design, so it only ever sits on white.
+import { Image } from "astro:assets";
+import mark from "../assets/brand/oj-mark.png";
+import { BUSINESS_NAME } from "../config";
+
+interface Props {
+  /** "header" shrinks on narrow phones so the header fits at 320px. */
+  size?: "header" | "default";
+  class?: string;
+}
+
+const { size = "default", class: className = "" } = Astro.props;
+// "OJ Solutions" -> "OJ" bold, "Solutions" medium
+const [first, ...restWords] = BUSINESS_NAME.split(" ");
+
+const sizes = {
+  header: {
+    link: "gap-1.5 min-[400px]:gap-2.5",
+    img: "h-[26px] min-[360px]:h-[28px] min-[400px]:h-[32px] sm:h-[34px]",
+    text: "text-[0.875rem] min-[360px]:text-[0.9375rem] min-[400px]:text-[1.0625rem] sm:text-[1.1875rem]",
+  },
+  default: { link: "gap-2.5", img: "h-[34px]", text: "text-[1.1875rem]" },
+}[size];
+---
+
+<a href="/" class:list={["inline-flex shrink-0 items-center rounded-sm", sizes.link, className]}>
+  <Image src={mark} alt="" height={34} densities={[1, 2]} loading="eager" class:list={["w-auto", sizes.img]} />
+  <span class:list={["font-heading leading-none tracking-tight whitespace-nowrap text-navy", sizes.text]}>
+    <span class="font-bold">{first}</span>{restWords.length > 0 && " "}{
+      restWords.length > 0 && <span class="font-medium">{restWords.join(" ")}</span>
+    }
+  </span>
+</a>
