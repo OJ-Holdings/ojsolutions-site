@@ -5,7 +5,7 @@ import type { ServiceKey } from "../lib/site";
 
 interface Props {
   title: string;
-  /** Part of the title to underline in gold. */
+  /** Part of the title to underline in gold. Keep it short: it never wraps. */
   highlight?: string;
   subhead: string;
   /** Small label above the headline, e.g. the service name. */
@@ -31,10 +31,10 @@ const after = at >= 0 ? title.slice(at + (highlight?.length ?? 0)) : "";
           </p>
         )
       }
-      <h1 class="text-[2.375rem] leading-[1.08] font-bold tracking-tight sm:text-6xl sm:leading-[1.05]">
+      <h1 class="text-[2rem] leading-[1.08] font-bold tracking-tight min-[360px]:text-[2.375rem] sm:text-6xl sm:leading-[1.05]">
         {before}{
           marked && (
-            <span class="underline decoration-gold decoration-[5px] underline-offset-[6px] [text-decoration-skip-ink:none] sm:decoration-[7px] sm:underline-offset-[10px]">
+            <span class="whitespace-nowrap underline decoration-gold decoration-[5px] underline-offset-[6px] [text-decoration-skip-ink:none] sm:decoration-[7px] sm:underline-offset-[10px]">
               {marked}
             </span>
           )

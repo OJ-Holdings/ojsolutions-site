@@ -29,7 +29,7 @@ const shown = items.filter((item) => filled(item.a));
       <div class="mt-8 max-w-3xl border-b border-line">
         {shown.map((item) => (
           <details class="group border-t border-line">
-            <summary class="flex min-h-14 items-center justify-between gap-4 py-4 font-heading text-lg font-bold hover:underline hover:decoration-gold hover:decoration-2 hover:underline-offset-4">
+            <summary class="flex min-h-14 items-center justify-between gap-4 py-4 font-heading text-lg font-bold text-balance hover:underline hover:decoration-gold hover:decoration-2 hover:underline-offset-4">
               {item.q}
               <Icon name="chevron-down" class="size-5 shrink-0 text-navy transition-transform group-open:rotate-180" />
             </summary>

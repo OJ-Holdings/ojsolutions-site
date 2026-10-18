@@ -20,28 +20,32 @@ const linkClass =
     <div>
       <Logo />
       <p class="mt-4 max-w-xs text-muted">Built by business owners, for business owners.</p>
-      <ul class="mt-5 space-y-2">
-        {
-          filled(EMAIL) && (
-            <li>
-              <a href={`mailto:${EMAIL}`} class:list={["inline-flex min-h-11 items-center gap-2 font-semibold", linkClass]}>
-                <Icon name="mail" class="size-5 text-muted" />
-                {EMAIL}
-              </a>
-            </li>
-          )
-        }
-        {
-          telHref && (
-            <li>
-              <a href={telHref} class:list={["inline-flex min-h-11 items-center gap-2 font-semibold", linkClass]}>
-                <Icon name="phone" class="size-5 text-muted" />
-                {PHONE}
-              </a>
-            </li>
-          )
-        }
-      </ul>
+      {
+        (filled(EMAIL) || telHref) && (
+          <ul class="mt-5 space-y-2">
+            {
+              filled(EMAIL) && (
+                <li>
+                  <a href={`mailto:${EMAIL}`} class:list={["inline-flex min-h-11 items-center gap-2 font-semibold", linkClass]}>
+                    <Icon name="mail" class="size-5 text-muted" />
+                    {EMAIL}
+                  </a>
+                </li>
+              )
+            }
+            {
+              telHref && (
+                <li>
+                  <a href={telHref} class:list={["inline-flex min-h-11 items-center gap-2 font-semibold", linkClass]}>
+                    <Icon name="phone" class="size-5 text-muted" />
+                    {PHONE}
+                  </a>
+                </li>
+              )
+            }
+          </ul>
+        )
+      }
     </div>
 
     <nav aria-labelledby="footer-services">

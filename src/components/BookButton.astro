@@ -18,7 +18,13 @@ const href = bookingHref(service);
 
 {
   href && (
-    <Button href={href} variant={variant} size={size} class={className}>
+    <Button
+      href={href}
+      variant={variant}
+      size={size}
+      class={className}
+      data-book={href.startsWith("mailto:") ? undefined : ""}
+    >
       {label}
     </Button>
   )

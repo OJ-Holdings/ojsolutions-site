@@ -79,15 +79,10 @@ export function bookingHref(service?: ServiceKey): string | null {
   if (calendarEmbed()) {
     return service ? `/book?service=${service}` : "/book";
   }
-  if (filled(BOOKING_URL)) {
-    if (!service) return BOOKING_URL.trim();
-    try {
-      const url = new URL(BOOKING_URL.trim());
-      url.searchParams.set("service", service);
-      return url.toString();
-    } catch {
-      return BOOKING_URL.trim();
-    }
+  const bookingUrl = webAddress(BOOKING_URL);
+  if (bookingUrl) {
+    if (service) bookingUrl.searchParams.set("service", service);
+    return bookingUrl.href;
   }
   if (filled(EMAIL)) {
     const subject = service
@@ -96,6 +91,21 @@ export function bookingHref(service?: ServiceKey): string | null {
     return `mailto:${EMAIL.trim()}?subject=${encodeURIComponent(subject)}`;
   }
   return null;
+}
+
+/**
+ * Turns a pasted link into a full web address, adding "https://" if it was
+ * left off (e.g. "calendly.com/oj"). Returns null if it isn't a real link.
+ */
+export function webAddress(value: string): URL | null {
+  const v = value.trim();
+  if (!v) return null;
+  try {
+    const url = new URL(/^https?:\/\//i.test(v) ? v : `https://${v}`);
+    return url.hostname.includes(".") ? url : null;
+  } catch {
+    return null;
+  }
 }
 
 /** Pulls the video ID out of a YouTube ID or link. */

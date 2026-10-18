@@ -1,7 +1,7 @@
 ---
 // Full-width navy section at the bottom of each main page.
 import BookButton from "./BookButton.astro";
-import type { ServiceKey } from "../lib/site";
+import { bookingHref, type ServiceKey } from "../lib/site";
 
 interface Props {
   heading: string;
@@ -10,15 +10,23 @@ interface Props {
 }
 
 const { heading, line, service } = Astro.props;
+// Asking people to book with no way to book would be a dead end.
+const canBook = bookingHref(service) !== null;
 ---
 
-<section class="on-navy bg-navy text-white" aria-labelledby="final-cta">
-  <div class="container-page py-16 text-center sm:py-24">
-    <span class="mx-auto block h-1 w-10 rounded-sm bg-gold" aria-hidden="true"></span>
-    <h2 id="final-cta" class="mx-auto mt-5 max-w-3xl text-[2rem] font-bold tracking-tight sm:text-5xl">{heading}</h2>
-    {line && <p class="mx-auto mt-5 max-w-xl text-lg text-white">{line}</p>}
-    <div class="mt-9 flex justify-center">
-      <BookButton variant="gold" size="lg" service={service} />
-    </div>
-  </div>
-</section>
+{
+  canBook && (
+    <section class="on-navy bg-navy text-white" aria-labelledby="final-cta">
+      <div class="container-page py-16 text-center sm:py-24">
+        <span class="mx-auto block h-1 w-10 rounded-sm bg-gold" aria-hidden="true" />
+        <h2 id="final-cta" class="mx-auto mt-5 max-w-3xl text-[2rem] font-bold tracking-tight sm:text-5xl">
+          {heading}
+        </h2>
+        {line && <p class="mx-auto mt-5 max-w-xl text-lg text-white">{line}</p>}
+        <div class="mt-9 flex justify-center">
+          <BookButton variant="gold" size="lg" service={service} />
+        </div>
+      </div>
+    </section>
+  )
+}

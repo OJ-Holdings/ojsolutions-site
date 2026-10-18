@@ -1,0 +1,35 @@
+---
+// "Contact us" block for the Privacy and Terms pages. Uses whatever contact
+// info is filled in, and hides itself if there is none.
+import { EMAIL, PHONE } from "../config";
+import { filled } from "../lib/site";
+
+interface Props {
+  /** e.g. "this policy" or "these terms" */
+  topic: string;
+}
+
+const { topic } = Astro.props;
+const email = filled(EMAIL) ? EMAIL.trim() : "";
+const phone = filled(PHONE) ? PHONE.trim() : "";
+const tel = phone ? `tel:${phone.replace(/[^\d+]/g, "")}` : "";
+---
+
+{
+  (email || phone) && (
+    <>
+      <h2>Contact us</h2>
+      <p>
+        Questions about {topic}?{" "}
+        {email && (
+          <>
+            Email us at <a href={`mailto:${email}`}>{email}</a>
+          </>
+        )}
+        {email && phone && " or call "}
+        {!email && phone && "Call us at "}
+        {phone && <a href={tel}>{phone}</a>}.
+      </p>
+    </>
+  )
+}

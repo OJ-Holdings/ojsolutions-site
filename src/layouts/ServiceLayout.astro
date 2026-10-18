@@ -47,7 +47,7 @@ const {
 } = Astro.props;
 ---
 
-<BaseLayout title={title} description={description}>
+<BaseLayout title={title} description={description} service={service}>
   <Hero title={heading} highlight={highlight} subhead={subhead} eyebrow={eyebrow} service={service}>
     <slot name="hero-secondary" slot="secondary" />
   </Hero>

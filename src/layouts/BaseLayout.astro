@@ -11,7 +11,7 @@ import inter400 from "@fontsource/inter/files/inter-latin-400-normal.woff2?url";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import { BUSINESS_NAME, GHL_CHAT_WIDGET } from "../config";
-import { filled } from "../lib/site";
+import { filled, type ServiceKey } from "../lib/site";
 
 interface Props {
   /** Unique page title, shown in the browser tab and search results. */
@@ -24,9 +24,11 @@ interface Props {
   hideBookButton?: boolean;
   /** Extra structured data for search engines. */
   jsonLd?: Record<string, unknown>;
+  /** Service pages tag the header Book a call button with their service. */
+  service?: ServiceKey;
 }
 
-const { title, description, noindex = false, hideBookButton = false, jsonLd } = Astro.props;
+const { title, description, noindex = false, hideBookButton = false, jsonLd, service } = Astro.props;
 
 const site = Astro.site ?? new URL("http://localhost:4321");
 const path = Astro.url.pathname.replace(/\.html$/, "").replace(/(.)\/$/, "$1").replace(/\/index$/, "/");
@@ -72,15 +74,40 @@ const ogImage = new URL("/og-image.png", site).href;
   <body class="flex min-h-dvh flex-col">
     <a
       href="#main"
-      class="sr-only z-50 rounded-lg bg-navy px-4 py-3 font-semibold text-white focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
+      class="sr-only z-50 rounded-lg bg-navy px-4 py-3 font-semibold text-white focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:px-4 focus:py-3"
     >
       Skip to content
     </a>
-    <Header hideBookButton={hideBookButton} />
+    <Header hideBookButton={hideBookButton} service={service} />
     <main id="main" tabindex="-1" class="flex-1 focus:outline-none">
       <slot />
     </main>
     <Footer />
+    <script is:inline>
+      // Outreach links carry tags like ?src=ig&rep=jacob&utm_source=facebook.
+      // Remember them for this visit and add them to every Book a call link,
+      // so they reach the GHL calendar even after the visitor clicks around.
+      (() => {
+        const KEY = "oj-tracking";
+        const keep = (k) => k === "src" || k === "rep" || k.startsWith("utm_");
+        let tags = {};
+        try {
+          tags = JSON.parse(sessionStorage.getItem(KEY) || "{}");
+        } catch {}
+        new URLSearchParams(location.search).forEach((v, k) => {
+          if (keep(k) && v) tags[k] = v;
+        });
+        try {
+          sessionStorage.setItem(KEY, JSON.stringify(tags));
+        } catch {}
+        if (!Object.keys(tags).length) return;
+        document.querySelectorAll("a[data-book]").forEach((a) => {
+          const url = new URL(a.href, location.href);
+          for (const [k, v] of Object.entries(tags)) if (!url.searchParams.has(k)) url.searchParams.set(k, v);
+          a.href = url.href;
+        });
+      })();
+    </script>
     {filled(GHL_CHAT_WIDGET) && <Fragment set:html={GHL_CHAT_WIDGET} />}
   </body>
 </html>

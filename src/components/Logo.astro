@@ -25,7 +25,7 @@ const sizes = {
 }[size];
 ---
 
-<a href="/" class:list={["inline-flex shrink-0 items-center rounded-sm", sizes.link, className]}>
+<a href="/" class:list={["inline-flex min-h-11 shrink-0 items-center rounded-sm", sizes.link, className]}>
   <Image src={mark} alt="" height={34} densities={[1, 2]} loading="eager" class:list={["w-auto", sizes.img]} />
   <span class:list={["font-heading leading-none tracking-tight whitespace-nowrap text-navy", sizes.text]}>
     <span class="font-bold">{first}</span>{restWords.length > 0 && " "}{

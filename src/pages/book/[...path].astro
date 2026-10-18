@@ -44,12 +44,17 @@ const embed = calendarEmbed()!;
   </section>
 
   <script is:inline>
-    // Pass this page's query string (service, src, rep, utm_*) to the calendar.
+    // Pass this page's query string (service, src, rep, utm_*) to the calendar,
+    // plus any outreach tags remembered from earlier pages this visit.
     (() => {
       const frame = document.querySelector("iframe[data-src]");
       if (!frame) return;
       const url = new URL(frame.dataset.src);
       new URLSearchParams(location.search).forEach((value, key) => url.searchParams.set(key, value));
+      try {
+        const saved = JSON.parse(sessionStorage.getItem("oj-tracking") || "{}");
+        for (const [key, value] of Object.entries(saved)) if (!url.searchParams.has(key)) url.searchParams.set(key, value);
+      } catch {}
       frame.src = url.toString();
     })();
   </script>
