@@ -1,0 +1,104 @@
+---
+import ServiceLayout from "../layouts/ServiceLayout.astro";
+import Section from "../components/Section.astro";
+import SectionHeading from "../components/SectionHeading.astro";
+import Steps from "../components/Steps.astro";
+import FeatureGrid from "../components/FeatureGrid.astro";
+import WebsiteExamples from "../components/WebsiteExamples.astro";
+import PriceFrom from "../components/PriceFrom.astro";
+import { FAQ_ANSWERS, WEBSITE_PRICE_FROM } from "../config";
+
+const included = [
+  {
+    title: "Custom design",
+    body: "Designed around your business and what you want visitors to do: call you or book.",
+  },
+  {
+    title: "Built for phones first",
+    body: "Designed for the small screen first, then scaled up for desktop.",
+  },
+  {
+    title: "Click-to-call and booking",
+    body: "Your number is one tap away, and customers can book without picking up the phone.",
+  },
+  {
+    title: "Fast load times",
+    body: "Built lean, so pages load quickly on a phone.",
+  },
+  {
+    title: "Basic Google setup",
+    body: "Page titles, descriptions, and a sitemap, so Google can read your site.",
+  },
+  {
+    title: "Hosting and launch handled",
+    body: "We put it live and handle the hosting. Nothing for you to set up.",
+  },
+];
+
+const steps = [
+  {
+    title: "We look at what you have",
+    body: "A call to go over your current site, or the lack of one, and what you need it to do.",
+  },
+  {
+    title: "We design and build it",
+    body: "You review it and tell us what to change before anything goes live.",
+  },
+  {
+    title: "We launch it",
+    body: "We put it live and take care of the hosting.",
+  },
+];
+
+const faq = [
+  {
+    q: "Can you redo my current site?",
+    a: "Yes. We can rebuild the site you have or start from scratch.",
+  },
+  // TODO(Jacob): answer these two in src/config.ts (FAQ_ANSWERS). Hidden until then.
+  { q: "Do I own the site?", a: FAQ_ANSWERS.websitesOwnership },
+  { q: "How long does it take?", a: FAQ_ANSWERS.websitesTimeline },
+];
+---
+
+<ServiceLayout
+  service="website"
+  title="Websites That Bring In Customers | OJ Solutions"
+  description="Fast, phone-first websites with click-to-call and booking built in. New sites or rebuilds, designed, built, launched, and hosted for you."
+  eyebrow="Websites"
+  heading="Your website should be bringing you customers."
+  highlight="bringing you customers."
+  subhead="We build fast, phone-first sites that make it easy to call or book you."
+  problemHeading="Most people find you on their phone."
+  faq={faq}
+  ctaHeading="Let's look at your site"
+  ctaLine="Book a short call. We'll go over what you have and what we'd change."
+>
+  <Fragment slot="problem">
+    <div class="mt-6 max-w-2xl space-y-4 text-lg text-muted">
+      <p>
+        If your site is slow, looks dated, or makes it hard to call or book, they don't stick around to figure it out.
+        They go back to search and call someone else.
+      </p>
+      <p>They won't tell you why. They just won't call.</p>
+    </div>
+  </Fragment>
+
+  <Section id="included" labelledby="included-title">
+    <SectionHeading
+      id="included-title"
+      title="What's included"
+      intro="New sites or rebuilds. The site you're on right now is built the same way."
+    />
+    <FeatureGrid items={included} />
+  </Section>
+
+  <Section id="how-it-works" labelledby="how-title">
+    <SectionHeading id="how-title" title="How it works" />
+    <Steps steps={steps} />
+  </Section>
+
+  <WebsiteExamples />
+
+  <PriceFrom price={WEBSITE_PRICE_FROM} noun="site" />
+</ServiceLayout>

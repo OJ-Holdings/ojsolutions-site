@@ -1,0 +1,103 @@
+---
+import ServiceLayout from "../layouts/ServiceLayout.astro";
+import Section from "../components/Section.astro";
+import SectionHeading from "../components/SectionHeading.astro";
+import Steps from "../components/Steps.astro";
+import FeatureGrid from "../components/FeatureGrid.astro";
+import CommercialExamples from "../components/CommercialExamples.astro";
+import PriceFrom from "../components/PriceFrom.astro";
+import { COMMERCIAL_PRICE_FROM, FAQ_ANSWERS, SHOOT_AREA } from "../config";
+import { filled } from "../lib/site";
+
+// Only promise to come on site when SHOOT_AREA is set in src/config.ts.
+// TODO(Jacob): decide how out-of-area clients work (they send footage?
+// we travel for a fee?) and answer FAQ_ANSWERS.commercialsComeToUs.
+const filming = filled(SHOOT_AREA)
+  ? {
+      title: "Filming on site",
+      body: `We come to you and film on site anywhere in ${SHOOT_AREA.trim()}.`,
+    }
+  : {
+      title: "Filming",
+      body: "We handle the filming, working from a shot list we plan with you.",
+    };
+
+const included = [
+  {
+    title: "Planning the concept",
+    body: "We work out the idea, the message, and the shots with you before anything gets filmed.",
+  },
+  filming,
+  {
+    title: "Editing",
+    body: "We edit the footage into finished commercials and short ads.",
+  },
+  {
+    title: "Vertical cuts",
+    body: "Versions made for Reels, TikTok, and Shorts.",
+  },
+  {
+    title: "Ad versions for Meta",
+    body: "Cuts ready to run as ads on Facebook and Instagram.",
+  },
+  {
+    title: "A longer cut for your website",
+    body: "A full version to put on your site.",
+  },
+];
+
+const steps = [
+  {
+    title: "We plan the idea",
+    body: "A call to figure out what to film, who it's for, and where it will run.",
+  },
+  {
+    title: "We film and edit",
+    body: "We shoot it and cut it into versions for each place it will run.",
+  },
+  {
+    title: "You get final cuts",
+    body: "Ready to post and ready to run as ads.",
+  },
+];
+
+const faq = [
+  // TODO(Jacob): answer these two in src/config.ts (FAQ_ANSWERS). Hidden until then.
+  { q: "Do you come to us?", a: FAQ_ANSWERS.commercialsComeToUs },
+  { q: "How long until it's ready?", a: FAQ_ANSWERS.commercialsTimeline },
+];
+---
+
+<ServiceLayout
+  service="commercial"
+  title="Commercials and Video Ads for Your Business | OJ Solutions"
+  description="Commercials and short video ads for your social media, website, and paid ads. We plan the idea, film it, and edit it into cuts ready to post."
+  eyebrow="Commercials"
+  heading="People scroll past photos. They stop for video."
+  highlight="They stop for video."
+  subhead="We make commercials and short video ads for your social media, website, and paid ads."
+  problemHeading="If you're not on video, you're easy to miss."
+  faq={faq}
+  ctaHeading="Let's get you on camera"
+  ctaLine="Book a short call and we'll plan what to film."
+>
+  <Fragment slot="problem">
+    <p class="mt-6 max-w-2xl text-lg text-muted">
+      If you're only posting photos, or not posting at all, you're invisible in the feed while your competitors show up.
+    </p>
+  </Fragment>
+
+  <Section id="included" labelledby="included-title">
+    <SectionHeading id="included-title" title="What's included" intro="We plan it, film it, and edit it." />
+    <FeatureGrid items={included} />
+  </Section>
+
+  <Section id="how-it-works" labelledby="how-title">
+    <SectionHeading id="how-title" title="How it works" />
+    <Steps steps={steps} />
+  </Section>
+
+  <CommercialExamples />
+
+  <PriceFrom price={COMMERCIAL_PRICE_FROM} noun="project" />
+</ServiceLayout>
