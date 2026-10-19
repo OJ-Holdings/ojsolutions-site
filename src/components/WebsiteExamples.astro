@@ -1,7 +1,11 @@
 ---
-// "Our work" for websites. Hidden when WEBSITE_EXAMPLES is empty.
+// "Our work" for websites, on a navy band. Lists WEBSITE_EXAMPLES from
+// src/config.ts. Until there's a real client site to show, a visible
+// PLACEHOLDER holds the spot. (Our own site, ojexteriorcare.com, is
+// featured in the Websites page hero.)
 import Section from "./Section.astro";
 import SectionHeading from "./SectionHeading.astro";
+import PlaceholderBox from "./PlaceholderBox.astro";
 import Icon from "./Icon.astro";
 import { WEBSITE_EXAMPLES } from "../config";
 import { filled } from "../lib/site";
@@ -16,27 +20,32 @@ const host = (url: string) => {
 };
 ---
 
-{
-  examples.length > 0 && (
-    <Section id="our-work" labelledby="our-work-title">
-      <SectionHeading id="our-work-title" title="Our work" />
+<Section id="our-work" labelledby="our-work-title" tone="navy">
+  <SectionHeading id="our-work-title" title="Our work" tone="navy" />
+  {
+    examples.length > 0 ? (
       <ul role="list" class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {examples.map((e) => (
-          <li class="relative flex flex-col rounded-lg border border-line p-6 hover:border-navy">
+          <li class="rule-soft relative flex flex-col rounded-lg border p-6 hover:border-gold">
             <h3 class="text-lg font-bold">
               <a href={e.url.trim()} target="_blank" rel="noopener" class="after:absolute after:inset-0 after:rounded-lg">
                 {e.name}
                 <span class="sr-only">(opens in a new tab)</span>
               </a>
             </h3>
-            {filled(e.description) && <p class="mt-1.5 text-muted">{e.description}</p>}
-            <p class="mt-4 inline-flex items-center gap-1.5 font-semibold text-navy" aria-hidden="true">
+            {filled(e.description) && <p class="text-soft mt-1.5">{e.description}</p>}
+            <p class="mt-4 inline-flex items-center gap-1.5 font-semibold text-gold" aria-hidden="true">
               {host(e.url.trim())}
               <Icon name="arrow-right" class="size-4" />
             </p>
           </li>
         ))}
       </ul>
-    </Section>
-  )
-}
+    ) : (
+      <>
+        {/* TODO(Jacob): add client sites to WEBSITE_EXAMPLES in src/config.ts once there are any. */}
+        <PlaceholderBox class="mt-10 max-w-2xl" label="client website examples" icon="browser" />
+      </>
+    )
+  }
+</Section>
