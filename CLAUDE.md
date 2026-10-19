@@ -27,11 +27,12 @@ Most visitors come from our cold calls, cold emails, Instagram and Facebook DMs,
 - SEO: unique title and meta description per page, an Open Graph image (navy background, OJ mark, "Built by business owners, for business owners."), @astrojs/sitemap, robots.txt.
 - The three service pages share one reusable ServiceLayout, so adding a service later is one new page.
 - All editable business info lives in one file, `src/config.ts`: BUSINESS_NAME, LEGAL_ENTITY, EMAIL, PHONE, BOOKING_URL, GHL_CALENDAR_EMBED, GHL_CHAT_WIDGET, DEMO_AUDIO_SRC, DEMO_VIDEO_SRC, STATS_SOURCE_URL, GUARANTEE_TEXT, SHOW_PRICING, SETUP_PRICE, MONTHLY_PRICE, WEBSITE_PRICE_FROM, COMMERCIAL_PRICE_FROM, WEBSITE_EXAMPLES, COMMERCIAL_EXAMPLES, SHOOT_AREA, social links, and the FAQ answers still owed. Unknown values stay empty.
-- If a config value is empty, hide whatever depends on it. Visitors never see a broken link, an empty player, or placeholder text.
+- If a config value is empty, hide whatever depends on it. Visitors never see a broken link or an empty player.
+- Exception for the redesign: answers Jacob still owes (guarantee, prices, setup time, calendar embed, demo audio, screen recording) show as visible text starting with "PLACEHOLDER:", listed in `PLACEHOLDERS.md`. Replace each one when its answer arrives; never fill one with made-up content.
 
 ## Booking and tracking
 
-- Every "Book a call" button goes to /book when GHL_CALENDAR_EMBED is set, otherwise to BOOKING_URL. If neither is set, it links to mailto:EMAIL. (Logic: `bookingHref` in `src/lib/site.ts`.)
+- Every "Book a call" button goes to /book. (Logic: `bookingHref` in `src/lib/site.ts`.) /book shows the GHL calendar when GHL_CALENDAR_EMBED is set, a button to BOOKING_URL when only that is set, and otherwise a visible PLACEHOLDER. The email address is shown plainly under it.
 - Buttons on service pages add ?service=receptionist, ?service=website, or ?service=commercial. Home page buttons add nothing.
 - /book shows the embedded GHL calendar and passes the page's full query string (service, src, rep, and any utm_ tags) through to the calendar embed URL, so those tags land on the contact in GHL.
 - Outreach links point at a service page and may carry src, rep, and utm_ tags (e.g. /ai-receptionist?src=ig&rep=jacob). A small script in BaseLayout remembers those tags for the visit and adds them to every Book a call link, so they still reach /book after the visitor clicks around.

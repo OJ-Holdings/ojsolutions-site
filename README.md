@@ -103,7 +103,7 @@ https://yourdomain.com/websites?src=email&rep=oscar&utm_campaign=fall
 - `rep` is who reached out (`jacob` or `oscar`).
 - Any `utm_` tags work too.
 
-The site remembers these while the person browses, and passes them to the calendar along with which service page they booked from (`service=receptionist`, `website`, or `commercial`). This only works once `GHL_CALENDAR_EMBED` (or `BOOKING_URL`) is set. With email booking there's nothing to pass them to.
+The site remembers these while the person browses, and passes them to the calendar along with which service page they booked from (`service=receptionist`, `website`, or `commercial`). This only works once `GHL_CALENDAR_EMBED` is set. Until then /book shows a placeholder.
 
 ---
 

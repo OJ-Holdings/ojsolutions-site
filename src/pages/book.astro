@@ -1,0 +1,101 @@
+---
+// The /book page. Every "Book a call" button on the site comes here.
+// - GHL_CALENDAR_EMBED set: the GoHighLevel calendar, embedded.
+// - Only BOOKING_URL set: a button to that booking page.
+// - Neither: a visible PLACEHOLDER until the calendar is ready.
+// The email address is always shown plainly under the calendar.
+//
+// Everything after the "?" in the address (service, src, rep, utm_ tags)
+// is passed through to the calendar, so it lands on the contact in GHL.
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Button from "../components/Button.astro";
+import Icon from "../components/Icon.astro";
+import { BOOKING_URL, EMAIL } from "../config";
+import { calendarEmbed, filled, webAddress } from "../lib/site";
+
+const embed = calendarEmbed();
+const bookingUrl = embed ? null : webAddress(BOOKING_URL);
+---
+
+<BaseLayout
+  title="Book a Call | OJ Solutions"
+  description="Pick a time for a short call with OJ Solutions. We'll look at your business and tell you what we'd fix first."
+  hideBookButton
+>
+  <section class="on-navy" aria-labelledby="book-title">
+    <div class="container-page pt-12 pb-14 sm:pt-16 sm:pb-20">
+      <h1 id="book-title" class="display-1">Book a call</h1>
+      <p class="text-soft mt-5 max-w-xl text-lg sm:text-xl">
+        Pick a time that works for you. We'll look at your business and tell you what we'd fix first.
+      </p>
+    </div>
+  </section>
+
+  <section class="pt-10 pb-16 sm:pt-14 sm:pb-24" aria-label="Booking calendar">
+    <div class="container-page">
+      {
+        embed ? (
+          <div class="overflow-hidden rounded-lg border border-line">
+            <iframe
+              id={embed.id}
+              data-src={embed.src}
+              title="Booking calendar"
+              class="block min-h-[880px] w-full border-0"
+              loading="eager"
+            />
+            <noscript>
+              <iframe src={embed.src} title="Booking calendar" class="block min-h-[880px] w-full border-0" />
+            </noscript>
+          </div>
+        ) : bookingUrl ? (
+          <Button href={bookingUrl.href} size="lg" data-book>
+            Pick a time
+            <Icon name="arrow-right" class="size-5" />
+          </Button>
+        ) : (
+          <div class="flex min-h-[28rem] flex-col items-center justify-center gap-4 rounded-lg border border-dashed border-navy p-6 text-center">
+            <Icon name="calendar" class="size-8 text-navy" />
+            <p class="max-w-md font-heading text-lg font-bold">
+              PLACEHOLDER: GoHighLevel booking calendar goes here.
+            </p>
+            {/* TODO(Jacob): paste the GHL calendar embed link into GHL_CALENDAR_EMBED in src/config.ts. */}
+          </div>
+        )
+      }
+
+      {
+        filled(EMAIL) && (
+          <p class="mt-8 text-lg text-muted">
+            Prefer email?{" "}
+            <a href={`mailto:${EMAIL.trim()}`} class="link break-all">
+              {EMAIL.trim()}
+            </a>
+          </p>
+        )
+      }
+    </div>
+  </section>
+
+  {
+    embed && (
+      <>
+        <script is:inline>
+          // Pass this page's query string (service, src, rep, utm_*) to the calendar,
+          // plus any outreach tags remembered from earlier pages this visit.
+          (() => {
+            const frame = document.querySelector("iframe[data-src]");
+            if (!frame) return;
+            const url = new URL(frame.dataset.src);
+            new URLSearchParams(location.search).forEach((value, key) => url.searchParams.set(key, value));
+            try {
+              const saved = JSON.parse(sessionStorage.getItem("oj-tracking") || "{}");
+              for (const [key, value] of Object.entries(saved)) if (!url.searchParams.has(key)) url.searchParams.set(key, value);
+            } catch {}
+            frame.src = url.toString();
+          })();
+        </script>
+        <script is:inline src="https://link.msgsndr.com/js/form_embed.js" defer />
+      </>
+    )
+  }
+</BaseLayout>

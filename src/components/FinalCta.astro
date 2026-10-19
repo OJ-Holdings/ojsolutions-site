@@ -1,7 +1,7 @@
 ---
 // Full-width navy close at the bottom of each main page.
 import BookButton from "./BookButton.astro";
-import { bookingHref, type ServiceKey } from "../lib/site";
+import type { ServiceKey } from "../lib/site";
 
 interface Props {
   heading: string;
@@ -10,12 +10,10 @@ interface Props {
 }
 
 const { heading, line, service } = Astro.props;
-// Asking people to book with no way to book would be a dead end.
-const canBook = bookingHref(service) !== null;
 ---
 
 {
-  canBook && (
+  (
     <section class="on-navy rule-soft border-t" aria-labelledby="final-cta">
       <div class="container-page py-20 sm:py-28">
         <div class="grid gap-10 lg:grid-cols-[1fr_auto] lg:items-end lg:gap-16">
