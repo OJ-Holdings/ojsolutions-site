@@ -18,13 +18,15 @@ const named = entity === BUSINESS_NAME ? entity : `${entity} ("${BUSINESS_NAME}"
   title="Terms of Use | OJ Solutions"
   description="The terms for using the OJ Solutions website and receiving text messages from us."
 >
-  <article class="container-page pt-10 pb-16 sm:pt-16 sm:pb-24">
-    <div class="max-w-2xl">
-      <span class="block h-1 w-10 rounded-sm bg-gold" aria-hidden="true"></span>
-      <h1 class="mt-4 text-[2.25rem] leading-[1.1] font-bold tracking-tight sm:text-5xl">Terms of Use</h1>
-      <p class="mt-4 text-muted">Last updated: {LAST_UPDATED}</p>
-
-      <div class="prose-page mt-8">
+  <article>
+    <header class="on-navy">
+      <div class="container-page pt-12 pb-12 sm:pt-16 sm:pb-16">
+        <h1 class="display-1">Terms of Use</h1>
+        <p class="text-soft mt-4 text-lg">Last updated: {LAST_UPDATED}</p>
+      </div>
+    </header>
+    <div class="container-page pt-6 pb-16 sm:pt-10 sm:pb-24">
+      <div class="prose-page max-w-2xl">
         <p>
           These terms cover your use of this website, run by {named} ("we," "us"). By using the site, you agree to them.
           If you don't agree, please don't use the site.
