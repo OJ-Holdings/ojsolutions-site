@@ -20,7 +20,7 @@ It's built with **Astro** (turns our files into a fast, plain website) and **Tai
 | `public/` | Files served exactly as they are: favicons, the share image, and demo media in `media/`. |
 | `scripts/brand-assets.py` | Rebuilds the logo mark, favicons, and share image from `logo.png`. Only needed if the logo changes. |
 | `logo.png` | The master logo file (the OJ mark). |
-| `netlify.toml` | Tells Netlify how to build the site. You shouldn't need to touch it. |
+| `vercel.json` | Vercel settings, like clean addresses (/websites instead of /websites.html). You shouldn't need to touch it. |
 | `CLAUDE.md` | The rules Claude Code follows when working on this site (brand, writing rules, booking). |
 | `dist/` and `node_modules/` | Created automatically. Don't edit them, and they're never uploaded to GitHub. |
 
@@ -132,8 +132,6 @@ Vercel uses Node.js 24. The project is configured for Astro, and `SITE_URL` in `
 ### Custom domain DNS
 
 The domain is registered outside Vercel. In the registrar's DNS settings, point the apex (`@`) to Vercel's current A record and `www` to Vercel's current CNAME target. Confirm the exact values in Vercel's **Domains** settings before changing DNS. Keep existing MX and mail-related TXT records so email continues to work. Vercel serves `www.ojsolutions.org` as a redirect to `ojsolutions.org`.
-
-The existing `netlify.toml` remains in the repo for the prior Netlify setup. Do not change DNS or disconnect any existing host until the Vercel domain status is valid and the production deployment has been checked.
 
 ---
 

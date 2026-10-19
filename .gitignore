@@ -18,8 +18,8 @@ pnpm-debug.log*
 .env.*
 !.env.example
 
-# Netlify local folder
-.netlify/
+# Vercel CLI local folder
+.vercel/
 
 # Editor and OS files
 .DS_Store

@@ -19,9 +19,10 @@ Most visitors come from our cold calls, cold emails, Instagram and Facebook DMs,
 ## Tech
 
 - Astro (latest stable) + Tailwind CSS, fully static output. No backend, no database, no CMS.
-- Hosted on Vercel from GitHub. The `ojsolutions-site` project builds `main` with `npm run build`, publishes `dist`, and uses Node.js 24. `netlify.toml` remains for the prior Netlify setup.
+- Hosted on Vercel from GitHub (live at ojsolutions.org). The `ojsolutions-site` Vercel project builds with `npm run build`, publishes `dist`, and uses Node.js 24. `vercel.json` holds the Vercel settings (clean URLs, response headers). Vercel already serves `/_astro/*` with a one-year immutable cache, so don't add one. Netlify is not used anymore.
 - Mobile-first. Design at 375px wide first, then scale up.
-- Fast: no animation libraries, minimal JS, optimized images. Target Lighthouse 95+ on mobile. This site is also our portfolio for the website service, so it has to be fast and clean.
+- Fast: minimal JS, optimized images. Target Lighthouse 95+ on mobile. This site is also our portfolio for the website service, so it has to be fast and clean.
+- Motion: GSAP is allowed on the homepage only. Service pages, and every other page, stay animation-library-free and use CSS. All motion respects prefers-reduced-motion.
 - Accessible: semantic HTML, alt text, visible focus states, WCAG AA contrast.
 - SEO: unique title and meta description per page, an Open Graph image (navy background, OJ mark, "Built by business owners, for business owners."), @astrojs/sitemap, robots.txt.
 - The three service pages share one reusable ServiceLayout, so adding a service later is one new page.
@@ -58,6 +59,6 @@ Most visitors come from our cold calls, cold emails, Instagram and Facebook DMs,
 ## Working in this repo
 
 - `npm run dev` starts the local site at http://localhost:4321. `npm run build` must finish with no errors before anything is pushed.
-- Pushing to `main` deploys to Vercel automatically. The prior Netlify integration may also deploy from `main`. Don't push without being asked.
+- Pushing to `main` deploys to production on Vercel. Every other pushed branch gets its own Vercel preview link. Don't push without being asked.
 - Where things live: business info in `src/config.ts`; link and booking helpers in `src/lib/site.ts`; shared page pieces in `src/components/`; page frames in `src/layouts/` (`BaseLayout` for every page, `ServiceLayout` for service pages); pages in `src/pages/`.
 - To find everything still waiting on an answer: search the code for `TODO(Jacob)`.
