@@ -2,8 +2,10 @@
 // The /book page. Every "Book a call" button on the site comes here.
 // - GHL_CALENDAR_EMBED set: the GoHighLevel calendar, embedded.
 // - Only BOOKING_URL set: a button to that booking page.
-// - Neither: a visible PLACEHOLDER until the calendar is ready.
-// The email address is always shown plainly under the calendar.
+// - Neither, on preview builds: a visible PLACEHOLDER box.
+// - Neither, on production: a "Book by email" button, with the address
+//   written out under it.
+// The email address is always shown plainly.
 //
 // Everything after the "?" in the address (service, src, rep, utm_ tags)
 // is passed through to the calendar, so it lands on the contact in GHL.
@@ -11,10 +13,13 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import Button from "../components/Button.astro";
 import Icon from "../components/Icon.astro";
 import { BOOKING_URL, EMAIL } from "../config";
-import { calendarEmbed, filled, webAddress } from "../lib/site";
+import { SHOW_PLACEHOLDERS, calendarEmbed, filled, webAddress } from "../lib/site";
 
 const embed = calendarEmbed();
 const bookingUrl = embed ? null : webAddress(BOOKING_URL);
+const email = filled(EMAIL) ? EMAIL.trim() : "";
+// Production with no calendar yet: booking happens by email.
+const bookByEmail = !embed && !bookingUrl && !SHOW_PLACEHOLDERS && email !== "";
 ---
 
 <BaseLayout
@@ -52,8 +57,20 @@ const bookingUrl = embed ? null : webAddress(BOOKING_URL);
             Pick a time
             <Icon name="arrow-right" class="size-5" />
           </Button>
+        ) : bookByEmail ? (
+          <div>
+            <Button href={`mailto:${email}?subject=${encodeURIComponent("Book a call")}`} size="lg">
+              <Icon name="mail" class="size-5" />
+              Book by email
+            </Button>
+            <p class="mt-5 text-lg">
+              <a href={`mailto:${email}`} class="link break-all">
+                {email}
+              </a>
+            </p>
+          </div>
         ) : (
-          <div class="flex min-h-[28rem] flex-col items-center justify-center gap-4 rounded-lg border border-dashed border-navy p-6 text-center">
+          SHOW_PLACEHOLDERS && <div class="flex min-h-[28rem] flex-col items-center justify-center gap-4 rounded-lg border border-dashed border-navy p-6 text-center">
             <Icon name="calendar" class="size-8 text-navy" />
             <p class="max-w-md font-heading text-lg font-bold">
               PLACEHOLDER: GoHighLevel booking calendar goes here.
@@ -64,11 +81,11 @@ const bookingUrl = embed ? null : webAddress(BOOKING_URL);
       }
 
       {
-        filled(EMAIL) && (
+        email && !bookByEmail && (
           <p class="mt-8 text-lg text-muted">
             Prefer email?{" "}
-            <a href={`mailto:${EMAIL.trim()}`} class="link break-all">
-              {EMAIL.trim()}
+            <a href={`mailto:${email}`} class="link break-all">
+              {email}
             </a>
           </p>
         )

@@ -71,15 +71,17 @@ export const DEMO_VIDEO_SRC: string = "";
 export const STATS_SOURCE_URL: string =
   "https://www.callrail.com/blog/missed-calls-cost-businesses-more-than-ever";
 
-// Your guarantee, written exactly how you want it shown.
-// Hidden if empty. TODO(Jacob): decide on a guarantee, if any.
-export const GUARANTEE_TEXT: string = "";
+// The guarantee line shown next to the Book a call button on the
+// AI Receptionist page. Hidden if empty.
+export const GUARANTEE_TEXT: string =
+  "We track every call and every booking. If it isn't making you money, we won't keep you on as a client.";
 
-// Pricing for the AI Receptionist. The prices only show when
-// SHOW_PRICING is true.
+// Pricing for the AI Receptionist. The "What does it cost?" FAQ always
+// uses these two numbers. SHOW_PRICING only turns on the separate
+// Pricing section.
 export const SHOW_PRICING: boolean = false;
 export const SETUP_PRICE: number = 1000;
-export const MONTHLY_PRICE: number = 500;
+export const MONTHLY_PRICE: number = 497;
 
 /* ---------- Websites and Commercials pages ---------- */
 

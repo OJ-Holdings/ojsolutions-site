@@ -41,11 +41,18 @@ export function filled(value: unknown): boolean {
 }
 
 /**
+ * Placeholders only show on preview and local builds. On the production
+ * site (Vercel sets VERCEL_ENV to "production") they're hidden.
+ */
+export const SHOW_PLACEHOLDERS: boolean = process.env.VERCEL_ENV !== "production";
+
+/**
  * A visible stand-in for an answer we don't have yet. The text always starts
  * with "PLACEHOLDER:" so it's easy to search for. Returns HTML, for FAQ answers.
+ * On production it returns "", so an FAQ question with no answer isn't shown.
  */
 export function placeholder(what: string): string {
-  return `<span class="placeholder">PLACEHOLDER: ${what}</span>`;
+  return SHOW_PLACEHOLDERS ? `<span class="placeholder">PLACEHOLDER: ${what}</span>` : "";
 }
 
 /** 1500 -> "$1,500" */

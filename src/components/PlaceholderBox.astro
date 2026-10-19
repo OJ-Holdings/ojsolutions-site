@@ -1,7 +1,9 @@
 ---
 // A visible box standing in for media or an embed we don't have yet.
 // The text starts with "PLACEHOLDER:" so it's easy to find (see PLACEHOLDERS.md).
+// Renders nothing on production builds (see SHOW_PLACEHOLDERS).
 import Icon from "./Icon.astro";
+import { SHOW_PLACEHOLDERS } from "../lib/site";
 
 interface Props {
   /** What goes here, e.g. "demo call recording (audio player)" */
@@ -15,6 +17,8 @@ interface Props {
 const { label, icon, aspect, class: className = "" } = Astro.props;
 ---
 
+{
+SHOW_PLACEHOLDERS && (
 <div
   class:list={[
     "flex flex-col items-center justify-center gap-3 rounded-lg border border-dashed border-current p-5 text-center",
@@ -26,3 +30,5 @@ const { label, icon, aspect, class: className = "" } = Astro.props;
   {icon && <Icon name={icon} class="size-7" />}
   <p class="max-w-sm font-heading font-bold text-balance">PLACEHOLDER: {label}</p>
 </div>
+)
+}

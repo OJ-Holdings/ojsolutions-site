@@ -133,19 +133,25 @@ const pairs = [
           <a href="/commercials" class="link mt-1 inline-flex min-h-11 items-center">Watch it with sound</a>
         </figcaption>
       </figure>
+
+      <p class="area-close text-soft max-w-3xl text-lg sm:text-xl">
+        We're a for-profit company and we're upfront about that. But the real reason we do this is that we firmly
+        believe a lot of businesses are missing out on what AI can do to improve every part of how they run, and we want
+        to help change that.
+      </p>
     </div>
   </div>
 </section>
 
 <style>
   .own-work {
-    grid-template-areas: "copy" "photos" "video";
+    grid-template-areas: "copy" "photos" "video" "close";
   }
   @media (min-width: 1024px) {
     .own-work {
       grid-template-columns: 5fr 7fr;
-      grid-template-rows: auto 1fr;
-      grid-template-areas: "copy photos" "video photos";
+      grid-template-rows: auto 1fr auto;
+      grid-template-areas: "copy photos" "video photos" "close close";
     }
   }
   .area-copy {
@@ -156,6 +162,9 @@ const pairs = [
   }
   .area-video {
     grid-area: video;
+  }
+  .area-close {
+    grid-area: close;
   }
   .pair {
     grid-template-columns: var(--before) var(--after);

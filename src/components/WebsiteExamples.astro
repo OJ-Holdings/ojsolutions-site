@@ -1,14 +1,14 @@
 ---
 // "Our work" for websites, on a navy band. Lists WEBSITE_EXAMPLES from
-// src/config.ts. Until there's a real client site to show, a visible
-// PLACEHOLDER holds the spot. (Our own site, ojexteriorcare.com, is
-// featured in the Websites page hero.)
+// src/config.ts. Until there's a real client site to show, preview builds
+// show a PLACEHOLDER and production hides the whole section. (Our own site,
+// ojexteriorcare.com, is featured in the Websites page hero.)
 import Section from "./Section.astro";
 import SectionHeading from "./SectionHeading.astro";
 import PlaceholderBox from "./PlaceholderBox.astro";
 import Icon from "./Icon.astro";
 import { WEBSITE_EXAMPLES } from "../config";
-import { filled } from "../lib/site";
+import { SHOW_PLACEHOLDERS, filled } from "../lib/site";
 
 const examples = WEBSITE_EXAMPLES.filter((e) => filled(e.name) && /^https?:\/\//i.test(e.url.trim()));
 const host = (url: string) => {
@@ -20,6 +20,8 @@ const host = (url: string) => {
 };
 ---
 
+{
+(examples.length > 0 || SHOW_PLACEHOLDERS) && (
 <Section id="our-work" labelledby="our-work-title" tone="navy">
   <SectionHeading id="our-work-title" title="Our work" tone="navy" />
   {
@@ -49,3 +51,5 @@ const host = (url: string) => {
     )
   }
 </Section>
+)
+}
