@@ -172,6 +172,15 @@
     @apply underline decoration-gold decoration-[0.1em] underline-offset-[0.14em] [text-decoration-skip-ink:none];
   }
 
+  /*
+    Answers we're still waiting on. Every one starts with "PLACEHOLDER:"
+    so they're easy to find, and they're listed in PLACEHOLDERS.md.
+  */
+  .placeholder {
+    @apply inline-block rounded-sm border border-dashed px-2 py-1 font-semibold;
+    border-color: currentColor;
+  }
+
   /* Body links: navy text with a gold underline. */
   .link {
     @apply font-semibold text-navy underline decoration-gold decoration-2 underline-offset-4 hover:decoration-navy;

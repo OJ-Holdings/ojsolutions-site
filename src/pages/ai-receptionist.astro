@@ -5,6 +5,7 @@ import SectionHeading from "../components/SectionHeading.astro";
 import Steps from "../components/Steps.astro";
 import FeatureGrid from "../components/FeatureGrid.astro";
 import BookButton from "../components/BookButton.astro";
+import PlaceholderBox from "../components/PlaceholderBox.astro";
 import {
   DEMO_AUDIO_SRC,
   DEMO_AUDIO_TRANSCRIPT,
@@ -16,7 +17,7 @@ import {
   SHOW_PRICING,
   STATS_SOURCE_URL,
 } from "../config";
-import { filled, formatPrice } from "../lib/site";
+import { filled, formatPrice, placeholder } from "../lib/site";
 import { mediaAvailable } from "../lib/media";
 
 const hasAudio = mediaAvailable(DEMO_AUDIO_SRC);
@@ -79,10 +80,28 @@ const faq = [
     q: "What happens with calls it can't handle?",
     a: "It transfers them to your phone or to your staff.",
   },
-  { q: "What does it cost?", a: costAnswer },
-  // TODO(Jacob): answer these three in src/config.ts (FAQ_ANSWERS). Hidden until then.
+  {
+    q: "What does it cost?",
+    // TODO(Jacob): confirm the price, then set SHOW_PRICING and remove the placeholder.
+    a: showPricing ? costAnswer : `<p>${costAnswer}</p><p class="mt-3">${placeholder("setup price and monthly price")}</p>`,
+  },
+  {
+    q: "Is there a guarantee?",
+    // TODO(Jacob): write the guarantee in GUARANTEE_TEXT (src/config.ts).
+    a: filled(GUARANTEE_TEXT) ? GUARANTEE_TEXT.trim() : placeholder("the guarantee"),
+  },
+  {
+    q: "How long does setup take?",
+    // TODO(Jacob): answer in FAQ_ANSWERS.receptionistSetupTime (src/config.ts).
+    a: filled(FAQ_ANSWERS.receptionistSetupTime) ? FAQ_ANSWERS.receptionistSetupTime : placeholder("how long setup takes"),
+  },
+  {
+    q: "What if I don't like the result?",
+    // TODO(Jacob): what happens if a customer isn't happy with it.
+    a: placeholder("what happens if you don't like the result"),
+  },
+  // TODO(Jacob): answer these two in src/config.ts (FAQ_ANSWERS). Hidden until then.
   { q: "Do I need a new phone number?", a: FAQ_ANSWERS.receptionistNewNumber },
-  { q: "How long does setup take?", a: FAQ_ANSWERS.receptionistSetupTime },
   { q: "Is there a long contract?", a: FAQ_ANSWERS.receptionistContract },
 ];
 ---
@@ -100,13 +119,64 @@ const faq = [
   ctaHeading="See it answer a call"
   ctaLine="Book a short call and we'll show you how it would work for your business."
 >
-  {
-    hasAudio && (
-      <a slot="hero-secondary" href="#hear-it" class="link inline-flex min-h-11 items-center text-lg">
-        Hear a real call
-      </a>
-    )
-  }
+  <Fragment slot="hero-secondary">
+    <p class="max-w-xs text-base">
+      {
+        filled(GUARANTEE_TEXT) ? (
+          GUARANTEE_TEXT.trim()
+        ) : (
+          <span class="placeholder">PLACEHOLDER: guarantee line</span>
+        )
+      }
+    </p>
+    {
+      hasAudio && (
+        <a href="#hear-it" class="link inline-flex min-h-11 items-center text-lg">
+          Hear a real call
+        </a>
+      )
+    }
+  </Fragment>
+
+  <div slot="hero-aside" id="hear-it" class="rule-soft scroll-mt-24 rounded-lg border p-5 sm:p-7">
+    <h2 class="font-heading text-xl font-bold sm:text-2xl">Hear a real call</h2>
+    {hasAudio && <p class="text-soft mt-1">A real call to our AI receptionist, recorded on our own system.</p>}
+    <div class="mt-5">
+      {
+        hasAudio ? (
+          <>
+            <audio controls preload="metadata" src={DEMO_AUDIO_SRC.trim()} class="w-full">
+              <a href={DEMO_AUDIO_SRC.trim()} class="link">
+                Download the call recording
+              </a>
+            </audio>
+            {filled(DEMO_AUDIO_TRANSCRIPT) && (
+              <details class="group mt-3">
+                <summary class="link inline-flex min-h-11 items-center">Read the transcript</summary>
+                <p class="text-soft mt-3 whitespace-pre-line">{DEMO_AUDIO_TRANSCRIPT.trim()}</p>
+              </details>
+            )}
+          </>
+        ) : (
+          <PlaceholderBox label="demo call recording (audio player)" icon="volume" />
+        )
+      }
+    </div>
+    <figure class="mt-5">
+      {
+        hasVideo ? (
+          <>
+            <video controls muted playsinline preload="metadata" src={videoSrc} class="w-full rounded-md" />
+            <figcaption class="text-soft mt-3">
+              Screen recording: the calendar event and the contact card the call created.
+            </figcaption>
+          </>
+        ) : (
+          <PlaceholderBox label="20 to 30 second screen recording of the booking the call created" icon="play" aspect="16 / 9" />
+        )
+      }
+    </figure>
+  </div>
 
   <Fragment slot="problem">
     <p class="mt-6 max-w-2xl text-lg text-muted">
@@ -115,16 +185,16 @@ const faq = [
     </p>
     {
       hasStats && (
-        <figure class="mt-10 max-w-3xl">
+        <figure class="mt-12 max-w-4xl">
           <p class="font-semibold">In a 2025 CallRail survey of 1,000 consumers:</p>
-          <div class="mt-4 grid gap-4 sm:grid-cols-2">
-            <div class="rounded-lg border border-line p-6">
-              <p class="font-heading text-5xl font-bold tracking-tight">78%</p>
-              <p class="mt-2 text-muted">said they've abandoned a business after an unanswered call.</p>
+          <div class="mt-6 grid gap-8 border-y border-line py-8 sm:grid-cols-2 sm:gap-0 sm:divide-x sm:divide-line">
+            <div class="sm:pr-10">
+              <p class="font-heading text-6xl font-bold tracking-tight sm:text-7xl">78%</p>
+              <p class="mt-3 text-lg text-muted">said they've abandoned a business after an unanswered call.</p>
             </div>
-            <div class="rounded-lg border border-line p-6">
-              <p class="font-heading text-5xl font-bold tracking-tight">82%</p>
-              <p class="mt-2 text-muted">said they'd call a competitor instead.</p>
+            <div class="sm:pl-10">
+              <p class="font-heading text-6xl font-bold tracking-tight sm:text-7xl">82%</p>
+              <p class="mt-3 text-lg text-muted">said they'd call a competitor instead.</p>
             </div>
           </div>
           <figcaption class="mt-4 text-[0.9375rem] text-muted">
@@ -138,56 +208,12 @@ const faq = [
     }
   </Fragment>
 
-  <Section id="how-it-works" labelledby="how-title">
-    <SectionHeading id="how-title" title="How it works" />
-    <Steps steps={steps} />
+  <Section id="how-it-works" labelledby="how-title" tone="navy">
+    <SectionHeading id="how-title" title="How it works" tone="navy" />
+    <Steps steps={steps} tone="navy" />
   </Section>
 
-  {
-    (hasAudio || hasVideo) && (
-      <Section id="hear-it" labelledby="hear-title">
-        <SectionHeading
-          id="hear-title"
-          title={hasAudio ? "Hear a real call" : "See what a booked call looks like"}
-          intro={hasAudio ? "A real call to our AI receptionist, recorded on our own system." : undefined}
-        />
-        <div class="mt-8 grid max-w-3xl gap-8">
-          {hasAudio && (
-            <div class="rounded-lg border border-line p-5 sm:p-6">
-              <audio controls preload="metadata" src={DEMO_AUDIO_SRC.trim()} class="w-full">
-                <a href={DEMO_AUDIO_SRC.trim()} class="link">
-                  Download the call recording
-                </a>
-              </audio>
-              {filled(DEMO_AUDIO_TRANSCRIPT) && (
-                <details class="group mt-4">
-                  <summary class="link inline-flex min-h-11 items-center">Read the transcript</summary>
-                  <p class="mt-3 whitespace-pre-line text-muted">{DEMO_AUDIO_TRANSCRIPT.trim()}</p>
-                </details>
-              )}
-            </div>
-          )}
-          {hasVideo && (
-            <figure>
-              <video
-                controls
-                muted
-                playsinline
-                preload="metadata"
-                src={videoSrc}
-                class="w-full rounded-lg border border-line"
-              />
-              <figcaption class="mt-3 text-muted">
-                Screen recording: the calendar event and the contact card the call created.
-              </figcaption>
-            </figure>
-          )}
-        </div>
-      </Section>
-    )
-  }
-
-  <Section id="included" labelledby="included-title">
+  <Section id="included" labelledby="included-title" border={false}>
     <SectionHeading id="included-title" title="What's included" />
     <FeatureGrid items={included} />
   </Section>

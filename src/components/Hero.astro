@@ -1,6 +1,10 @@
 ---
-// Top of every main page: headline, subhead, and the Book a call button.
+// Top of every service page: a navy band with the service name, headline,
+// subhead, and the Book a call button. An optional "aside" slot puts proof
+// (a player, a video, a screenshot) beside the copy on wide screens and
+// right under the button on phones.
 import BookButton from "./BookButton.astro";
+import Icon from "./Icon.astro";
 import type { ServiceKey } from "../lib/site";
 
 interface Props {
@@ -8,7 +12,7 @@ interface Props {
   /** Part of the title to underline in gold. Keep it short: it never wraps. */
   highlight?: string;
   subhead: string;
-  /** Small label above the headline, e.g. the service name. */
+  /** The service name, shown with its icon above the headline. */
   eyebrow?: string;
   service?: ServiceKey;
 }
@@ -18,33 +22,37 @@ const at = highlight ? title.lastIndexOf(highlight) : -1;
 const before = at >= 0 ? title.slice(0, at) : title;
 const marked = at >= 0 ? highlight : "";
 const after = at >= 0 ? title.slice(at + (highlight?.length ?? 0)) : "";
+const icon = ({ receptionist: "phone", website: "browser", commercial: "camera" } as const)[service ?? "receptionist"];
+const hasAside = Astro.slots.has("aside");
 ---
 
-<section class="pt-12 pb-14 sm:pt-20 sm:pb-24">
-  <div class="container-page">
+<section class="on-navy overflow-hidden" aria-labelledby="page-title">
+  <div
+    class:list={[
+      "container-page grid gap-12 pt-9 pb-16 sm:pt-16 sm:pb-24",
+      hasAside && "lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:items-center lg:gap-14",
+    ]}
+  >
     <div class="max-w-3xl">
       {
         eyebrow && (
-          <p class="mb-5 flex items-center gap-3 text-sm font-semibold tracking-wider text-navy uppercase">
-            <span class="block h-0.5 w-8 bg-gold" aria-hidden="true" />
+          <p class="flex items-center gap-2.5 font-heading text-base font-bold">
+            <span class="flex size-8 items-center justify-center rounded-md bg-gold text-navy" aria-hidden="true">
+              <Icon name={icon} class="size-[1.125rem]" />
+            </span>
             {eyebrow}
           </p>
         )
       }
-      <h1 class="text-[2rem] leading-[1.08] font-bold tracking-tight min-[360px]:text-[2.375rem] sm:text-6xl sm:leading-[1.05]">
-        {before}{
-          marked && (
-            <span class="whitespace-nowrap underline decoration-gold decoration-[5px] underline-offset-[6px] [text-decoration-skip-ink:none] sm:decoration-[7px] sm:underline-offset-[10px]">
-              {marked}
-            </span>
-          )
-        }{after}
+      <h1 id="page-title" class:list={["display-1", eyebrow && "mt-5 sm:mt-7"]}>
+        {before}{marked && <span class="mark-gold whitespace-nowrap">{marked}</span>}{after}
       </h1>
-      <p class="mt-6 max-w-2xl text-lg text-muted sm:mt-8 sm:text-xl">{subhead}</p>
-      <div class="mt-8 flex flex-wrap items-center gap-x-7 gap-y-4">
-        <BookButton service={service} size="lg" />
+      <p class="text-soft mt-5 max-w-2xl text-lg sm:mt-7 sm:text-xl">{subhead}</p>
+      <div class="mt-7 flex flex-wrap items-center gap-x-6 gap-y-3 sm:mt-9">
+        <BookButton service={service} variant="gold" size="lg" />
         <slot name="secondary" />
       </div>
     </div>
+    {hasAside && <div><slot name="aside" /></div>}
   </div>
 </section>

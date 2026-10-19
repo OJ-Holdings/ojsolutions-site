@@ -88,3 +88,4 @@ These verdicts are final. No more photo review.
 
 - Phase 1 done: homepage rebuilt in direction A (navy-led). Navy header and footer, navy hero with the animated example call (GSAP, homepage only), "We run businesses too" moved up with the 3 cleared OJ Exterior Care photos and a 1 MB muted loop of our commercial, new "What we fix" rows and "How we work" statement.
 - Phase 2 done: /book is always built (PLACEHOLDER box until GHL_CALENDAR_EMBED is set, email shown plainly under it). Every Book a call button goes to /book (service pages add ?service=). Footer Instagram, TikTok, and YouTube links removed (cleared in SOCIAL_LINKS); email stays.
+- Phase 3 done: AI Receptionist page restyled (shared navy service hero, step track, ruled checklist). Book a call sits at about 516px on a 375px phone. PLACEHOLDERs for the guarantee line, demo call audio, the 20 to 30 second screen recording, and FAQ answers on price, guarantee, setup time, and not liking the result.

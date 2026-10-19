@@ -40,6 +40,14 @@ export function filled(value: unknown): boolean {
   return Boolean(value);
 }
 
+/**
+ * A visible stand-in for an answer we don't have yet. The text always starts
+ * with "PLACEHOLDER:" so it's easy to search for. Returns HTML, for FAQ answers.
+ */
+export function placeholder(what: string): string {
+  return `<span class="placeholder">PLACEHOLDER: ${what}</span>`;
+}
+
 /** 1500 -> "$1,500" */
 export function formatPrice(amount: number): string {
   return "$" + amount.toLocaleString("en-US", { maximumFractionDigits: 0 });

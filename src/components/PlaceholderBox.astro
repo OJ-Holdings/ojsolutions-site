@@ -1,0 +1,28 @@
+---
+// A visible box standing in for media or an embed we don't have yet.
+// The text starts with "PLACEHOLDER:" so it's easy to find (see PLACEHOLDERS.md).
+import Icon from "./Icon.astro";
+
+interface Props {
+  /** What goes here, e.g. "demo call recording (audio player)" */
+  label: string;
+  icon?: "play" | "volume" | "calendar" | "browser" | "camera";
+  /** CSS aspect ratio, e.g. "16 / 9". Leave out for a short box. */
+  aspect?: string;
+  class?: string;
+}
+
+const { label, icon, aspect, class: className = "" } = Astro.props;
+---
+
+<div
+  class:list={[
+    "flex flex-col items-center justify-center gap-3 rounded-lg border border-dashed border-current p-5 text-center",
+    !aspect && "min-h-28",
+    className,
+  ]}
+  style={aspect ? `aspect-ratio: ${aspect}` : undefined}
+>
+  {icon && <Icon name={icon} class="size-7" />}
+  <p class="max-w-sm font-heading font-bold text-balance">PLACEHOLDER: {label}</p>
+</div>
