@@ -83,3 +83,7 @@ These verdicts are final. No more photo review.
 - Don't download the impeccable detector.
 - Screenshots only when a section is finished.
 - One page per request.
+
+## 8. Autonomous run status (2026-10-19)
+
+- Phase 1 done: homepage rebuilt in direction A (navy-led). Navy header and footer, navy hero with the animated example call (GSAP, homepage only), "We run businesses too" moved up with the 3 cleared OJ Exterior Care photos and a 1 MB muted loop of our commercial, new "What we fix" rows and "How we work" statement.

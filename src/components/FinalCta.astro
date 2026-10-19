@@ -1,5 +1,5 @@
 ---
-// Full-width navy section at the bottom of each main page.
+// Full-width navy close at the bottom of each main page.
 import BookButton from "./BookButton.astro";
 import { bookingHref, type ServiceKey } from "../lib/site";
 
@@ -16,15 +16,16 @@ const canBook = bookingHref(service) !== null;
 
 {
   canBook && (
-    <section class="on-navy bg-navy text-white" aria-labelledby="final-cta">
-      <div class="container-page py-16 text-center sm:py-24">
-        <span class="mx-auto block h-1 w-10 rounded-sm bg-gold" aria-hidden="true" />
-        <h2 id="final-cta" class="mx-auto mt-5 max-w-3xl text-[2rem] font-bold tracking-tight sm:text-5xl">
-          {heading}
-        </h2>
-        {line && <p class="mx-auto mt-5 max-w-xl text-lg text-white">{line}</p>}
-        <div class="mt-9 flex justify-center">
-          <BookButton variant="gold" size="lg" service={service} />
+    <section class="on-navy rule-soft border-t" aria-labelledby="final-cta">
+      <div class="container-page py-20 sm:py-28">
+        <div class="grid gap-10 lg:grid-cols-[1fr_auto] lg:items-end lg:gap-16">
+          <div class="max-w-3xl">
+            <h2 id="final-cta" class="display-1">{heading}</h2>
+            {line && <p class="text-soft mt-6 max-w-xl text-lg sm:text-xl">{line}</p>}
+          </div>
+          <div>
+            <BookButton variant="gold" size="lg" service={service} />
+          </div>
         </div>
       </div>
     </section>

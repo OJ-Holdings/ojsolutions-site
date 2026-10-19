@@ -103,6 +103,10 @@
   ::selection {
     @apply bg-gold text-navy;
   }
+  html {
+    caret-color: var(--color-gold);
+    scrollbar-color: var(--color-navy) var(--color-white);
+  }
 
   /* Visible keyboard focus everywhere. Gold on navy sections. */
   :focus-visible {
@@ -138,6 +142,36 @@
     @apply mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8;
   }
 
+  /* Navy sections: white text, softer white for secondary text. */
+  .on-navy {
+    @apply bg-navy text-white;
+  }
+  .text-soft {
+    color: color-mix(in srgb, var(--color-white) 78%, var(--color-navy));
+  }
+  .rule-soft {
+    border-color: color-mix(in srgb, var(--color-white) 16%, var(--color-navy));
+  }
+
+  /* Display type for section and page headings. */
+  .display-1 {
+    @apply font-heading font-bold tracking-tight;
+    font-size: clamp(2.25rem, 1.4rem + 4.2vw, 4.5rem);
+    line-height: 1.04;
+    letter-spacing: -0.03em;
+  }
+  .display-2 {
+    @apply font-heading font-bold;
+    font-size: clamp(1.875rem, 1.35rem + 2.4vw, 3.25rem);
+    line-height: 1.08;
+    letter-spacing: -0.025em;
+  }
+
+  /* Gold underline used to mark the key words in a headline. */
+  .mark-gold {
+    @apply underline decoration-gold decoration-[0.1em] underline-offset-[0.14em] [text-decoration-skip-ink:none];
+  }
+
   /* Body links: navy text with a gold underline. */
   .link {
     @apply font-semibold text-navy underline decoration-gold decoration-2 underline-offset-4 hover:decoration-navy;
@@ -159,5 +193,8 @@
   }
   .prose-page a {
     @apply font-semibold text-navy underline decoration-gold decoration-2 underline-offset-4 hover:decoration-navy;
+  }
+  .on-navy .link {
+    @apply text-white hover:decoration-white;
   }
 }
