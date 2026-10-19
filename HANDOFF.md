@@ -74,7 +74,7 @@ These verdicts are final. No more photo review.
 
 ## 6. Vercel preview link
 
-- None yet. The redesign branch hasn't been pushed.
+- The redesign branch is pushed. See the final report for the preview link.
 
 ## 7. Working rules
 
@@ -92,3 +92,4 @@ These verdicts are final. No more photo review.
 - Phase 4 done: Commercials page. Full commercial self-hosted as the hero centerpiece (720x1280, 4.5 MB, controls, preload none, poster). The 15-second cut is a smaller second player in a navy Our work band. Pricing restyled on all service pages.
 - Phase 5 done: Websites page. ojexteriorcare.com featured in the hero (one Playwright phone screenshot of its Services section, chosen because the top of the page shows location text, ratings, and job counts) with a link to the live site. Our work shows a PLACEHOLDER for client examples.
 - Phase 6 done: 404, Privacy, and Terms restyled to match (navy title bands, ruled legal sections). vercel.json keeps cleanUrls and adds X-Content-Type-Options: nosniff and X-Frame-Options: SAMEORIGIN. /_astro caching untouched.
+- Phase 7 done: PLACEHOLDERS.md lists all 9 placeholders by file and page. DESIGN.md records the navy-led system. Final push done.
