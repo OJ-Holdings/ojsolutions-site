@@ -1,7 +1,8 @@
 ---
-// "Our work" for commercials. Each video shows a thumbnail first and only
-// loads YouTube when someone taps play, so the page stays fast.
-// Hidden when COMMERCIAL_EXAMPLES is empty.
+// "Our work" for commercials, on a navy band. Anything passed in the slot
+// (our own self-hosted cuts) comes first. YouTube examples show a thumbnail
+// and only load YouTube when someone taps play, so the page stays fast.
+// Hidden when there's no slot content and COMMERCIAL_EXAMPLES is empty.
 import Section from "./Section.astro";
 import SectionHeading from "./SectionHeading.astro";
 import Icon from "./Icon.astro";
@@ -9,17 +10,19 @@ import { COMMERCIAL_EXAMPLES } from "../config";
 import { youtubeId } from "../lib/site";
 
 const ids = COMMERCIAL_EXAMPLES.map(youtubeId).filter((id): id is string => Boolean(id));
+const hasSlot = Astro.slots.has("default");
 ---
 
 {
-  ids.length > 0 && (
+  (ids.length > 0 || hasSlot) && (
     <>
-      <Section id="our-work" labelledby="our-work-title">
-        <SectionHeading id="our-work-title" title="Our work" />
-        <ul role="list" class="mt-10 grid gap-6 sm:grid-cols-2">
+      <Section id="our-work" labelledby="our-work-title" tone="navy">
+        <SectionHeading id="our-work-title" title="Our work" tone="navy" />
+        {hasSlot && <div class="mt-10"><slot /></div>}
+        {ids.length > 0 && <ul role="list" class="mt-10 grid gap-6 sm:grid-cols-2">
           {ids.map((id, i) => (
             <li>
-              <div class="relative aspect-video overflow-hidden rounded-lg border border-line bg-navy" data-yt={id}>
+              <div class="rule-soft relative aspect-video overflow-hidden rounded-lg border bg-navy" data-yt={id}>
                 <button
                   type="button"
                   class="group absolute inset-0 flex h-full w-full items-center justify-center"
@@ -41,7 +44,7 @@ const ids = COMMERCIAL_EXAMPLES.map(youtubeId).filter((id): id is string => Bool
               </div>
             </li>
           ))}
-        </ul>
+        </ul>}
       </Section>
       <script is:inline>
         // Swap the thumbnail for the real YouTube player on tap.
