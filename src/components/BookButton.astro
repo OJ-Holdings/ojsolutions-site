@@ -12,7 +12,7 @@ interface Props {
   class?: string;
 }
 
-const { service, variant = "navy", size = "md", label = "Book a call", class: className } = Astro.props;
+const { service, variant = "navy", size = "md", label = "Request a call", class: className } = Astro.props;
 const href = bookingHref(service);
 ---
 
