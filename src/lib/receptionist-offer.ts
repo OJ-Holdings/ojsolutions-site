@@ -1,3 +1,6 @@
+import { MONTHLY_PRICE, SETUP_PRICE } from "../config";
+import { formatPrice } from "./site";
+
 /**
  * Single commercial source for the existing AI Receptionist Pro offer.
  * The founders have NOT approved Starter / Pro tier changes or addon pricing.
@@ -63,3 +66,16 @@ export const RECEPTIONIST_OPTIONAL_MODULES = [
 
 export const RECEPTIONIST_TERMS_NOTICE =
   "Final setup timeline, service agreement, cancellation and data terms are reviewed before purchase.";
+
+/** Keep the published home and receptionist service-page FAQs identical. */
+export const RECEPTIONIST_FAQ = [
+  { q: "Is it a real person?", a: "No. It identifies itself as an AI assistant at the beginning of every call." },
+  { q: "Do I need a new phone number?", a: "No. You can keep your business number and configure the AI as overflow or as your front desk." },
+  { q: "What if a caller wants a human?", a: "The AI collects their details and flags the request for a callback." },
+  { q: "Does it quote job prices?", a: "It uses your approved service details. The default workflow is to book an on-site estimate, not guess a price." },
+  { q: "What does it cost?", a: `AI Receptionist Pro is ${formatPrice(MONTHLY_PRICE)} per month with a ${formatPrice(SETUP_PRICE)} one-time setup fee. Missed-call text-back, advanced CRM pipelines and other optional modules are quoted separately.` },
+  { q: "How long does setup take?", a: "We confirm your setup timeline after reviewing your call flow and business requirements." },
+  { q: "Is there a long contract?", a: "We'll review the full contract and cancellation terms before you sign." },
+  { q: "Where are you based?", a: "Kenosha, Wisconsin. We focus on local service businesses across southeast Wisconsin." },
+  { q: "Who owns the call data?", a: "Data access, retention, export and ownership will be set out in the service agreement before purchase." },
+];
