@@ -28,7 +28,7 @@ const sizes = {
 }[size];
 ---
 
-<a href="/" class:list={["inline-flex min-h-11 shrink-0 items-center rounded-sm", sizes.link, className]}>
+<a href="/" aria-label="OJ Solutions homepage" class:list={["inline-flex min-h-11 shrink-0 items-center rounded-sm", sizes.link, className]}>
   {
     onNavy ? (
       <span class="inline-flex shrink-0 rounded-md bg-white p-1">
@@ -45,8 +45,9 @@ const sizes = {
       sizes.text,
     ]}
   >
-    <span class="font-bold">{first}</span>{restWords.length > 0 && " "}{
-      restWords.length > 0 && <span class="font-medium">{restWords.join(" ")}</span>
-    }
+    <span class="font-bold">{first}</span>
+    {restWords.length > 0 && (
+      <span class={size === "header" ? "hidden min-[380px]:inline" : ""}>{" "}<span class="font-medium">{restWords.join(" ")}</span></span>
+    )}
   </span>
 </a>
