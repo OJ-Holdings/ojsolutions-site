@@ -38,8 +38,8 @@ for (const [path, page] of [["homepage", home], ["receptionist", aiLanding]]) {
 }
 assert.match(home, /missed-call text-back, review requests, follow-up workflows and reporting/i,
   "Homepage incorrectly describes Pro inclusions as optional add-ons");
-assert.match(home, /reviews of OJ Exterior Care/i,
-  "Founder-company reviews must not be represented as AI customer results");
+assert.match(home, /Google reviews of\s*<strong>OJ Exterior Care<\/strong>/i,
+  "Founder-company reviews must be explicitly attributed to the separate exterior-care business");
 
 const book = html("book");
 assert.match(book, /id=["']consultation-form["']/);
