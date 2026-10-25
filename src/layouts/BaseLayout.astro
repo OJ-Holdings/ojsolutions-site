@@ -108,6 +108,42 @@ const ogImage = new URL("/og-image.png", site).href;
         });
       })();
     </script>
+    <script is:inline>
+      // First-party measurement hooks only. No GA4/Meta IDs are configured here.
+      // Never send names, phone numbers, email addresses, form notes, or dates.
+      (() => {
+        const emit = (event) => {
+          window.dataLayer = window.dataLayer || [];
+          window.dataLayer.push({event});
+          if (typeof window.gtag === "function") window.gtag("event", event);
+        };
+        document.addEventListener("click", (e) => {
+          const target = e.target;
+          if (!(target instanceof Element)) return;
+          const a = target.closest("a");
+          if (!a) return;
+          if (a.hasAttribute("data-demo-call") || a.href.startsWith("tel:+12624010826"))
+            emit("demo_call_tap");
+          if (a.hasAttribute("data-book")) emit("consultation_booking_click");
+        });
+        document.addEventListener("play", (e) => {
+          const media = e.target;
+          if (!(media instanceof HTMLMediaElement)) return;
+          if (media.tagName === "AUDIO") emit("demo_audio_play");
+          if (media.tagName === "VIDEO") emit("commercial_video_play");
+        }, true);
+        const pricing = document.querySelector("#pricing");
+        if (pricing && "IntersectionObserver" in window) {
+          const observer = new IntersectionObserver(entries => {
+            if (entries.some(entry => entry.isIntersecting)) {
+              emit("pricing_section_view");
+              observer.disconnect();
+            }
+          }, {threshold: .35});
+          observer.observe(pricing);
+        }
+      })();
+    </script>
     {filled(GHL_CHAT_WIDGET) && <Fragment set:html={GHL_CHAT_WIDGET} />}
   </body>
 </html>
