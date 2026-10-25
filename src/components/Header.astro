@@ -30,6 +30,7 @@ const path = Astro.url.pathname.replace(/\.html$/, "").replace(/\/$/, "") || "/"
           <ul
             class="rule-soft absolute inset-x-0 top-full border-b bg-navy px-4 pb-3 sm:px-6 md:inset-x-auto md:right-0 md:mt-4 md:w-72 md:rounded-lg md:border md:p-2"
           >
+            <li><a href="/services" class="flex min-h-12 items-center py-2 font-bold text-gold hover:underline md:px-3">All services</a></li>
             {
               SERVICES.map((s) => (
                 <li class="rule-soft border-t first:border-t-0 md:border-t-0">
