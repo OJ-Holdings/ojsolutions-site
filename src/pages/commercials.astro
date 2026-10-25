@@ -9,6 +9,10 @@ import PriceFrom from "../components/PriceFrom.astro";
 import { COMMERCIAL_PRICE_FROM, FAQ_ANSWERS, SHOOT_AREA } from "../config";
 import { filled } from "../lib/site";
 import Icon from "../components/Icon.astro";
+import { mediaAvailable } from "../lib/media";
+
+const longCut = mediaAvailable("/media/commercial-hero.mp4") ? "/media/commercial-hero.mp4" : "/media/commercial-30.mp4";
+const shortCut = mediaAvailable("/media/commercial-15.mp4") ? "/media/commercial-15.mp4" : "/media/commercial-15.mp4";
 
 // Only promise to come on site when SHOOT_AREA is set in src/config.ts.
 // TODO(Jacob): decide how out-of-area clients work (they send footage?
@@ -93,15 +97,15 @@ const faq = [
         poster="/media/commercial-30-poster.webp"
         class="block size-full object-cover"
       >
-        <source src="/media/commercial-30.mp4" type="video/mp4" />
-        <a href="/media/commercial-30.mp4" class="link">Watch our commercial</a>
+        <source src={longCut} type="video/mp4" />
+        <a href={longCut} class="link">Watch our commercial</a>
       </video>
     </div>
     <figcaption class="mt-3 flex items-center gap-2 font-semibold">
       <span class="flex size-6 items-center justify-center rounded-sm bg-gold text-navy" aria-hidden="true">
         <Icon name="volume" class="size-4" />
       </span>
-      Our own commercial. Sound on.
+      Our own OJ Exterior Care commercial. Tap play for sound.
     </figcaption>
   </figure>
 
@@ -123,8 +127,8 @@ const faq = [
           poster="/media/commercial-15-poster.webp"
           class="block size-full object-cover"
         >
-          <source src="/media/commercial-15.mp4" type="video/mp4" />
-          <a href="/media/commercial-15.mp4" class="link">Watch the short version</a>
+          <source src={shortCut} type="video/mp4" />
+          <a href={shortCut} class="link">Watch the short version</a>
         </video>
       </div>
       <figcaption class="max-w-xs">
