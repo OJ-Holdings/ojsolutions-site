@@ -12,7 +12,8 @@ import FrontDeskFeatures from "../components/home/FrontDeskFeatures.astro";
 import FrontDeskPricing from "../components/home/FrontDeskPricing.astro";
 import OwnWork from "../components/home/OwnWork.astro";
 import { BUSINESS_NAME, EMAIL, PHONE, SOCIAL_LINKS, MONTHLY_PRICE, SETUP_PRICE } from "../config";
-import { SERVICES, filled, formatPrice, type ServiceKey } from "../lib/site";
+import { SERVICES, filled, type ServiceKey } from "../lib/site";
+import { RECEPTIONIST_FAQ } from "../lib/receptionist-offer";
 
 const serviceIcon: Record<ServiceKey, "phone" | "browser" | "camera"> = {
   receptionist: "phone",
@@ -42,16 +43,7 @@ const steps = [
   { title: "You get the lead", body: "See who called, what they need, and when the estimate is booked." },
 ];
 
-const faq = [
-  { q: "Is it a real person?", a: "No. It identifies itself as an AI assistant at the beginning of every call." },
-  { q: "Do I need a new phone number?", a: "No. Keep your business number. Use the AI as overflow or as your full front desk." },
-  { q: "What if a caller wants a human?", a: "The AI collects their details and flags the request for a callback." },
-  { q: "Does it quote prices?", a: "We configure your service information. The default is to book an on-site estimate instead of guessing a price." },
-  { q: "What does it cost?", a: `AI Receptionist Pro starts at ${formatPrice(MONTHLY_PRICE)}/month with a ${formatPrice(SETUP_PRICE)} one-time setup fee.` },
-  { q: "How fast is setup?", a: "We confirm the timeline after learning how your business and phones work." },
-  { q: "Is there a contract?", a: "We review the agreement and cancellation terms before you sign." },
-  { q: "Where are you based?", a: "Kenosha, Wisconsin. Serving local service businesses across southeast Wisconsin." },
-];
+
 ---
 
 <BaseLayout
@@ -66,17 +58,19 @@ const faq = [
       <div>
         <p class="mb-5 text-sm font-bold tracking-widest text-gold uppercase">Your AI front desk · Kenosha, WI</p>
         <h1 id="hero-title" class="display-1 max-w-[13ch] sm:max-w-none lg:max-w-[12ch]">
-          Built by business owners, for <span class="mark-gold whitespace-nowrap">business owners.</span>
+          You're on the job. <span class="mark-gold">Your phone still gets answered.</span>
         </h1>
         <p class="text-soft mt-6 max-w-xl text-lg sm:mt-8 sm:text-xl">
-          Our AI receptionist answers your calls around the clock, captures customer details, and books on-site
-          estimates while you're out doing the work.
+          An AI receptionist for home-service businesses in southeast Wisconsin. It answers incoming calls,
+          captures leads and books available on-site estimates while you're doing the work.
         </p>
         <div class="mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
           <a href="tel:+12624010826" data-demo-call class="inline-flex min-h-14 items-center justify-center rounded-lg bg-gold px-6 text-base font-bold text-navy underline decoration-transparent decoration-2 underline-offset-4 hover:decoration-navy sm:text-lg">Call our AI: (262) 401-0826</a>
           <BookButton variant="gold" size="lg" label="Book a 15-min call" />
         </div>
-        <p class="text-soft mt-4 text-sm">Hear it yourself. No sales pitch. Just make the call.</p>
+        <p class="text-soft mt-4 max-w-lg text-sm">Hear it yourself. No sales pitch. Just make the call.</p>
+        <p class="text-soft mt-2 max-w-lg text-sm">The AI identifies itself, asks about a pretend job, and walks through an estimate request. Use a fake name and address. Calls may be recorded.</p>
+        <p class="mt-5 text-sm font-bold tracking-wide text-white">Built by business owners, for business owners.</p>
       </div>
       <div id="demo" class="scroll-mt-24"><CallDemo /></div>
     </div>
@@ -141,7 +135,7 @@ const faq = [
 
   <FrontDeskPricing />
 
-  <FaqSection items={faq} title="Questions before you call" />
+  <FaqSection items={RECEPTIONIST_FAQ} title="Questions before you call" />
 
   <FinalCta
     heading="You do the work. We get the phone."

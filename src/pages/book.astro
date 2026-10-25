@@ -1,7 +1,9 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { EMAIL } from "../config";
-import { filled } from "../lib/site";
+import { filled, formatPrice } from "../lib/site";
+import { MONTHLY_PRICE, SETUP_PRICE } from "../config";
+import { RECEPTIONIST_CORE, RECEPTIONIST_TERMS_NOTICE } from "../lib/receptionist-offer";
 
 const email = filled(EMAIL) ? EMAIL.trim() : "";
 const submitUrl = "https://vgckpcktsfuithqggknd.supabase.co/functions/v1/oj-solutions-consultations";
@@ -61,8 +63,16 @@ const submitUrl = "https://vgckpcktsfuithqggknd.supabase.co/functions/v1/oj-solu
             <input class="book-input" type="email" id="booking-email" name="email" autocomplete="email" maxlength="200" required placeholder="you@business.com" />
           </div>
           <div>
-            <label class="book-label" for="booking-phone">Phone</label>
+            <label class="book-label" for="booking-phone">Phone (optional)</label>
             <input class="book-input" type="tel" id="booking-phone" name="phone" autocomplete="tel" maxlength="35" placeholder="(262) 555-0100" />
+            <p class="mt-2 text-sm text-muted">A phone number is for this inquiry. Text messages are optional and require your separate agreement below.</p>
+            <div class="sms-consent mt-4">
+              <input type="checkbox" id="booking-sms-consent" name="smsConsent" value="yes" />
+              <div>
+                <label for="booking-sms-consent" class="cursor-pointer">I agree to receive text messages from OJ Solutions at the number I provide about this consultation. Consent is not required to request a call. Message and data rates may apply. Reply STOP to opt out or HELP for assistance.</label>
+                <p class="mt-1">See our <a href="/privacy">Privacy Policy</a> and <a href="/terms">Terms</a>.</p>
+              </div>
+            </div>
           </div>
           <div>
             <label class="book-label" for="booking-business">Business name</label>
@@ -78,13 +88,24 @@ const submitUrl = "https://vgckpcktsfuithqggknd.supabase.co/functions/v1/oj-solu
               <option value="General consultation">Something else</option>
             </select>
           </div>
+          <div id="receptionist-offer-summary" class="mt-2 rounded-lg border border-line bg-white p-4">
+            <p class="font-heading text-base font-bold">AI Receptionist Pro · {formatPrice(MONTHLY_PRICE)}/month + {formatPrice(SETUP_PRICE)} setup</p>
+            <details class="mt-2">
+              <summary class="min-h-11 font-semibold text-navy underline decoration-gold underline-offset-4">View included features and optional modules</summary>
+              <ul class="mt-2 list-disc space-y-1 pl-6 text-sm text-muted">
+                {RECEPTIONIST_CORE.map((feature) => <li>{feature.title}</li>)}
+              </ul>
+              <p class="mt-3 text-sm text-muted">Missed-call text-back, advanced CRM pipelines, review requests and follow-up automation are quoted separately.</p>
+              <p class="mt-2 text-sm text-muted">{RECEPTIONIST_TERMS_NOTICE}</p>
+            </details>
+          </div>
           <div>
             <label class="book-label" for="booking-notes">What would you like to improve?</label>
             <textarea class="book-input" id="booking-notes" name="notes" rows="3" maxlength="1000" placeholder="Tell us about missed calls, your website, marketing, or another challenge..."></textarea>
           </div>
           <p class="text-sm text-muted" id="selected-summary">First select your preferred date and time.</p>
           <button type="submit" id="submit-request" class="submit-book" disabled>Request this 15-minute call ↗</button>
-          <p class="text-sm text-muted">Submitting a request does not reserve a time or opt you into marketing messages. We'll respond directly to confirm.</p>
+          <p class="text-sm text-muted">Submitting a request does not reserve a time or automatically sign you up for marketing messages. We will contact you to confirm the request.</p>
           <div id="booking-feedback" role="status" aria-live="polite" class="booking-feedback" hidden></div>
         </form>
         {email && <p class="mt-8 text-muted">Prefer email? <a href={"mailto:" + email + "?subject=" + encodeURIComponent("15-minute consultation request")} class="link">{email}</a></p>}
@@ -100,6 +121,7 @@ const submitUrl = "https://vgckpcktsfuithqggknd.supabase.co/functions/v1/oj-solu
     const feedback = document.querySelector<HTMLElement>("#booking-feedback");
     const summary = document.querySelector<HTMLElement>("#selected-summary");
     const sendButton = document.querySelector<HTMLButtonElement>("#submit-request");
+    const receptionistOffer = document.querySelector<HTMLElement>("#receptionist-offer-summary");
     let time = "";
     const centralDate = () => {
       const parts = new Intl.DateTimeFormat("en-US", { timeZone: "America/Chicago", year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(new Date());
@@ -171,6 +193,9 @@ const submitUrl = "https://vgckpcktsfuithqggknd.supabase.co/functions/v1/oj-solu
       const requested = new URLSearchParams(location.search).get("service");
       const mapping: Record<string, string> = { receptionist: "AI receptionist", website: "Websites", commercial: "Commercials", solutions: "General consultation" };
       if (requested && mapping[requested]) select.value = mapping[requested];
+      const syncOffer = () => { if (receptionistOffer) receptionistOffer.hidden = select.value !== "AI receptionist"; };
+      select.addEventListener("change", syncOffer);
+      syncOffer();
     }
     form?.addEventListener("submit", async (event) => {
       event.preventDefault();
@@ -188,7 +213,22 @@ const submitUrl = "https://vgckpcktsfuithqggknd.supabase.co/functions/v1/oj-solu
         phone: String(data.get("phone") || ""), business: String(data.get("business") || ""),
         service: String(data.get("service") || ""), notes: String(data.get("notes") || ""),
         website: String(data.get("website") || ""), date: dateInput.value, time,
+        smsConsent: data.get("smsConsent") === "yes",
       };
+      if (payload.smsConsent && payload.phone.replace(/\D/g, "").length < 10) {
+        setFeedback("Enter a phone number if you choose to receive text messages.", true);
+        sendButton.disabled = false;
+        sendButton.textContent = "Request this 15-minute call ↗";
+        document.querySelector<HTMLInputElement>("#booking-phone")?.focus();
+        return;
+      }
+      // Vercel branch previews must not send live intake events or capture unpersisted SMS consent.
+      if (!["ojsolutions.org", "www.ojsolutions.org"].includes(window.location.hostname)) {
+        setFeedback("Preview only: no booking request was sent. The live intake will be enabled after the consent database and API changes are approved.", false);
+        sendButton.disabled = false;
+        sendButton.textContent = "Request this 15-minute call ↗";
+        return;
+      }
       try {
         const controller = new AbortController();
         const timeout = window.setTimeout(() => controller.abort(), 15000);
@@ -230,6 +270,10 @@ const submitUrl = "https://vgckpcktsfuithqggknd.supabase.co/functions/v1/oj-solu
     .booking-feedback { border:1px solid #8eab91; color:#123f20; background:#ecf9ef; border-radius:6px; padding:14px; margin-top:18px; font-weight:600; }
     .booking-feedback[role="alert"] { border-color:#bc746e; background:#fff1f0; color:#8b2222; }
     .booking-feedback[hidden] { display:none; }
+    .sms-consent { display:flex; align-items:flex-start; gap:11px; font-size:.875rem; line-height:1.55; color:#4a5568; cursor:pointer; }
+    .sms-consent input { width:20px; height:20px; flex:0 0 20px; margin-top:3px; accent-color:#0b1f3a; }
+    .sms-consent a { color:#0b1f3a; font-weight:700; text-decoration:underline; text-decoration-color:#c4a452; text-underline-offset:3px; }
+    .sms-consent :focus-visible { outline:3px solid #c4a452; outline-offset:3px; }
     .form-hidden { position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden; }
     @media(max-width:850px) { .booking-grid {grid-template-columns:1fr; gap:52px;} }
     @media(max-width:410px) { .slot-grid {grid-template-columns:repeat(3,minmax(0,1fr));} }

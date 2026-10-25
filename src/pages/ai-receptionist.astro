@@ -19,6 +19,7 @@ import {
 } from "../config";
 import { SHOW_PLACEHOLDERS, filled, formatPrice, placeholder } from "../lib/site";
 import { mediaAvailable } from "../lib/media";
+import { RECEPTIONIST_CORE, RECEPTIONIST_TERMS_NOTICE, RECEPTIONIST_FAQ } from "../lib/receptionist-offer";
 
 const hasAudio = mediaAvailable(DEMO_AUDIO_SRC);
 const hasVideo = mediaAvailable(DEMO_VIDEO_SRC);
@@ -44,53 +45,9 @@ const steps = [
   },
 ];
 
-const included = [
-  {
-    title: "AI receptionist",
-    body: "Answers calls around the clock, identifies itself as AI, and handles common questions about your services.",
-  },
-  {
-    title: "Booking to your calendar",
-    body: "Books the appointment onto your calendar while the caller is still on the phone.",
-  },
-  {
-    title: "Missed-call text-back",
-    body: "If a call does get missed, the caller gets a text back so they don't move on.",
-  },
-  {
-    title: "CRM setup",
-    body: "We set up your CRM on GoHighLevel. Every caller is saved as a contact you can follow up with.",
-  },
-  {
-    title: "Done-for-you setup and management",
-    body: "We set it up with your services, prices, and hours, then keep it running and update it when things change.",
-  },
-];
 
-const costAnswer = `${formatPrice(SETUP_PRICE)} one-time setup, then ${formatPrice(MONTHLY_PRICE)} per month for AI Receptionist Pro.`;
 
-const faq = [
-  {
-    q: "Will it sound like a robot?",
-    a: hasAudio ? `Don't take our word for it. <a href="#hear-it">Listen to the real call above</a>.` : "",
-  },
-  {
-    q: "What happens with calls it can't handle?",
-    a: "It captures their details and flags the request for a prompt callback.",
-  },
-  { q: "What does it cost?", a: costAnswer },
 
-  {
-    q: "How long does setup take?",
-    // TODO(Jacob): answer in FAQ_ANSWERS.receptionistSetupTime (src/config.ts).
-    // Until then this is a PLACEHOLDER on preview builds and hidden on production.
-    a: filled(FAQ_ANSWERS.receptionistSetupTime) ? FAQ_ANSWERS.receptionistSetupTime : placeholder("how long setup takes"),
-  },
-
-  // TODO(Jacob): answer these two in src/config.ts (FAQ_ANSWERS). Hidden until then.
-  { q: "Do I need a new phone number?", a: FAQ_ANSWERS.receptionistNewNumber },
-  { q: "Is there a long contract?", a: FAQ_ANSWERS.receptionistContract },
-];
 ---
 
 <ServiceLayout
@@ -102,14 +59,17 @@ const faq = [
   highlight="Your phone is."
   subhead="An AI receptionist that answers calls around the clock, captures customer details, and books on-site estimates while you are busy doing the work."
   problemHeading="Every missed call is a lead you already paid for."
-  faq={faq}
+  faq={RECEPTIONIST_FAQ}
   ctaHeading="See it answer a call"
   ctaLine="Hear our AI live at (262) 401-0826, then talk about setting it up for your business."
 >
   <Fragment slot="hero-secondary">
-    <a href="tel:+12624010826" class="link inline-flex min-h-11 items-center text-lg font-bold">
-      Call our AI: (262) 401-0826
-    </a>
+    <div>
+      <a href="tel:+12624010826" class="link inline-flex min-h-11 items-center text-lg font-bold">
+        Call our AI: (262) 401-0826
+      </a>
+      <p class="text-soft mt-2 max-w-sm text-sm">It simulates a customer estimate call. Use fake details; the call may be recorded.</p>
+    </div>
     {hasAudio && (
       <a href="#hear-it" class="link inline-flex min-h-11 items-center text-lg">Hear the recorded demo</a>
     )}
@@ -197,7 +157,8 @@ const faq = [
 
   <Section id="included" labelledby="included-title" border={false}>
     <SectionHeading id="included-title" title="What's included" />
-    <FeatureGrid items={included} />
+    <FeatureGrid items={RECEPTIONIST_CORE.map(({ title, description }) => ({ title, body: description }))} />
+    <p class="mt-6 max-w-3xl text-muted">Missed-call text-back, advanced CRM pipelines, review requests and follow-up automation are available as separately scoped services.</p>
   </Section>
 
   {
@@ -219,9 +180,10 @@ const faq = [
             </div>
           </dl>
           <p class="mt-6 border-t border-line pt-6 text-muted">
-            Includes everything above: the AI receptionist, booking, missed-call text-back, CRM setup, and ongoing
-            management.
+            Includes the core receptionist capabilities listed above. Missed-call text-back and advanced CRM pipelines
+            are separately scoped services.
           </p>
+          <p class="mt-3 text-sm text-muted">{RECEPTIONIST_TERMS_NOTICE}</p>
           <BookButton service="receptionist" class="mt-6 w-full sm:w-auto" />
         </div>
       </Section>

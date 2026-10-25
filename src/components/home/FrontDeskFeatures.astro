@@ -1,24 +1,17 @@
 ---
 import Section from "../Section.astro";
 import SectionHeading from "../SectionHeading.astro";
+import { RECEPTIONIST_OPTIONAL_MODULES } from "../../lib/receptionist-offer";
 
 const features = [
   ["01", "24/7 answering", "Your AI receptionist can pick up while you're on the job, closed, or tied up with a customer."],
   ["02", "Lead capture", "It asks for the caller's name, address, service, and preferred timeframe."],
   ["03", "On-site estimate booking", "It schedules an available estimate on your connected calendar instead of guessing prices."],
   ["04", "Instant lead alerts", "You receive the information from the call without digging through voicemail."],
-  ["05", "CRM and call history", "Keep the captured lead, recording, and transcript together for follow-up."],
+  ["05", "Basic contacts and call history", "Store caller details, recordings and transcripts. Advanced CRM pipelines are optional."],
   ["06", "Keep your business number", "Use it as overflow or as your primary front desk. You choose how calls are handled."],
 ];
-const extras = [
-  ["Missed-call recovery", "Reach back out when a caller doesn't get through."],
-  ["CRM and pipeline", "Track leads from new inquiry to booked estimate and won or lost."],
-  ["Online booking", "Give customers a way to pick an estimate slot."],
-  ["Review requests", "Request honest Google reviews after a completed job."],
-  ["Follow-up automation", "Send estimate follow-ups, appointment reminders, and customer reactivation messages."],
-  ["Websites and forms", "Capture more requests from people visiting your website."],
-  ["Reporting", "Review call volume, leads captured, and estimates booked."],
-];
+
 ---
 <Section id="front-desk" labelledby="front-desk-title">
   <SectionHeading id="front-desk-title" title="A front desk that works while you do" intro="No missed-call guessing game. Calls answered, details captured, estimates scheduled." />
@@ -37,17 +30,17 @@ const extras = [
     <div>
       <h2 id="more-tools-title" class="display-2">Everything behind the front desk.</h2>
       <p class="text-soft mt-6 max-w-lg text-lg">The receptionist is the first step. Add the follow-up systems your business needs as you grow.</p>
-      <p class="text-soft mt-4 text-base">Additional modules are configured and scoped separately.</p>
+      <p class="text-soft mt-4 text-base">These are optional add-ons, not included in the published AI Receptionist Pro price. Core call history and basic contacts are included.</p>
     </div>
     <div class="rule-soft border-t">
-      {extras.map(([name, description], i) => (
+      {RECEPTIONIST_OPTIONAL_MODULES.map((module, i) => (
         <details class="rule-soft group border-b">
           <summary class="flex min-h-16 cursor-pointer items-center gap-4 py-4 text-left font-heading text-lg font-bold">
             <span class="text-sm text-gold">{String(i + 1).padStart(2, "0")}</span>
-            <span class="flex-1">{name}</span>
+            <span class="flex-1">{module.title}</span>
             <span class="text-2xl text-gold group-open:rotate-45" aria-hidden="true">+</span>
           </summary>
-          <p class="text-soft pb-5 pl-9">{description}</p>
+          <p class="text-soft pb-5 pl-9">{module.description}</p>
         </details>
       ))}
     </div>
