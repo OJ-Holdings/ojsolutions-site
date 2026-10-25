@@ -1,0 +1,61 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import BookButton from "../components/BookButton.astro";
+
+import { trades, type Trade } from "../data/industries";
+interface Props { trade: Trade; }
+
+export function getStaticPaths() {
+  return trades.map(trade => ({ params: { trade: trade.slug }, props: { trade } }));
+}
+
+const { trade } = Astro.props;
+---
+<BaseLayout
+  title={`AI Receptionist for ${trade.name} | OJ Solutions`}
+  description={`An AI front desk for ${trade.name.toLowerCase()} business owners in southeast Wisconsin. Capture callers, gather details, and schedule estimates with an operator-focused setup.`}
+>
+  <section class="on-navy">
+    <div class="container-page grid gap-12 py-16 lg:grid-cols-[1.1fr_.9fr] lg:items-center lg:py-24">
+      <div>
+        <p class="text-sm font-bold uppercase tracking-widest text-gold">AI receptionist / {trade.name}</p>
+        <h1 class="display-1 mt-5">{trade.title}</h1>
+        <p class="text-soft mt-6 max-w-2xl text-lg">{trade.situation} OJ Solutions configures its AI front desk around the work you actually do.</p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a href="tel:+12624010826" data-demo-call class="inline-flex min-h-14 items-center rounded-lg bg-gold px-6 text-lg font-bold text-navy">Call our AI: (262) 401-0826</a>
+          <BookButton variant="gold" size="lg" service="receptionist" label="Request a 15-min call"/>
+        </div>
+        <p class="text-soft mt-4 text-sm">Try the demo using a fictional name, address and job description. Calls may be recorded.</p>
+      </div>
+      <aside class="rounded-lg border border-white/25 p-7">
+        <p class="text-sm font-bold tracking-widest text-gold uppercase">Illustrative caller inquiry</p>
+        <blockquote class="mt-4 font-heading text-2xl font-bold leading-snug">“{trade.example}”</blockquote>
+        <p class="text-soft mt-5 text-sm">Fictional example only. Not a real customer recording or testimonial.</p>
+      </aside>
+    </div>
+  </section>
+  <section class="container-page grid gap-12 py-16 lg:grid-cols-[.85fr_1.15fr] lg:py-24">
+    <div>
+      <h2 class="display-2">Capture the information before the lead disappears.</h2>
+      <p class="mt-6 text-lg text-muted">Your AI identifies itself, asks for the essentials, and follows a workflow agreed with your business. It can schedule an available on-site estimate when properly configured. Calls needing an actual person are flagged for callback.</p>
+      <p class="mt-5 text-muted">The AI is not a technician and should not diagnose hazards, quote unapproved prices, or promise emergency response.</p>
+    </div>
+    <div>
+      <h3 class="text-2xl font-bold">What it can ask a caller about</h3>
+      <ul class="mt-7 space-y-4 border-t border-line">
+        {trade.details.map((line, i) => (
+          <li class="flex gap-5 border-b border-line py-4">
+            <span class="font-bold text-muted">{String(i+1).padStart(2,"0")}</span><span class="text-lg">{line}</span>
+          </li>
+        ))}
+      </ul>
+      <p class="mt-7 text-muted">Services, availability, integrations, and approvals are configured for each business. <a href="/ai-receptionist" class="link">Review current package inclusions and pricing</a>.</p>
+    </div>
+  </section>
+  <section class="bg-navy text-white">
+    <div class="container-page flex flex-wrap items-center justify-between gap-8 py-12">
+      <div><h2 class="display-2">You do the work. We get the phone.</h2><p class="text-soft mt-4">We focus on southeast Wisconsin service-business owners.</p></div>
+      <BookButton variant="gold" size="lg" label="Request a 15-minute conversation" />
+    </div>
+  </section>
+</BaseLayout>

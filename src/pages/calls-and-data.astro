@@ -1,0 +1,34 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import BookButton from "../components/BookButton.astro";
+---
+<BaseLayout title="How We Handle AI Calls and Data | OJ Solutions" description="Plain-language information on OJ Solutions' AI call disclosure, recorded demo calls, customer information, and consultation requests.">
+  <section class="on-navy">
+    <div class="container-page py-16 sm:py-24">
+      <p class="text-sm font-bold uppercase tracking-widest text-gold">Trust / Calls & data</p>
+      <h1 class="display-1 mt-4 max-w-4xl">Clear about the AI. <span class="mark-gold">Clear about your data.</span></h1>
+      <p class="text-soft mt-6 max-w-2xl text-lg">We want you to know what happens when you call our demonstration line or submit a consultation request.</p>
+    </div>
+  </section>
+  <article class="container-page py-14 sm:py-20">
+    <div class="prose-page max-w-3xl">
+      <h2>Who answers the demo line?</h2>
+      <p>Our demo line is answered by an AI receptionist, not by a human employee. The AI should identify itself as an AI assistant. You can hang up at any time.</p>
+      <h2>Are calls recorded?</h2>
+      <p>Demo calls may be recorded and transcribed for handling inquiries and reviewing how the system works. Use a fictional name, address and job description when trying the demonstration. Do not share sensitive information or details about an actual customer.</p>
+      <h2>What does the animated example show?</h2>
+      <p>The animation and conversation on our site are fictional illustrations. The sample calendar booking is not a live appointment or a transcript of a real caller.</p>
+      <h2>What happens when I request a consultation?</h2>
+      <p>Our separate 15-minute request form collects the details you provide, including your preferred date, time, name, email and optional contact details. It does not check either founder's live schedule and does not automatically reserve a time. A team member must confirm it directly.</p>
+      <h2>What about SMS messages?</h2>
+      <p>Providing a phone number is not itself permission to text you. The consultation form offers a separate unchecked checkbox for optional consultation-related text messages. We record that choice when you submit the form. We do not enable promotional texts through this form.</p>
+      <h2>Who can see my information?</h2>
+      <p>Authorized OJ Workspace members responsible for consultation follow-up can view submitted requests. We use infrastructure and service providers to operate the site and database. More detail is in our <a href="/privacy">Privacy Policy</a>.</p>
+      <h2>How long are calls and data kept?</h2>
+      <p>Data retention, access, export, deletion and ownership for paying clients are governed by their signed service agreement. We do not promise a specific retention period here without approved service terms. For personal information collected through this site, please review the <a href="/privacy">Privacy Policy</a>.</p>
+      <h2>How can I contact you about my data?</h2>
+      <p>Use the contact information and requests process in the <a href="/privacy">Privacy Policy</a>. You can also learn more about our <a href="/ai-receptionist">AI receptionist service</a>.</p>
+    </div>
+    <div class="mt-10"><BookButton size="lg" label="Request a 15-minute call" /></div>
+  </article>
+</BaseLayout>
