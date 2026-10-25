@@ -23,5 +23,7 @@ jobs:
         env:
           VERCEL_ENV: production
         run: npm run build
+      - name: Ensure recorded demo is a privacy-reviewed, exact media pair
+        run: node scripts/verify-media-integrity.mjs
       - name: Verify routes, disclosure and booking contract
         run: node scripts/verify-site.mjs
