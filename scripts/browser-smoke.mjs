@@ -3,7 +3,7 @@ import { chromium } from "playwright";
 import { mkdir } from "node:fs/promises";
 
 const origin = process.env.SITE_TEST_ORIGIN || "http://127.0.0.1:4321";
-const browser = await chromium.launch({ headless: true, args: ["--no-sandbox"] });
+const browser = await chromium.launch({ headless: true, ...(process.env.CHROME_PATH ? { executablePath: process.env.CHROME_PATH } : {}), args: ["--no-sandbox"] });
 const artifactDir = "test-results";
 await mkdir(artifactDir, { recursive: true });
 const errors = [];
