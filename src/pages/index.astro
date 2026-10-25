@@ -1,149 +1,544 @@
 ---
-import { Image } from "astro:assets";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import Hero from "../components/Hero.astro";
-import Section from "../components/Section.astro";
-import SectionHeading from "../components/SectionHeading.astro";
-import Steps from "../components/Steps.astro";
-import FaqSection from "../components/FaqSection.astro";
-import FinalCta from "../components/FinalCta.astro";
-import Icon from "../components/Icon.astro";
-import { BUSINESS_NAME, EMAIL, FAQ_ANSWERS, FOUNDERS_PHOTO, PHONE, SOCIAL_LINKS } from "../config";
-import { SERVICES, filled } from "../lib/site";
+import { DEMO_AUDIO_SRC, DEMO_AUDIO_TRANSCRIPT, MONTHLY_PRICE, SETUP_PRICE, GHL_CALENDAR_EMBED, BOOKING_URL } from "../config";
+import { bookingHref, filled, formatPrice } from "../lib/site";
+import { mediaAvailable } from "../lib/media";
 
-// Optional "Why us" photo from src/assets/photos/ (set in src/config.ts).
-const photos = import.meta.glob<{ default: ImageMetadata }>("../assets/photos/*.{jpg,jpeg,png,webp,avif}");
-const photoKey = Object.keys(photos).find(
-  (key) => filled(FOUNDERS_PHOTO.file) && key.endsWith("/" + FOUNDERS_PHOTO.file.trim()),
-);
-const photo = photoKey && filled(FOUNDERS_PHOTO.alt) ? (await photos[photoKey]()).default : null;
+const demoPhone = "(262) 401-0826";
+const demoTel = "tel:+12624010826";
+const booking = bookingHref("receptionist") ?? demoTel;
+const calendarReady = filled(GHL_CALENDAR_EMBED) || filled(BOOKING_URL);
+const bookingLabel = calendarReady ? "Book a 15-minute call" : "Request a 15-minute call";
+const hasAudio = mediaAvailable(DEMO_AUDIO_SRC);
+const hasTranscript = hasAudio && filled(DEMO_AUDIO_TRANSCRIPT);
 
-const site = Astro.site ?? new URL("http://localhost:4321");
+const coreFeatures = [
+  { number: "01", name: "24/7 call answering", description: "Your AI front desk is available when you're out on the job, closed, or tied up with a customer." },
+  { number: "02", name: "Natural conversations", description: "It introduces itself as an AI assistant and speaks with your callers in plain language." },
+  { number: "03", name: "Lead qualification", description: "Captures the service, name, address, and preferred timeframe without another voicemail." },
+  { number: "04", name: "Estimate booking", description: "Schedules available on-site estimate slots directly onto your connected calendar." },
+  { number: "05", name: "Instant lead alerts", description: "The information from the call goes straight to you so you know what comes next." },
+  { number: "06", name: "Call history and transcripts", description: "Review what happened inside the CRM instead of trying to remember every conversation." },
+];
+const extraFeatures = [
+  ["Missed-call recovery", "Follow up automatically when a caller doesn't reach you."],
+  ["CRM and pipeline", "Track leads from new inquiry to booked estimate and won or lost."],
+  ["Online booking", "Let customers reserve a convenient estimate slot."],
+  ["Review requests", "Invite customers to leave honest reviews after completed work."],
+  ["Follow-up workflows", "Keep quotes, reminders, and previous customers from falling through the cracks."],
+  ["Websites and quote forms", "Give visitors a clear way to request service."],
+  ["Reporting", "See calls answered, leads captured, and estimates booked."],
+];
+const faq = [
+  ["Is it a real person?", "No. It is an AI receptionist, and it identifies itself as an AI assistant at the start of the call."],
+  ["What if someone wants a human?", "The AI captures their information and flags the request for a prompt callback."],
+  ["Do I need to change my phone number?", "No. Keep your existing number. The AI can work as overflow when you can't answer or as a full front desk."],
+  ["Can it handle my services and prices?", "We configure it around your services, hours, and service area. It can book an on-site estimate rather than guess a price."],
+  ["What happens after the call?", "You receive the captured lead details, and the recording and transcript are available in the CRM."],
+  ["How long does setup take?", "We'll confirm the setup timeline after reviewing your business and phone configuration."],
+  ["Who owns my leads and data?", "Ownership, access, and retention will be described in the service agreement before you sign."],
+  ["Is there a contract?", "We'll review the contract and cancellation terms with you before you sign up."],
+  ["What does it cost?", "The starting price is $797 per month with a $2,000 one-time setup fee."],
+  ["Who's behind OJ Solutions?", "Two local operators who run OJ Exterior Care in Kenosha. We built our own AI receptionist before offering the system to other businesses."],
+];
+const industryList = ["Exterior cleaning", "HVAC", "Plumbing", "Electrical", "Landscaping", "Roofing and gutters", "Auto detailing", "Painting", "Cleaning services"];
 const jsonLd = {
   "@context": "https://schema.org",
-  "@type": "Organization",
-  name: BUSINESS_NAME,
-  url: new URL("/", site).href,
-  logo: new URL("/icon-512.png", site).href,
-  ...(filled(EMAIL) && { email: EMAIL }),
-  ...(filled(PHONE) && { telephone: PHONE }),
-  founder: [
-    { "@type": "Person", name: "Jacob" },
-    { "@type": "Person", name: "Oscar" },
-  ],
-  sameAs: Object.values(SOCIAL_LINKS).filter(filled),
+  "@type": "Service",
+  name: "AI receptionist for home service businesses",
+  description: "AI call answering, lead capture, and estimate booking for southeast Wisconsin service businesses.",
+  serviceType: "AI receptionist and appointment booking",
+  areaServed: ["Kenosha, Wisconsin", "Racine, Wisconsin", "Pleasant Prairie, Wisconsin"],
+  provider: { "@type": "LocalBusiness", name: "OJ Solutions", telephone: "+12624010826", address: { "@type": "PostalAddress", addressLocality: "Kenosha", addressRegion: "WI", addressCountry: "US" } },
 };
-
-const steps = [
-  {
-    title: "Book a call",
-    body: "Pick a time that works for you. It's a short call.",
-  },
-  {
-    title: "We find the biggest leak",
-    body: "We look at your business and find the one thing costing you the most.",
-  },
-  {
-    title: "We fix that first",
-    body: "Then you decide if you want more. No package you have to buy into.",
-  },
-];
-
-const faq = [
-  {
-    q: "Do I have to buy all three?",
-    a: "No. Most businesses should start with whichever one fixes their biggest problem. You can add more later if it makes sense.",
-  },
-  {
-    q: "How does it start?",
-    a: "With a short call. We look at your business and tell you what we'd fix first.",
-  },
-  {
-    q: "Where are you based?",
-    a: FAQ_ANSWERS.whereBased, // TODO(Jacob): answer in src/config.ts. Hidden until then.
-  },
-];
 ---
 
 <BaseLayout
-  title="OJ Solutions | AI Receptionist, Websites, and Commercials"
-  description="We fix what's slowing your business down: missed calls, a website that doesn't bring in work, and marketing nobody watches. Built by business owners."
+  title="AI Receptionist for Home-Service Businesses in Kenosha | OJ Solutions"
+  description="You're on the job. Your phone still gets answered. Hear the OJ Solutions AI receptionist capture leads and book estimates. Call our live demo at (262) 401-0826."
   jsonLd={jsonLd}
+  hideChrome
 >
-  <Hero
-    title="Built by business owners, for business owners."
-    highlight="business owners."
-    subhead="We fix what's slowing you down: missed calls, a website that doesn't bring in work, and marketing nobody watches."
-  />
-
-  <Section id="services" labelledby="services-title">
-    <SectionHeading
-      id="services-title"
-      title="What we fix"
-      intro="Three services, all done for you. Start with the one that fixes your biggest problem."
-    />
-    <ul role="list" class="mt-10 grid gap-4 md:grid-cols-3">
-      {
-        SERVICES.map((s) => (
-          <li class="group relative flex flex-col rounded-lg border border-line p-6 hover:border-navy sm:p-7">
-            <h3 class="text-xl font-bold">
-              <a href={s.href} class="after:absolute after:inset-0 after:rounded-lg">
-                {s.name}
-              </a>
-            </h3>
-            <p class="mt-2 flex-1 text-muted">{s.problem}</p>
-            <p
-              class="mt-6 inline-flex items-center gap-1.5 font-semibold text-navy group-hover:underline group-hover:decoration-gold group-hover:decoration-2 group-hover:underline-offset-4"
-              aria-hidden="true"
-            >
-              See how it works
-              <Icon name="arrow-right" class="size-4" />
-            </p>
-          </li>
-        ))
-      }
-    </ul>
-  </Section>
-
-  <Section id="how-we-work" labelledby="how-title">
-    <SectionHeading id="how-title" title="How we work" />
-    <Steps steps={steps} />
-  </Section>
-
-  <Section id="why-us" labelledby="why-title">
-    <div class:list={["grid gap-10", photo && "md:grid-cols-2 md:items-center md:gap-14"]}>
-      <div>
-        <SectionHeading id="why-title" title="We run businesses too" />
-        <div class="mt-6 max-w-2xl space-y-4 text-lg text-muted">
-          <p>
-            We're Jacob and Oscar. Besides OJ Solutions, we run our own businesses, including a pressure washing and
-            window cleaning company.
-          </p>
-          <p>
-            Everything we sell, we built for our own business first and tested it there before offering it to anyone
-            else. So when we talk about missed calls, websites, and getting seen online, we're talking about problems we
-            deal with ourselves.
-          </p>
+  <link slot="head" rel="preconnect" href="https://fonts.googleapis.com" />
+  <link slot="head" rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link slot="head" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800;900&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+  <div class="oj-landing">
+    <header class="site-header">
+      <div class="shell header-inner">
+        <a href="/" class="brand" aria-label="OJ Solutions homepage">
+          <span class="mark"><img src="/icon-512.png" width="40" height="40" alt="" /></span>
+          <span class="brand-name"><strong>OJ</strong> SOLUTIONS<small>YOUR AI FRONT DESK</small></span>
+        </a>
+        <nav class="main-nav" aria-label="Primary navigation">
+          <a href="#how-it-works">How it works</a>
+          <a href="#demo">Hear it live</a>
+          <a href="#pricing">Pricing</a>
+        </nav>
+        <div class="header-actions">
+          <a class="header-call" href={demoTel} data-track="demo_call_tap">Hear it live <span aria-hidden="true">↗</span></a>
+          <a class="header-book" href={booking} data-track="booking_tap">{calendarReady ? "Book a call" : "Request a call"}</a>
         </div>
       </div>
-      {
-        photo && (
-          <Image
-            src={photo}
-            alt={FOUNDERS_PHOTO.alt}
-            widths={[400, 640, 960, 1280]}
-            sizes="(min-width: 768px) 50vw, 100vw"
-            class="h-auto w-full rounded-lg border border-line"
-          />
-        )
-      }
-    </div>
-  </Section>
+    </header>
 
-  <FaqSection items={faq} />
+    <main>
+      <section class="hero section-pad" aria-labelledby="hero-title">
+        <div class="shell hero-layout">
+          <div class="hero-content">
+            <p class="eyebrow"><span class="eyebrow-line"></span> AI RECEPTIONIST FOR HOME-SERVICE BUSINESSES</p>
+            <h1 id="hero-title">You're on the job.<br /><em>Your phone still gets answered.</em></h1>
+            <p class="hero-text">You're running a business, not sitting behind a desk. Our AI receptionist answers calls 24/7, captures customer details, and books estimates while you focus on the work.</p>
+            <div class="button-row">
+              <a href={demoTel} class="btn btn-gold" data-track="demo_call_tap">Call our AI: {demoPhone} <span aria-hidden="true">↗</span></a>
+              <a href={booking} class="btn btn-outline" data-track="booking_tap">{bookingLabel}</a>
+            </div>
+            <p class="quiet-note">Hear it in action. No sales pitch. Just make the call.</p>
+            <div class="hero-proof"><span class="small-dash"></span> Built by business owners, for business owners.</div>
+          </div>
+          <div class="demo-visual" aria-label="Illustrative simulated AI receptionist call and lead summary">
+            <div class="phone-shell">
+              <div class="phone-top"><span>OJ SOLUTIONS / AI FRONT DESK</span><span class="phone-time">00:42</span></div>
+              <div class="phone-symbol" aria-hidden="true"><span class="phone-rings">✳</span></div>
+              <p class="visual-meta">INCOMING CUSTOMER CALL</p>
+              <h2>Mike Reynolds</h2>
+              <p class="visual-helper">Fictional example customer</p>
+              <div class="phone-status"><span class="status-dot"></span> ANSWERED BY AI</div>
+              <div class="waveform" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+              <div class="phone-caption">“Thanks for calling. I'm the AI assistant...”</div>
+            </div>
+            <div class="lead-card">
+              <div class="lead-top"><span>NEW ESTIMATE REQUEST</span><span class="booked-label">CAPTURED</span></div>
+              <div class="lead-row"><span>Name</span><strong>Mike Reynolds</strong></div>
+              <div class="lead-row"><span>Service</span><strong>Driveway + windows</strong></div>
+              <div class="lead-row"><span>Timeframe</span><strong>This week</strong></div>
+              <p>Illustrative demo. No real customer data.</p>
+            </div>
+          </div>
+        </div>
+        <div class="shell hero-bottom"><span>BASED IN KENOSHA, WISCONSIN</span><span>BUILT FOR PEOPLE WHO DO THE WORK</span></div>
+      </section>
 
-  <FinalCta
-    heading="Let's find what's slowing you down"
-    line="A short call. We'll tell you what we'd fix first."
-  />
+      <section class="problem section-pad" aria-labelledby="problem-title">
+        <div class="shell split">
+          <div>
+            <p class="eyebrow ink-eyebrow"><span class="eyebrow-line"></span> THE COST OF A MISSED CALL</p>
+            <h2 id="problem-title">Nobody leaves a voicemail anymore.<br /><em>They call the next guy.</em></h2>
+          </div>
+          <div class="problem-copy">
+            <p>You're on a ladder. Under a truck. Halfway through a job.</p>
+            <p>Your phone rings. You can't answer. The customer moves on.</p>
+            <p>At our own exterior-care business, a typical job is worth about <strong>$400.</strong> A few missed opportunities can add up quickly.</p>
+            <p class="heavy">You shouldn't have to choose between doing the work and answering the phone.</p>
+          </div>
+        </div>
+        <div class="shell scenario"><span class="scenario-missed"><span class="signal-red"></span> CALL MISSED</span><span class="scenario-arrow" aria-hidden="true">→</span><span class="scenario-leak">CUSTOMER CALLS THE NEXT COMPANY</span><span class="scenario-arrow" aria-hidden="true">→</span><span class="scenario-outcome">JOB OPPORTUNITY LOST</span></div>
+      </section>
+
+      <section id="demo" class="demo-section section-pad" aria-labelledby="demo-title">
+        <div class="shell demo-grid">
+          <div>
+            <p class="eyebrow"><span class="eyebrow-line"></span> LIVE AI DEMONSTRATION</p>
+            <h2 id="demo-title">Don't take our word for it.<br /><em>Make the call.</em></h2>
+            <p>You'll hear an AI receptionist introduce itself, ask the right questions, and guide a customer through an estimate request.</p>
+            <a href={demoTel} class="btn btn-gold" data-track="demo_call_tap">Call the AI: {demoPhone} <span aria-hidden="true">↗</span></a>
+            <p class="quiet-note">The fastest way to understand it is to hear it yourself.</p>
+          </div>
+          <div class="demo-panel">
+            <div class="panel-header"><span class="mini-label">01 / HEAR IT IN ACTION</span><span class="panel-indicator">LIVE DEMO LINE</span></div>
+            {hasAudio ? (
+              <div class="audio-wrap">
+                <h3>Inside an AI receptionist call</h3>
+                <p>Simulated customer inquiry. Example data only.</p>
+                <audio controls preload="metadata" src={DEMO_AUDIO_SRC.trim()} data-track-audio>
+                  Your browser does not support the audio element.
+                </audio>
+                {hasTranscript && (
+                  <details class="transcript">
+                    <summary>Read the approved transcript</summary>
+                    <p>{DEMO_AUDIO_TRANSCRIPT.trim()}</p>
+                  </details>
+                )}
+                {!hasTranscript && <p class="placeholder-note">[APPROVED TRANSCRIPT – TO ADD]</p>}
+              </div>
+            ) : (
+              <div class="audio-pending">
+                <div class="audio-icon" aria-hidden="true">◉</div>
+                <h3>The real demo is on the phone.</h3>
+                <p>The approved recording will be added here. Until then, call the live demo line and hear the conversation for yourself.</p>
+                <a href={demoTel} class="panel-link" data-track="demo_call_tap">Tap to call the AI <span aria-hidden="true">↗</span></a>
+                <span class="placeholder-note">[APPROVED DEMO MP3 + TRANSCRIPT – TO ADD]</span>
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
+      <section id="how-it-works" class="how section-pad" aria-labelledby="how-title">
+        <div class="shell">
+          <div class="section-heading">
+            <p class="eyebrow ink-eyebrow"><span class="eyebrow-line"></span> THREE SIMPLE STEPS</p>
+            <h2 id="how-title">We handle the phone.<br /><em>You handle the work.</em></h2>
+            <p>We set up the system. It answers and captures the lead. You show up to the estimate.</p>
+          </div>
+          <div class="steps">
+            <article><span class="step-num">01 / SETUP</span><div class="step-art" aria-hidden="true">⌘</div><h3>We set up your front desk.</h3><p>We configure your services, business hours, service area, and calendar. Keep your existing number.</p></article>
+            <article><span class="step-num">02 / ANSWER</span><div class="step-art" aria-hidden="true">◎</div><h3>It answers, captures, and books.</h3><p>The AI introduces itself, collects the customer's details, and books an available estimate slot.</p></article>
+            <article><span class="step-num">03 / ALERT</span><div class="step-art" aria-hidden="true">↗</div><h3>You get the lead alert.</h3><p>See who called, what they need, and when the estimate is scheduled. No digging through voicemails.</p></article>
+          </div>
+        </div>
+      </section>
+
+      <section id="features" class="features section-pad" aria-labelledby="features-title">
+        <div class="shell">
+          <div class="section-heading">
+            <p class="eyebrow"><span class="eyebrow-line"></span> YOUR AI FRONT DESK</p>
+            <h2 id="features-title">A front desk that works<br /><em>while you do.</em></h2>
+            <p>Built for real incoming calls and the information you need to follow up.</p>
+          </div>
+          <div class="feature-grid">
+            {coreFeatures.map((feature) => (
+              <article class="feature"><span class="feature-num">{feature.number}</span><h3>{feature.name}</h3><p>{feature.description}</p></article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section class="stack section-pad" aria-labelledby="stack-title">
+        <div class="shell split">
+          <div>
+            <p class="eyebrow ink-eyebrow"><span class="eyebrow-line"></span> MORE THAN CALL ANSWERING</p>
+            <h2 id="stack-title">Everything behind<br /><em>the front desk.</em></h2>
+            <p class="stack-intro">The AI captures the opportunity. The systems behind it help you follow through. Additional modules are configured to your business.</p>
+          </div>
+          <div class="stack-list">
+            {extraFeatures.map(([name, description], i) => (
+              <details class="stack-item"><summary><span class="stack-index">{String(i + 1).padStart(2, "0")}</span><span>{name}</span><span class="expand-icon" aria-hidden="true">+</span></summary><p>{description}</p></details>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="about" class="operators section-pad" aria-labelledby="about-title">
+        <div class="shell operators-inner">
+          <div>
+            <p class="eyebrow"><span class="eyebrow-line"></span> BUILT BY OPERATORS</p>
+            <h2 id="about-title">We know what it's like<br /><em>to miss a call.</em></h2>
+            <p>We run OJ Exterior Care, a pressure washing and window cleaning company serving Kenosha and Racine. We built the AI receptionist on our own business line first.</p>
+            <p>We're not selling a system we've never used. We know what happens when you're halfway through a job and the phone starts ringing.</p>
+            <p class="operators-bold">Built by business owners, for business owners.</p>
+          </div>
+          <div class="founder-photo">
+            <div class="photo-frame"><span class="photo-num">CLIENT ZERO / OJ EXTERIOR CARE</span><span class="photo-emblem">OJ</span><strong>Real operators.<br />Real field experience.</strong><span class="photo-placeholder">[PHOTO – REAL FIELD SHOT TO ADD]</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="industries section-pad" aria-labelledby="industries-title">
+        <div class="shell">
+          <p class="eyebrow ink-eyebrow"><span class="eyebrow-line"></span> BUILT FOR THE TRADES</p>
+          <h2 id="industries-title">If you're doing the work,<br /><em>who's answering the phone?</em></h2>
+          <div class="industry-chips">{industryList.map((trade) => <span>{trade}</span>)}</div>
+          <p class="location-copy">Based in Kenosha, WI. Serving service businesses across southeast Wisconsin.</p>
+        </div>
+      </section>
+
+      <section id="pricing" class="pricing section-pad" aria-labelledby="pricing-title">
+        <div class="shell price-grid">
+          <div>
+            <p class="eyebrow"><span class="eyebrow-line"></span> STRAIGHTFORWARD PRICING</p>
+            <h2 id="pricing-title">A front desk without another<br /><em>full-time hire.</em></h2>
+            <p>Clear pricing for the core AI receptionist setup. We'll discuss any additional modules before you commit.</p>
+          </div>
+          <div class="price-card">
+            <div class="price-top"><span>AI RECEPTIONIST PRO</span><span class="price-flash">01 / FLAGSHIP</span></div>
+            <div class="price"><strong>{formatPrice(MONTHLY_PRICE)}</strong><span>/ month</span></div>
+            <p class="setup">One-time setup: <strong>{formatPrice(SETUP_PRICE)}</strong></p>
+            <div class="price-rule"></div>
+            <p class="card-label">CORE CAPABILITIES</p>
+            <ul>
+              <li>24/7 AI call answering</li><li>Caller details and lead capture</li><li>Estimate calendar booking</li><li>Owner notifications</li><li>Call recordings and transcripts</li><li>Overflow or full-front-desk setup</li>
+            </ul>
+            <a class="btn btn-gold full-btn" href={booking} data-track="booking_tap">{bookingLabel} <span aria-hidden="true">↗</span></a>
+            <p class="price-terms">Additional features and service terms are confirmed before purchase. [CONTRACT AND CANCELLATION TERMS – CONFIRM]</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="faq" class="faqs section-pad" aria-labelledby="faq-title">
+        <div class="shell faq-wrap">
+          <div><p class="eyebrow ink-eyebrow"><span class="eyebrow-line"></span> THE PRACTICAL QUESTIONS</p><h2 id="faq-title">Straight answers.<br /><em>No tech talk.</em></h2></div>
+          <div class="faq-list">{faq.map(([question, answer]) => (
+            <details><summary>{question}<span class="faq-plus" aria-hidden="true">+</span></summary><p>{answer}</p></details>
+          ))}</div>
+        </div>
+      </section>
+
+      <section class="closing section-pad" aria-labelledby="closing-title">
+        <div class="shell closing-inner">
+          <p class="eyebrow"><span class="eyebrow-line"></span> READY TO HEAR THE DIFFERENCE?</p>
+          <h2 id="closing-title">Your phone is ringing.<br /><em>Who's picking up?</em></h2>
+          <p>You didn't start a business to spend the day returning missed calls. Hear the AI for yourself.</p>
+          <div class="button-row centered"><a href={demoTel} class="btn btn-gold" data-track="demo_call_tap">Call our AI: {demoPhone} <span aria-hidden="true">↗</span></a><a href={booking} class="btn btn-outline" data-track="booking_tap">{bookingLabel}</a></div>
+          <p class="quiet-note">No commitment required to call the demo.</p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="oj-footer">
+      <div class="shell footer-inner">
+        <div class="footer-brand"><a href="/" aria-label="OJ Solutions home"><span class="footer-mark">OJ</span> SOLUTIONS</a><p>Your AI front desk.</p><p>Built by business owners, for business owners.</p></div>
+        <div><h2>CONTACT</h2><p>Kenosha, Wisconsin</p><a href={demoTel} data-track="demo_call_tap">{demoPhone}</a><p class="footer-pending">[BUSINESS EMAIL / DOMAIN – CONFIRM]</p></div>
+        <div><h2>EXPLORE</h2><a href="#demo">Hear it live</a><a href="#how-it-works">How it works</a><a href="#pricing">Pricing</a><a href="#about">About</a><a href={booking} data-track="booking_tap">Book a call</a></div>
+      </div>
+      <div class="shell legal-line"><span>© {new Date().getFullYear()} OJ Solutions. All rights reserved.</span><span><a href="/privacy">Privacy</a><a href="/terms">Terms</a></span><p>Calls with our AI assistant may be recorded. [LEGAL – REVIEW CALL RECORDING AND SMS DISCLOSURES]</p></div>
+    </footer>
+  </div>
+  <script>
+    const signal = (eventName: string) => {
+      const w = window as typeof window & { dataLayer?: Array<Record<string, string>>; gtag?: (...args: unknown[]) => void };
+      w.dataLayer?.push({ event: eventName });
+      w.gtag?.("event", eventName);
+    };
+    document.querySelectorAll<HTMLAnchorElement>("a[data-track]").forEach((a) => {
+      a.addEventListener("click", () => signal(a.dataset.track || "outbound_tap"));
+    });
+    document.querySelectorAll<HTMLAudioElement>("audio[data-track-audio]").forEach((audio) => {
+      audio.addEventListener("play", () => signal("demo_audio_play"), { once: true });
+    });
+  </script>
+  <style>
+    .oj-landing { --ink:#0A0A0C; --bone:#F4F1EA; --gold:#C4A452; --steel:#8A93A0; --navy:#12203A; --green:#1FBF6B; --red:#E5484D; background:var(--ink); color:var(--bone); font-family:"Inter Tight","Inter",Arial,sans-serif; font-size:17px; line-height:1.55; overflow:hidden; }
+    .oj-landing * { box-sizing:border-box; }
+    .oj-landing h1,.oj-landing h2,.oj-landing h3,.oj-landing p { margin-top:0; }
+    .oj-landing h1,.oj-landing h2,.oj-landing h3 { font-family:"Inter Tight","Inter",sans-serif; text-wrap:balance; }
+    .oj-landing h1 em,.oj-landing h2 em { font-family:"Instrument Serif",Georgia,serif; font-weight:400; color:var(--gold); }
+    .oj-landing a { color:inherit; text-decoration:none; }
+    .oj-landing a:focus-visible,.oj-landing button:focus-visible,.oj-landing summary:focus-visible { outline:3px solid var(--gold); outline-offset:4px; }
+    .oj-landing .shell { width:min(1200px,calc(100% - 40px)); margin-inline:auto; }
+    .oj-landing .section-pad { padding:108px 0; }
+    .oj-landing .eyebrow { display:flex; align-items:center; gap:12px; margin-bottom:30px; color:var(--gold); font:600 11px/1.5 "JetBrains Mono",monospace; letter-spacing:.13em; }
+    .oj-landing .eyebrow-line { width:28px; height:1px; flex:0 0 28px; background:currentColor; }
+    .oj-landing .ink-eyebrow { color:#80671e; }
+    .oj-landing h2 { font-weight:850; letter-spacing:-.055em; font-size:clamp(37px,4.6vw,65px); line-height:1.07; }
+    .oj-landing .site-header { position:sticky; top:0; z-index:50; background:#0A0A0CF2; border-bottom:1px solid #34302a; backdrop-filter:blur(12px); }
+    .oj-landing .header-inner { min-height:82px; display:flex; align-items:center; justify-content:space-between; gap:24px; }
+    .oj-landing .brand { display:flex; align-items:center; gap:11px; flex-shrink:0; }
+    .oj-landing .mark { background:var(--bone); display:flex; align-items:center; justify-content:center; border-radius:4px; width:47px; height:47px; overflow:hidden; }
+    .oj-landing .mark img { width:39px; height:39px; object-fit:contain; }
+    .oj-landing .brand-name { letter-spacing:.08em; font-size:16px; line-height:1.1; font-weight:500; white-space:nowrap; }
+    .oj-landing .brand-name strong { font-weight:900; }
+    .oj-landing .brand-name small { display:block; font:500 8px/1.5 "JetBrains Mono",monospace; letter-spacing:.16em; margin-top:4px; color:var(--steel); }
+    .oj-landing .main-nav { display:flex; gap:30px; font-size:13px; font-weight:600; color:#cbc7c0; }
+    .oj-landing .main-nav a:hover,.oj-landing .header-call:hover { color:var(--gold); }
+    .oj-landing .header-actions { display:flex; align-items:center; gap:18px; }
+    .oj-landing .header-call { font-size:13px; font-weight:700; white-space:nowrap; color:var(--gold); }
+    .oj-landing .header-book { padding:12px 16px; border:1px solid var(--gold); border-radius:4px; color:var(--gold); font-size:13px; font-weight:700; white-space:nowrap; }
+    .oj-landing .header-book:hover { background:var(--gold); color:var(--ink); }
+    .oj-landing .hero { position:relative; background:radial-gradient(ellipse at 75% 40%,#191813 0%,#0A0A0C 62%); padding-bottom:38px; }
+    .oj-landing .hero-layout { display:grid; grid-template-columns:minmax(0,1.12fr) minmax(330px,.88fr); align-items:center; gap:clamp(40px,6vw,100px); }
+    .oj-landing .hero h1 { font-size:clamp(42px,5.1vw,77px); letter-spacing:-.062em; line-height:1.07; font-weight:900; margin-bottom:24px; }
+    .oj-landing .hero h1 em { display:inline-block; }
+    .oj-landing .hero-text { font-size:clamp(17px,1.5vw,20px); color:#b4b1aa; max-width:580px; line-height:1.65; }
+    .oj-landing .button-row { display:flex; align-items:stretch; flex-wrap:wrap; gap:12px; margin-top:34px; }
+    .oj-landing .btn { display:inline-flex; align-items:center; justify-content:center; gap:15px; padding:15px 20px; min-height:52px; font-size:14px; font-weight:800; border-radius:5px; transition:background-color .2s,color .2s,border-color .2s; text-align:center; }
+    .oj-landing .btn span { font-size:19px; line-height:1; }
+    .oj-landing .btn-gold { color:var(--ink); background:var(--gold); border:1px solid var(--gold); }
+    .oj-landing .btn-gold:hover { background:#e3c16d; }
+    .oj-landing .btn-outline { border:1px solid #73716d; color:var(--bone); }
+    .oj-landing .btn-outline:hover { border-color:var(--gold); color:var(--gold); }
+    .oj-landing .quiet-note { color:var(--steel); font-size:13px; margin:13px 0 0; }
+    .oj-landing .hero-proof { margin-top:62px; font-size:13px; font-weight:700; color:#b9b4a9; display:flex; align-items:center; gap:11px; }
+    .oj-landing .small-dash { height:1px; width:23px; background:var(--gold); }
+    .oj-landing .demo-visual { position:relative; padding:5px 0 28px 12px; }
+    .oj-landing .phone-shell { background:#101318; border:1px solid #44433d; border-radius:26px; padding:24px 27px 35px; min-height:490px; box-shadow:0 22px 75px #0008; }
+    .oj-landing .phone-top,.oj-landing .panel-header,.oj-landing .lead-top,.oj-landing .price-top { display:flex; align-items:center; justify-content:space-between; gap:12px; font:500 10px/1.4 "JetBrains Mono",monospace; letter-spacing:.06em; color:#a8a8a2; }
+    .oj-landing .phone-time { color:var(--gold); }
+    .oj-landing .phone-symbol { margin:64px auto 24px; width:83px; height:83px; border-radius:50%; display:grid; place-items:center; background:#2c2a23; color:var(--gold); border:1px solid #675a33; font-size:40px; }
+    .oj-landing .phone-rings { display:inline-block; }
+    .oj-landing .visual-meta { text-align:center; color:var(--gold); font:500 10px "JetBrains Mono",monospace; letter-spacing:.13em; margin-bottom:7px; }
+    .oj-landing .phone-shell h2 { text-align:center; font-size:29px; letter-spacing:-.03em; margin-bottom:5px; }
+    .oj-landing .visual-helper { color:var(--steel); font-size:12px; text-align:center; margin-bottom:18px; }
+    .oj-landing .phone-status { display:flex; gap:9px; align-items:center; justify-content:center; color:var(--green); font:600 10px "JetBrains Mono",monospace; letter-spacing:.11em; }
+    .oj-landing .status-dot,.oj-landing .signal-red { display:inline-block; width:7px; height:7px; background:var(--green); border-radius:50%; }
+    .oj-landing .waveform { display:flex; align-items:center; justify-content:center; gap:5px; height:55px; margin-top:16px; }
+    .oj-landing .waveform span { display:block; width:4px; height:18px; border-radius:2px; background:#b3a16e; animation:wave 1.4s ease-in-out infinite alternate; }
+    .oj-landing .waveform span:nth-child(2n) { height:32px; animation-delay:-.5s; }
+    .oj-landing .waveform span:nth-child(3n) { height:42px; animation-delay:-.9s; }
+    .oj-landing .waveform span:nth-child(5n) { height:13px; animation-delay:-.2s; }
+    .oj-landing .phone-caption { text-align:center; color:#c8c1b2; font:12px/1.6 "Instrument Serif",Georgia,serif; font-style:italic; }
+    .oj-landing .lead-card { position:relative; width:87%; margin:-65px 0 0 auto; padding:20px 22px 13px; background:var(--bone); color:var(--ink); border:1px solid #c4a452; border-radius:8px; box-shadow:0 14px 40px #0009; }
+    .oj-landing .lead-top { border-bottom:1px solid #d7d1c5; padding-bottom:15px; color:#5b5b5a; }
+    .oj-landing .booked-label { color:#137344; font-weight:700; }
+    .oj-landing .lead-row { display:flex; justify-content:space-between; gap:15px; border-bottom:1px solid #dcd8d1; padding:10px 0; font-size:12px; }
+    .oj-landing .lead-row span { color:#60646c; }
+    .oj-landing .lead-row strong { text-align:right; font-weight:800; }
+    .oj-landing .lead-card p { margin:10px 0 0; font:10px "JetBrains Mono",monospace; color:#676767; }
+    .oj-landing .hero-bottom { display:flex; justify-content:space-between; border-top:1px solid #292820; padding-top:24px; color:#848077; font:500 10px "JetBrains Mono",monospace; letter-spacing:.09em; }
+    .oj-landing .problem,.oj-landing .how,.oj-landing .industries,.oj-landing .faqs { background:var(--bone); color:var(--ink); }
+    .oj-landing .split { display:grid; grid-template-columns:1.1fr .9fr; gap:100px; align-items:start; }
+    .oj-landing .problem h2,.oj-landing .stack h2,.oj-landing .industries h2 { margin:0; }
+    .oj-landing .problem h2 em,.oj-landing .how h2 em,.oj-landing .stack h2 em,.oj-landing .industries h2 em,.oj-landing .faqs h2 em { color:#927731; }
+    .oj-landing .problem-copy { font-size:18px; color:#4e4c49; }
+    .oj-landing .problem-copy p { margin:0 0 20px; }
+    .oj-landing .problem-copy strong,.oj-landing .heavy { color:var(--ink); font-weight:800; }
+    .oj-landing .scenario { margin-top:55px; display:flex; align-items:center; gap:18px; padding:22px 28px; border:1px solid #cdc6bb; font:600 11px/1.6 "JetBrains Mono",monospace; letter-spacing:.04em; }
+    .oj-landing .scenario-missed { color:#a5252a; }
+    .oj-landing .signal-red { background:var(--red); margin-right:8px; }
+    .oj-landing .scenario-arrow { font-size:22px; color:#73706a; }
+    .oj-landing .scenario-leak { color:#575450; }
+    .oj-landing .scenario-outcome { font-weight:800; }
+    .oj-landing .demo-section { background:#121316; }
+    .oj-landing .demo-grid { display:grid; grid-template-columns:1fr 1fr; gap:90px; align-items:center; }
+    .oj-landing .demo-grid h2 { margin-bottom:22px; }
+    .oj-landing .demo-grid p { max-width:490px; color:#b2b2ad; font-size:18px; }
+    .oj-landing .demo-grid .btn { margin-top:22px; }
+    .oj-landing .demo-grid .quiet-note { font-size:13px; }
+    .oj-landing .demo-panel { padding:24px; border:1px solid #585041; background:#0a0a0c; min-height:355px; }
+    .oj-landing .panel-indicator { color:var(--gold); }
+    .oj-landing .audio-pending { text-align:center; padding:34px 15px 10px; }
+    .oj-landing .audio-icon { border:1px solid var(--gold); border-radius:50%; width:55px; height:55px; display:grid; place-items:center; margin:0 auto 20px; color:var(--gold); }
+    .oj-landing .audio-pending h3 { font-size:23px; margin-bottom:9px; }
+    .oj-landing .audio-pending p { margin:0 auto; font-size:15px; }
+    .oj-landing .panel-link { display:inline-block; color:var(--gold); font-size:14px; font-weight:800; margin-top:22px; }
+    .oj-landing .placeholder-note { display:block; font:10px "JetBrains Mono",monospace!important; color:#9d998b!important; margin-top:18px; }
+    .oj-landing .audio-wrap { padding-top:30px; }
+    .oj-landing .audio-wrap h3 { font-size:25px; }
+    .oj-landing .audio-wrap p { font-size:14px; }
+    .oj-landing .audio-wrap audio { display:block; width:100%; margin-top:20px; }
+    .oj-landing .transcript { margin-top:24px; font-size:14px; }
+    .oj-landing .transcript summary { color:var(--gold); cursor:pointer; }
+    .oj-landing .transcript p { white-space:pre-line; margin-top:12px; }
+    .oj-landing .section-heading { max-width:790px; margin-bottom:50px; }
+    .oj-landing .section-heading p:not(.eyebrow) { font-size:18px; margin:22px 0 0; color:#5e5a52; }
+    .oj-landing .steps { display:grid; grid-template-columns:repeat(3,1fr); gap:0; border-top:1px solid #c7c0b5; border-bottom:1px solid #c7c0b5; }
+    .oj-landing .steps article { padding:28px 36px 32px; border-right:1px solid #c7c0b5; }
+    .oj-landing .steps article:first-child { padding-left:0; }
+    .oj-landing .steps article:last-child { border-right:0; }
+    .oj-landing .step-num,.oj-landing .feature-num,.oj-landing .stack-index,.oj-landing .mini-label,.oj-landing .card-label { font:500 11px/1.5 "JetBrains Mono",monospace; letter-spacing:.08em; color:#8d762f; }
+    .oj-landing .step-art { font-size:40px; margin:30px 0 18px; color:#a88a3b; }
+    .oj-landing .steps h3 { font-size:23px; line-height:1.18; letter-spacing:-.04em; }
+    .oj-landing .steps p { font-size:16px; margin:12px 0 0; color:#56524c; }
+    .oj-landing .features { background:#111214; }
+    .oj-landing .features .section-heading p:not(.eyebrow) { color:#b6b6ad; }
+    .oj-landing .feature-grid { display:grid; grid-template-columns:repeat(3,1fr); border-left:1px solid #383838; border-top:1px solid #383838; }
+    .oj-landing .feature { padding:28px; min-height:220px; border-right:1px solid #383838; border-bottom:1px solid #383838; }
+    .oj-landing .feature-num { color:var(--gold); }
+    .oj-landing .feature h3 { font-size:22px; margin:30px 0 11px; }
+    .oj-landing .feature p { color:#afaca5; font-size:16px; }
+    .oj-landing .stack { background:#f4f1ea; color:#0a0a0c; }
+    .oj-landing .stack-intro { color:#5e5a52; font-size:18px; margin-top:20px; }
+    .oj-landing .stack-item { border-top:1px solid #bfb9ae; }
+    .oj-landing .stack-item:last-child { border-bottom:1px solid #bfb9ae; }
+    .oj-landing .stack-item summary { display:flex; align-items:center; gap:20px; font-size:18px; font-weight:800; min-height:69px; cursor:pointer; }
+    .oj-landing .stack-index { color:#766535; flex:0 0 32px; }
+    .oj-landing .expand-icon { margin-left:auto; font-size:24px; font-weight:400; color:#756539; }
+    .oj-landing .stack-item[open] .expand-icon { transform:rotate(45deg); }
+    .oj-landing .stack-item p { color:#59564f; margin:0 0 20px 52px; font-size:16px; }
+    .oj-landing .operators { background:#111214; }
+    .oj-landing .operators-inner { display:grid; grid-template-columns:1.1fr .9fr; gap:90px; align-items:center; }
+    .oj-landing .operators p:not(.eyebrow) { font-size:18px; color:#b5b4af; max-width:620px; margin-top:23px; }
+    .oj-landing .operators .operators-bold { font-weight:800; color:var(--bone)!important; }
+    .oj-landing .photo-frame { min-height:410px; border:1px solid #65542f; background:repeating-linear-gradient(125deg,#1c1c1c,#1c1c1c 3px,#20201e 3px,#20201e 6px); display:flex; flex-direction:column; align-items:flex-start; justify-content:flex-end; padding:36px; position:relative; }
+    .oj-landing .photo-num { position:absolute; top:30px; left:32px; color:var(--gold); font:11px "JetBrains Mono",monospace; }
+    .oj-landing .photo-emblem { font-size:85px; line-height:1; font-weight:900; color:#6d5e37; margin-bottom:30px; }
+    .oj-landing .photo-frame strong { font-size:27px; line-height:1.1; }
+    .oj-landing .photo-placeholder { color:#bbb2a4; font:10px "JetBrains Mono",monospace; margin-top:19px; }
+    .oj-landing .industries h2 { max-width:930px; }
+    .oj-landing .industry-chips { display:flex; flex-wrap:wrap; gap:10px; margin-top:40px; }
+    .oj-landing .industry-chips span { border:1px solid #b6afa3; padding:11px 16px; font-size:15px; font-weight:700; }
+    .oj-landing .location-copy { color:#6b6256; font-size:15px; margin-top:32px; }
+    .oj-landing .pricing { background:#101113; }
+    .oj-landing .price-grid { display:grid; grid-template-columns:.95fr 1.05fr; gap:100px; align-items:start; }
+    .oj-landing .price-grid > div:first-child > p:last-child { margin-top:24px; color:#aba89e; font-size:18px; }
+    .oj-landing .price-card { border:1px solid #867247; padding:34px 40px; background:#171819; }
+    .oj-landing .price-top { color:var(--gold); }
+    .oj-landing .price { display:flex; align-items:baseline; gap:9px; margin-top:34px; }
+    .oj-landing .price strong { font-size:clamp(57px,5vw,76px); font-weight:900; letter-spacing:-.06em; line-height:1; }
+    .oj-landing .price span,.oj-landing .setup { color:#bab6aa; }
+    .oj-landing .setup { margin:10px 0 28px; }
+    .oj-landing .setup strong { color:var(--bone); }
+    .oj-landing .price-rule { border-top:1px solid #4d483b; }
+    .oj-landing .card-label { display:block; margin-top:27px; color:var(--gold); }
+    .oj-landing .price-card ul { margin:14px 0 26px; padding:0; list-style:none; }
+    .oj-landing .price-card li { padding:7px 0 7px 22px; position:relative; font-size:15px; }
+    .oj-landing .price-card li::before { content:"✓"; position:absolute; left:0; color:var(--gold); font-weight:700; }
+    .oj-landing .full-btn { width:100%; }
+    .oj-landing .price-terms { font-size:12px; color:#99958b; margin-top:14px; }
+    .oj-landing .faq-wrap { display:grid; grid-template-columns:.85fr 1.15fr; gap:80px; }
+    .oj-landing .faq-list { border-top:1px solid #bfb8ab; }
+    .oj-landing .faq-list details { border-bottom:1px solid #bfb8ab; }
+    .oj-landing .faq-list summary { display:flex; align-items:center; justify-content:space-between; gap:20px; font-size:17px; font-weight:800; cursor:pointer; padding:23px 0; list-style:none; }
+    .oj-landing .faq-list summary::-webkit-details-marker { display:none; }
+    .oj-landing .faq-plus { font-size:25px; color:#847033; font-weight:400; }
+    .oj-landing .faq-list details[open] .faq-plus { transform:rotate(45deg); }
+    .oj-landing .faq-list p { padding:0 40px 23px 0; margin:0; font-size:16px; color:#5b554b; }
+    .oj-landing .closing { text-align:center; background:radial-gradient(ellipse at 50% 0%,#252219 0%,#0a0a0c 70%); }
+    .oj-landing .closing-inner { max-width:860px; }
+    .oj-landing .closing .eyebrow,.oj-landing .centered { justify-content:center; }
+    .oj-landing .closing h2 { font-size:clamp(44px,5vw,72px); }
+    .oj-landing .closing p:not(.eyebrow):not(.quiet-note) { font-size:19px; color:#afaaa1; max-width:620px; margin:28px auto 0; }
+    .oj-landing .oj-footer { background:#080809; border-top:1px solid #282725; }
+    .oj-landing .footer-inner { display:grid; grid-template-columns:2fr 1fr 1fr; gap:60px; padding:63px 0 50px; }
+    .oj-landing .footer-brand a { font-size:22px; font-weight:700; letter-spacing:.07em; }
+    .oj-landing .footer-mark { color:var(--gold); font-weight:900; }
+    .oj-landing .footer-brand p { margin:13px 0 0; font-size:14px; color:var(--steel); }
+    .oj-landing .footer-inner h2 { font-size:11px; letter-spacing:.14em; color:var(--gold); margin:0 0 20px; }
+    .oj-landing .footer-inner > div:not(:first-child) a,.oj-landing .footer-inner > div:not(:first-child) p { display:block; margin:0 0 11px; font-size:14px; color:#bab6af; }
+    .oj-landing .footer-pending { font:11px "JetBrains Mono",monospace!important; }
+    .oj-landing .legal-line { border-top:1px solid #282725; padding:25px 0 33px; display:flex; flex-wrap:wrap; justify-content:space-between; gap:16px; color:#8e8a82; font-size:12px; }
+    .oj-landing .legal-line span:nth-child(2) { display:flex; gap:22px; }
+    .oj-landing .legal-line p { width:100%; font-size:11px; }
+    @keyframes wave { from { transform:scaleY(.55); } to { transform:scaleY(1.1); } }
+    @media (prefers-reduced-motion:reduce) { .oj-landing .waveform span { animation:none; } .oj-landing .btn { transition:none; } }
+    @media (max-width:1080px) { .oj-landing .main-nav { display:none; } .oj-landing .hero-layout,.oj-landing .price-grid,.oj-landing .operators-inner { gap:35px; } .oj-landing .split { gap:45px; } }
+    @media (max-width:800px) {
+      .oj-landing .section-pad { padding:76px 0; }
+      .oj-landing .hero-layout,.oj-landing .demo-grid,.oj-landing .split,.oj-landing .operators-inner,.oj-landing .price-grid,.oj-landing .faq-wrap { grid-template-columns:1fr; gap:35px; }
+      .oj-landing .demo-visual { width:min(490px,100%); margin:auto; }
+      .oj-landing .hero-proof { margin-top:35px; }
+      .oj-landing .hero-bottom { margin-top:45px; }
+      .oj-landing .steps { grid-template-columns:1fr; }
+      .oj-landing .steps article,.oj-landing .steps article:first-child { border-right:0; border-bottom:1px solid #c7c0b5; padding:28px 0; }
+      .oj-landing .steps article:last-child { border-bottom:0; }
+      .oj-landing .step-art { margin:14px 0; }
+      .oj-landing .feature-grid { grid-template-columns:repeat(2,1fr); }
+      .oj-landing .footer-inner { grid-template-columns:1fr 1fr; }
+      .oj-landing .scenario { flex-wrap:wrap; }
+    }
+    @media (max-width:560px) {
+      .oj-landing { font-size:16px; }
+      .oj-landing .shell { width:calc(100% - 32px); }
+      .oj-landing .header-inner { min-height:71px; gap:10px; }
+      .oj-landing .brand-name { font-size:12px; }
+      .oj-landing .brand-name small { font-size:6px; }
+      .oj-landing .mark { width:34px; height:34px; }
+      .oj-landing .mark img { width:29px; height:29px; }
+      .oj-landing .header-call { display:none; }
+      .oj-landing .header-book { padding:10px; font-size:11px; }
+      .oj-landing .hero { padding-top:60px; }
+      .oj-landing .hero h1 { font-size:clamp(38px,10.3vw,55px); }
+      .oj-landing .eyebrow { font-size:9px; letter-spacing:.07em; }
+      .oj-landing h2 { font-size:clamp(36px,9.6vw,49px); }
+      .oj-landing .hero-text { font-size:17px; }
+      .oj-landing .button-row { flex-direction:column; align-items:stretch; }
+      .oj-landing .btn { width:100%; font-size:14px; }
+      .oj-landing .demo-visual { padding-left:0; margin-top:5px; }
+      .oj-landing .phone-shell { min-height:420px; padding:17px 16px; }
+      .oj-landing .phone-symbol { margin:46px auto 18px; }
+      .oj-landing .lead-card { width:94%; padding:16px; }
+      .oj-landing .hero-bottom { flex-wrap:wrap; gap:10px; font-size:9px; }
+      .oj-landing .problem-copy,.oj-landing .demo-grid p { font-size:16px; }
+      .oj-landing .scenario { padding:17px; display:grid; grid-template-columns:1fr; gap:8px; }
+      .oj-landing .scenario-arrow { transform:rotate(90deg); font-size:16px; }
+      .oj-landing .feature-grid { grid-template-columns:1fr; }
+      .oj-landing .feature { min-height:unset; padding:26px 20px; }
+      .oj-landing .feature h3 { margin-top:15px; }
+      .oj-landing .section-heading { margin-bottom:33px; }
+      .oj-landing .price-card { padding:25px 19px; }
+      .oj-landing .footer-inner { grid-template-columns:1fr; gap:33px; }
+      .oj-landing .legal-line { display:block; }
+      .oj-landing .legal-line span { display:block; margin-bottom:14px; }
+      .oj-landing .legal-line span:nth-child(2) { display:flex; }
+    }
+  </style>
 </BaseLayout>
