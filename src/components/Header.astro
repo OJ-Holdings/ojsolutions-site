@@ -55,8 +55,8 @@ const path = Astro.url.pathname.replace(/\.html$/, "").replace(/\/$/, "") || "/"
         <span class="hidden font-semibold lg:inline">Call (262) 401-0826</span>
       </a>
       {!hideBookButton && <>
-        <BookButton size="header" variant="gold" service={service} label="Book" class="min-[480px]:hidden" />
-        <BookButton size="header" variant="gold" service={service} label="Book a call" class="hidden min-[480px]:inline-flex" />
+        <BookButton size="header" variant="gold" service={service} label="Request" class="min-[480px]:hidden" />
+        <BookButton size="header" variant="gold" service={service} label="Request 15 min" class="hidden min-[480px]:inline-flex" />
       </>}
     </div>
   </div>
