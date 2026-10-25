@@ -1,0 +1,41 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import CallDemo from "../components/home/CallDemo.astro";
+import BookButton from "../components/BookButton.astro";
+---
+<BaseLayout title="Try the AI Receptionist Demo | OJ Solutions" description="Hear OJ Solutions' AI receptionist by calling the live demo number. View a clearly labeled fictional conversation before calling.">
+  <section class="on-navy" aria-labelledby="demo-title">
+    <div class="container-page grid gap-10 py-16 lg:grid-cols-[1.1fr_.9fr] lg:items-center lg:py-24">
+      <div>
+        <p class="mb-4 text-sm font-bold uppercase tracking-widest text-gold">Interactive example / live demo line</p>
+        <h1 id="demo-title" class="display-1">Hear the AI pick up <span class="mark-gold">for yourself.</span></h1>
+        <p class="text-soft mt-6 max-w-xl text-lg">The animated phone shows an example conversation with fictional scheduling details. The phone number below connects you to our live AI demonstration, not to the animation.</p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a href="tel:+12624010826" data-demo-call class="inline-flex min-h-14 items-center justify-center rounded-lg bg-gold px-6 text-lg font-bold text-navy">Call (262) 401-0826</a>
+          <BookButton variant="gold" size="lg" service="receptionist" label="Request a 15-min call"/>
+        </div>
+        <div class="mt-7 max-w-xl border-l-2 border-gold pl-5">
+          <h2 class="text-lg font-bold">What to expect</h2>
+          <p class="text-soft mt-2">The AI introduces itself, asks what service you need, and walks through an example estimate request. Use a made-up name, address and job details. Demo calls may be recorded and transcribed. Don't provide real customer or sensitive information.</p>
+          <p class="text-soft mt-2">When you're finished, hang up. No account or contract is needed to try the line.</p>
+        </div>
+      </div>
+      <CallDemo />
+    </div>
+  </section>
+  <section class="container-page py-14 sm:py-20" aria-labelledby="transcript-title">
+    <div class="max-w-3xl">
+      <p class="mb-4 text-sm font-bold uppercase tracking-widest text-muted">Fictional illustrated transcript</p>
+      <h2 id="transcript-title" class="display-2">Here's the kind of conversation you'll hear.</h2>
+      <ol class="mt-9 space-y-4 border-l-4 border-gold pl-5 text-lg">
+        <li><strong>AI:</strong> Hi, I'm the AI receptionist. How can I help?</li>
+        <li><strong>Caller:</strong> Do you have anything open this week?</li>
+        <li><strong>AI:</strong> I have Thursday at 10 or Friday at 2. Which works better?</li>
+        <li><strong>Caller:</strong> Thursday at 10.</li>
+        <li><strong>AI:</strong> You're booked for Thursday at 10.</li>
+      </ol>
+      <p class="mt-6 text-sm text-muted">This is not a transcript of a real recorded call. Availability and bookings in this demonstration are illustrative.</p>
+      <p class="mt-7 text-lg"><a href="/ai-receptionist" class="link">Explore what AI Receptionist Pro includes</a></p>
+    </div>
+  </section>
+</BaseLayout>
