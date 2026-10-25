@@ -1,7 +1,9 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { EMAIL } from "../config";
-import { filled } from "../lib/site";
+import { filled, formatPrice } from "../lib/site";
+import { MONTHLY_PRICE, SETUP_PRICE } from "../config";
+import { RECEPTIONIST_CORE, RECEPTIONIST_TERMS_NOTICE } from "../lib/receptionist-offer";
 
 const email = filled(EMAIL) ? EMAIL.trim() : "";
 const submitUrl = "https://vgckpcktsfuithqggknd.supabase.co/functions/v1/oj-solutions-consultations";
@@ -86,6 +88,17 @@ const submitUrl = "https://vgckpcktsfuithqggknd.supabase.co/functions/v1/oj-solu
               <option value="General consultation">Something else</option>
             </select>
           </div>
+          <div id="receptionist-offer-summary" class="mt-2 rounded-lg border border-line bg-white p-4">
+            <p class="font-heading text-base font-bold">AI Receptionist Pro · {formatPrice(MONTHLY_PRICE)}/month + {formatPrice(SETUP_PRICE)} setup</p>
+            <details class="mt-2">
+              <summary class="min-h-11 font-semibold text-navy underline decoration-gold underline-offset-4">View included features and optional modules</summary>
+              <ul class="mt-2 list-disc space-y-1 pl-6 text-sm text-muted">
+                {RECEPTIONIST_CORE.map((feature) => <li>{feature.title}</li>)}
+              </ul>
+              <p class="mt-3 text-sm text-muted">Missed-call text-back, advanced CRM pipelines, review requests and follow-up automation are quoted separately.</p>
+              <p class="mt-2 text-sm text-muted">{RECEPTIONIST_TERMS_NOTICE}</p>
+            </details>
+          </div>
           <div>
             <label class="book-label" for="booking-notes">What would you like to improve?</label>
             <textarea class="book-input" id="booking-notes" name="notes" rows="3" maxlength="1000" placeholder="Tell us about missed calls, your website, marketing, or another challenge..."></textarea>
@@ -108,6 +121,7 @@ const submitUrl = "https://vgckpcktsfuithqggknd.supabase.co/functions/v1/oj-solu
     const feedback = document.querySelector<HTMLElement>("#booking-feedback");
     const summary = document.querySelector<HTMLElement>("#selected-summary");
     const sendButton = document.querySelector<HTMLButtonElement>("#submit-request");
+    const receptionistOffer = document.querySelector<HTMLElement>("#receptionist-offer-summary");
     let time = "";
     const centralDate = () => {
       const parts = new Intl.DateTimeFormat("en-US", { timeZone: "America/Chicago", year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(new Date());
@@ -179,6 +193,9 @@ const submitUrl = "https://vgckpcktsfuithqggknd.supabase.co/functions/v1/oj-solu
       const requested = new URLSearchParams(location.search).get("service");
       const mapping: Record<string, string> = { receptionist: "AI receptionist", website: "Websites", commercial: "Commercials", solutions: "General consultation" };
       if (requested && mapping[requested]) select.value = mapping[requested];
+      const syncOffer = () => { if (receptionistOffer) receptionistOffer.hidden = select.value !== "AI receptionist"; };
+      select.addEventListener("change", syncOffer);
+      syncOffer();
     }
     form?.addEventListener("submit", async (event) => {
       event.preventDefault();
