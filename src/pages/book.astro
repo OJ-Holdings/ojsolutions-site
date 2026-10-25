@@ -64,10 +64,13 @@ const submitUrl = "https://vgckpcktsfuithqggknd.supabase.co/functions/v1/oj-solu
             <label class="book-label" for="booking-phone">Phone (optional)</label>
             <input class="book-input" type="tel" id="booking-phone" name="phone" autocomplete="tel" maxlength="35" placeholder="(262) 555-0100" />
             <p class="mt-2 text-sm text-muted">A phone number is for this inquiry. Text messages are optional and require your separate agreement below.</p>
-            <label class="sms-consent mt-4" for="booking-sms-consent">
+            <div class="sms-consent mt-4">
               <input type="checkbox" id="booking-sms-consent" name="smsConsent" value="yes" />
-              <span>I agree to receive text messages from OJ Solutions at the number I provide about this consultation. Consent is not required to request a call. Message and data rates may apply. Reply STOP to opt out or HELP for assistance. See the <a href="/privacy">Privacy Policy</a> and <a href="/terms">Terms</a>.</span>
-            </label>
+              <div>
+                <label for="booking-sms-consent" class="cursor-pointer">I agree to receive text messages from OJ Solutions at the number I provide about this consultation. Consent is not required to request a call. Message and data rates may apply. Reply STOP to opt out or HELP for assistance.</label>
+                <p class="mt-1">See our <a href="/privacy">Privacy Policy</a> and <a href="/terms">Terms</a>.</p>
+              </div>
+            </div>
           </div>
           <div>
             <label class="book-label" for="booking-business">Business name</label>
@@ -195,7 +198,7 @@ const submitUrl = "https://vgckpcktsfuithqggknd.supabase.co/functions/v1/oj-solu
         website: String(data.get("website") || ""), date: dateInput.value, time,
         smsConsent: data.get("smsConsent") === "yes",
       };
-      if (payload.smsConsent && !payload.phone.trim()) {
+      if (payload.smsConsent && payload.phone.replace(/\D/g, "").length < 10) {
         setFeedback("Enter a phone number if you choose to receive text messages.", true);
         sendButton.disabled = false;
         sendButton.textContent = "Request this 15-minute call ↗";
