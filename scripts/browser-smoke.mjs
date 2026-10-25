@@ -33,7 +33,21 @@ async function checkViewport(width, height) {
       page: document.documentElement.scrollWidth, viewport: window.innerWidth,
       body: document.body.scrollWidth,
     }));
-    assert.ok(overflow.page <= overflow.viewport + 2, "Horizontal scroll on " + width + "px: " + JSON.stringify(overflow));
+    if (overflow.page > overflow.viewport + 2) {
+      const offenders = await page.evaluate(() => [...document.body.querySelectorAll("*")]
+        .map(el => ({ el, rect: el.getBoundingClientRect(), css: getComputedStyle(el) }))
+        .filter(({ rect, css }) => css.display !== "none" && css.visibility !== "hidden"
+          && rect.width > 0 && (rect.right > innerWidth + 3 || rect.left < -3))
+        .sort((a, b) => b.rect.right - a.rect.right)
+        .slice(0, 18)
+        .map(({ el, rect }) => ({
+          tag: el.tagName.toLowerCase(),
+          cls: typeof el.className === "string" ? el.className.slice(0, 75) : "",
+          text: (el.textContent || "").slice(0, 35),
+          left: Math.round(rect.left), right: Math.round(rect.right), width: Math.round(rect.width),
+        })));
+      throw new Error("Horizontal scroll on " + width + "px: " + JSON.stringify({ ...overflow, offenders }));
+    }
     const call = page.locator("header a[href='tel:+12624010826']");
     const rect = await call.boundingBox();
     assert.ok(rect && rect.x >= 0 && rect.x + rect.width <= width + 2, "Call CTA outside viewport");
