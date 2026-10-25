@@ -2,8 +2,7 @@
 // TODO(Jacob): This is a plain-language template, not legal advice.
 // Have it reviewed (ideally by a lawyer) before relying on it, and update
 // LAST_UPDATED when you change it.
-// TODO(Jacob): If calls to our own number are answered by the AI
-// receptionist or recorded, add a line about that under "What we collect".
+// [LEGAL – REVIEW]: Confirm jurisdiction-specific recording disclosures, consent, and retention terms before relying on this template.
 import BaseLayout from "../layouts/BaseLayout.astro";
 import LegalContact from "../components/LegalContact.astro";
 import { BUSINESS_NAME, EMAIL, LEGAL_ENTITY, PHONE } from "../config";
@@ -46,6 +45,11 @@ const hasContact = filled(EMAIL) || filled(PHONE);
           <li>
             <strong>Booking and chat tools.</strong> Our booking calendar and chat are provided by a third party
             (GoHighLevel). Those tools may use cookies to work properly.
+          </li>
+          <li>
+            <strong>AI receptionist demo calls.</strong> When you call our AI front desk, it identifies itself as an AI
+            assistant. Calls may be recorded and transcribed so we can handle inquiries and review how the system works.
+            Please do not provide sensitive personal information in a demonstration call.
           </li>
         </ul>
 
