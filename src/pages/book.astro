@@ -222,9 +222,9 @@ const submitUrl = "https://vgckpcktsfuithqggknd.supabase.co/functions/v1/oj-solu
         document.querySelector<HTMLInputElement>("#booking-phone")?.focus();
         return;
       }
-      // Vercel branch previews must not send live intake events or capture unpersisted SMS consent.
+      // Do not send production leads or consent records from branch previews.
       if (!["ojsolutions.org", "www.ojsolutions.org"].includes(window.location.hostname)) {
-        setFeedback("Preview only: no booking request was sent. The live intake will be enabled after the consent database and API changes are approved.", false);
+        setFeedback("Preview mode: no booking request was sent. Please use ojsolutions.org/book to request a real consultation.", false);
         sendButton.disabled = false;
         sendButton.textContent = "Request this 15-minute call ↗";
         return;
