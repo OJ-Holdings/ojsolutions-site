@@ -20,13 +20,16 @@ export const BUSINESS_NAME: string = "OJ Solutions";
 // TODO(Jacob): add the legal entity name once it's registered.
 export const LEGAL_ENTITY: string = "";
 
+// TODO(founders): Confirm that this existing repository email is approved for public contact and booking fallback.
 export const EMAIL: string = "ojsolutionshq@gmail.com";
 
 // Format it the way you want it shown, e.g. "(555) 123-4567".
 // TODO(Jacob): add the business phone number. Hidden until set.
-export const PHONE: string = "";
+export const PHONE: string = "(262) 401-0826";
 
 // The canonical address used for the sitemap, search results, and share previews.
+// TODO(founders): The existing domain below is configured in the repo but has NOT been confirmed against the new master brief.
+// Verify ownership and intended public canonical URL before merging.
 export const SITE_URL: string = "https://ojsolutions.org";
 
 /* ---------- Booking ---------- */
@@ -77,9 +80,9 @@ export const GUARANTEE_TEXT: string = "";
 
 // Pricing for the AI Receptionist. The prices only show when
 // SHOW_PRICING is true.
-export const SHOW_PRICING: boolean = false;
-export const SETUP_PRICE: number = 1000;
-export const MONTHLY_PRICE: number = 500;
+export const SHOW_PRICING: boolean = true;
+export const SETUP_PRICE: number = 2000;
+export const MONTHLY_PRICE: number = 797;
 
 /* ---------- Websites and Commercials pages ---------- */
 
