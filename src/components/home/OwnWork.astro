@@ -281,6 +281,8 @@ import siding from "../../assets/photos/exterior-siding-before-after.jpg";
   .video-link { color: white; text-decoration: underline; text-decoration-color: var(--operator-gold); text-decoration-thickness: 2px; text-underline-offset: 4px; font-size: .82rem; font-weight: 750; min-height: 44px; display: inline-flex; align-items: center; gap: 7px; z-index: 2; position: relative; }
   .video-link:hover { color: #e5c676; }
   .video-toggle { position: absolute; top: 14px; right: 14px; z-index: 3; display: grid; place-items: center; color: white; width: 44px; height: 44px; background: rgba(7,22,42,.88); border: 1px solid rgba(255,255,255,.42); cursor: pointer; border-radius: 6px; }
+  .video-toggle[hidden] { display: none; }
+  .gallery-film:has(video[controls]) .gallery-caption { bottom: 68px; }
   .video-toggle svg { width: 18px; height: 18px; }
   .video-toggle [hidden] { display: none; }
   .video-toggle:hover { background: #233b54; }
