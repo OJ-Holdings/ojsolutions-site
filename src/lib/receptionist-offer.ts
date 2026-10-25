@@ -2,8 +2,8 @@ import { MONTHLY_PRICE, SETUP_PRICE } from "../config";
 import { formatPrice } from "./site";
 
 /**
- * Single commercial source for the existing AI Receptionist Pro offer.
- * The founders have NOT approved Starter / Pro tier changes or addon pricing.
+ * Proposed single source of truth for the currently published AI Receptionist Pro offer.
+ * Founder sign-off is required on the exact core vs optional modules below. New tiers and addon pricing are unapproved.
  * Keep this in sync with the website master brief and contract when approved.
  */
 export const RECEPTIONIST_CORE = [
