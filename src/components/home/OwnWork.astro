@@ -114,7 +114,7 @@ import siding from "../../assets/photos/exterior-siding-before-after.jpg";
               <rect x="6" y="5" width="4" height="14" rx="1"></rect>
               <rect x="14" y="5" width="4" height="14" rx="1"></rect>
             </svg>
-            <svg class="loop-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" hidden>
+            <svg class="loop-play is-hidden" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
               <path d="M8 5.5v13l11-6.5z"></path>
             </svg>
           </button>
@@ -284,7 +284,7 @@ import siding from "../../assets/photos/exterior-siding-before-after.jpg";
   .video-toggle[hidden] { display: none; }
   .gallery-film:has(video[controls]) .gallery-caption { bottom: 68px; }
   .video-toggle svg { width: 18px; height: 18px; }
-  .video-toggle [hidden] { display: none; }
+  .video-toggle [hidden], .video-toggle .is-hidden { display: none; }
   .video-toggle:hover { background: #233b54; }
   .operator-principles { margin-top: 48px; border-top: 1px solid rgba(255,255,255,.25); border-bottom: 1px solid rgba(255,255,255,.25); display: grid; grid-template-columns: repeat(3, 1fr); }
   .principle { display: grid; grid-template-columns: auto 1fr; align-items: start; gap: 15px; padding: 29px 24px 31px 0; }
@@ -435,8 +435,8 @@ import siding from "../../assets/photos/exterior-siding-before-after.jpg";
         paused = !paused;
         toggle.setAttribute("aria-pressed", String(paused));
         toggle.setAttribute("aria-label", paused ? "Play the commercial preview" : "Pause the commercial preview");
-        if (pauseIcon) pauseIcon.hidden = paused;
-        if (playIcon) playIcon.hidden = !paused;
+        if (pauseIcon) pauseIcon.classList.toggle("is-hidden", paused);
+        if (playIcon) playIcon.classList.toggle("is-hidden", !paused);
         sync();
       });
       const observer = new IntersectionObserver(entries => {
