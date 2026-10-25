@@ -1,3 +1,17 @@
+# Approved update: AI front desk focus (2026-10-25)
+
+The founder-supplied website master brief is the current source of truth for offer positioning and public claims. **Keep the existing redesign branch's navy-and-gold visual language, GSAP animated phone dialogue, booking calendar, and the real OJ Exterior Care imagery.** Extend the site rather than rebuilding this demo.
+
+- Flagship is the AI receptionist for local home-service businesses in Kenosha, Racine and Pleasant Prairie, WI. Secondary offerings (websites, commercials) can remain, but should not eclipse the receptionist.
+- Main CTA: tel:+12624010826, displayed (262) 401-0826. Secondary CTA: booking request. Demo animation is fictional sample data, not an actual recording.
+- The AI must introduce itself as AI in example dialogue. Lead details: name, address, service, timeframe. Schedule on-site estimates instead of quoting unverified prices.
+- Approved starting price: $797/month + $2,000 setup. Never reintroduce the previous $497 or $1,000 prices. No guarantee, discount or cancellation promise is currently approved.
+- Do not invent customer proof, guarantees, contract duration, setup timelines, achievements or client results. Keep any existing true photos and mark examples as our own business.
+- Existing canonical domain and contact email remain configured, but the founders must confirm they are ready to publish. GHL calendar, real approved recording, transcripts and legal terms remain launch blockers.
+- Preserve Astro + Tailwind, existing reusable components, and accessible reduced-motion behavior. Changes go through a PR; do not push to the production branch without review.
+
+---
+
 # OJ Solutions website
 
 Rules for every Claude Code session working on this repo (Jacob's or Oscar's). Follow them for every change, including small copy edits.
