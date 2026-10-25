@@ -18,20 +18,20 @@ import { SHOW_PLACEHOLDERS, calendarEmbed, filled, webAddress } from "../lib/sit
 const embed = calendarEmbed();
 const bookingUrl = embed ? null : webAddress(BOOKING_URL);
 const email = filled(EMAIL) ? EMAIL.trim() : "";
-// Production with no calendar yet: booking happens by email.
+// Production with no calendar yet: request a call by email; never suggest a time has been reserved.
 const bookByEmail = !embed && !bookingUrl && !SHOW_PLACEHOLDERS && email !== "";
 ---
 
 <BaseLayout
   title="Book a Call | OJ Solutions"
-  description="Pick a time for a short call with OJ Solutions. We'll look at your business and tell you what we'd fix first."
+  description="Schedule a 15-minute OJ Solutions consultation when online availability is enabled, or request one by email."
   hideBookButton
 >
   <section class="on-navy" aria-labelledby="book-title">
     <div class="container-page pt-12 pb-14 sm:pt-16 sm:pb-20">
       <h1 id="book-title" class="display-1">Book a call</h1>
       <p class="text-soft mt-5 max-w-xl text-lg sm:text-xl">
-        Pick a time that works for you. We'll look at your business and tell you what we'd fix first.
+        {embed || bookingUrl ? "Choose an available 15-minute time for a conversation about your business." : "Our online calendar isn't connected yet. Contact us by email to request a 15-minute consultation."}
       </p>
     </div>
   </section>
