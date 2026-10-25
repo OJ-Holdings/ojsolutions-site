@@ -1,3 +1,5 @@
+> **October 2026 AI-front-desk enhancement:** The `feat/extend-animated-demo-redesign` branch builds on `redesign` and preserves `src/components/home/CallDemo.astro`'s animated phone conversation and calendar. It adds prominent live demo calling, receptionist capabilities, and approved $797/month + $2,000 setup pricing. Do not substitute the unrelated dark-black concept from PR #2 for the existing navy-and-gold site. Confirm GHL calendar, legal terms, live domain/email, and real demo media before launch.
+
 # OJ Solutions website
 
 The website for OJ Solutions: a home page, one page per service (AI Receptionist, Websites, Commercials), a booking page, Privacy, Terms, and a "page not found" page.
