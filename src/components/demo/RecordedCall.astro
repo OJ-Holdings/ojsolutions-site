@@ -38,7 +38,7 @@ if (available) {
 const approvedDemo = transcript !== null;
 ---
 {approvedDemo && transcript && (
-  <section id="recorded-call" class="border-y border-line bg-navy text-white" aria-labelledby="recorded-title">
+  <section id="recorded-call" data-duration={transcript.duration} class="border-y border-line bg-navy text-white" aria-labelledby="recorded-title">
     <div class="container-page grid gap-10 py-14 lg:grid-cols-[.95fr_1.05fr] lg:py-20">
       <div>
         <p class="text-xs font-bold uppercase tracking-widest text-gold">Authentic demo call · Edited for length</p>
