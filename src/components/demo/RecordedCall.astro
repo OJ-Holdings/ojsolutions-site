@@ -1,0 +1,121 @@
+---
+import { mediaAvailable } from "../../lib/media";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+
+const file = "/media/demo-call.json";
+const audioSrc = "/media/demo-call.mp3";
+const available = mediaAvailable(file) && mediaAvailable(audioSrc);
+type Word = { w: string; start: number; end: number; redacted?: boolean };
+type Utterance = { id: number; speaker: "ai" | "caller"; text: string; start: number; end: number; words: Word[] };
+type Field = { id: string; label: string; value: string; t: number };
+type Transcript = {
+  version: number; audio: string; duration: number; label: string; edits: string;
+  utterances: Utterance[];
+  leadCard: {title: string; fields: Field[]; status: {label: string; t: number}};
+};
+let transcript: Transcript | null = null;
+if (available) {
+  try {
+    const raw = JSON.parse(readFileSync(join(process.cwd(), "public", "media", "demo-call.json"),"utf8")) as Transcript;
+    const valid = raw.version === 1 && raw.audio === audioSrc
+      && Number.isFinite(raw.duration) && raw.duration > 20
+      && Array.isArray(raw.utterances) && raw.utterances.length > 0
+      && raw.utterances.every(turn => ["ai","caller"].includes(turn.speaker)
+          && typeof turn.text === "string" && Array.isArray(turn.words)
+          && turn.words.every(word => Number.isFinite(word.start) && Number.isFinite(word.end)
+                && word.start >= 0 && word.end <= raw.duration && word.end >= word.start))
+      && Array.isArray(raw.leadCard?.fields);
+    if (!valid) throw new Error("Invalid demo JSON");
+    // Block accidental publication of address / phone identifiers in timing metadata.
+    const rawWords = JSON.stringify(raw).toLowerCase();
+    if (rawWords.includes("4210 lakeview") || /\b(?:\d[ -]?){10}\b/.test(rawWords)) throw new Error("Unsanitized demo metadata");
+    transcript = raw;
+  } catch (err) {
+    console.warn("Real demo hidden until sanitized audio and complete metadata match.", err);
+  }
+}
+const approvedDemo = transcript !== null;
+---
+{approvedDemo && transcript && (
+  <section id="recorded-call" data-duration={transcript.duration} class="border-y border-line bg-navy text-white" aria-labelledby="recorded-title">
+    <div class="container-page grid gap-10 py-14 lg:grid-cols-[.95fr_1.05fr] lg:py-20">
+      <div>
+        <p class="text-xs font-bold uppercase tracking-widest text-gold">Authentic demo call · Edited for length</p>
+        <h2 id="recorded-title" class="display-2 mt-4">Hear the AI handle a real demo call.</h2>
+        <p class="text-soft mt-5">This recording is from the OJ Exterior Care demonstration line. Pauses were shortened and caller details redacted. The date discussed was from the time of recording, not today's availability.</p>
+        <audio controls preload="metadata" class="mt-7 w-full" data-real-demo-audio>
+          <source src={audioSrc} type="audio/mpeg"/>
+          Your browser cannot play this recording.
+        </audio>
+        <p class="text-soft mt-4 text-sm">Recording and timing data must match for word highlighting. Press play to hear the edited demo. No audio starts automatically.</p>
+        <p class="mt-5 text-sm font-semibold text-gold">{transcript.edits}</p>
+        <div class="mt-8 rounded-lg border border-white/25 p-5" data-demo-lead>
+          <p class="text-sm font-bold uppercase tracking-widest text-gold">{transcript.leadCard.title} · Example data</p>
+          <dl class="mt-4 grid gap-3 sm:grid-cols-2">
+            {transcript.leadCard.fields.map(field => (
+              <div data-lead-time={field.t} hidden>
+                <dt class="text-sm text-soft">{field.label}</dt>
+                <dd class="mt-1 font-bold">{field.value}</dd>
+              </div>
+            ))}
+          </dl>
+          <p class="mt-4 rounded-lg bg-gold px-3 py-2 font-bold text-navy" data-lead-time={transcript.leadCard.status.t} hidden>{transcript.leadCard.status.label} · Demo only</p>
+          <p class="mt-3 text-sm text-soft" data-demo-lead-prompt>The example lead card fills as the call plays.</p>
+        </div>
+      </div>
+      <div class="min-w-0">
+        <div class="rounded-lg border border-white/25 p-5 sm:p-7">
+          <p class="text-sm font-bold uppercase tracking-widest text-gold">Synced transcript</p>
+          <ol class="mt-5 max-h-[34rem] space-y-4 overflow-y-auto" data-demo-transcript>
+            {transcript.utterances.map(turn => (
+              <li data-utterance-start={turn.start} class="rounded-md border border-white/15 bg-white/5 p-3">
+                <p class="mb-1 text-xs font-bold uppercase tracking-widest text-gold">{turn.speaker === "ai" ? "AI receptionist" : "Demo caller"}</p>
+                <p aria-label={turn.text} class="leading-relaxed">
+                  {turn.words.map(word => <span aria-hidden="true" data-word-start={word.start} data-word-end={word.end} class="rounded-sm">{word.redacted ? "•••• " : word.w+" "}</span>)}
+                </p>
+              </li>
+            ))}
+          </ol>
+          <details class="mt-5">
+            <summary class="inline-flex min-h-11 cursor-pointer items-center font-semibold underline decoration-gold underline-offset-4">Read accessible plain-text transcript</summary>
+            <div class="mt-3 space-y-2 text-sm text-soft">
+              {transcript.utterances.map(turn => <p><strong>{turn.speaker === "ai" ? "AI" : "Caller"}:</strong> {turn.text}</p>)}
+            </div>
+          </details>
+        </div>
+      </div>
+    </div>
+  </section>
+)}
+<script>
+  const audio = document.querySelector<HTMLAudioElement>("[data-real-demo-audio]");
+  if (audio) {
+    const lines = Array.from(document.querySelectorAll<HTMLElement>("[data-utterance-start]"));
+    const words = Array.from(document.querySelectorAll<HTMLElement>("[data-word-start]"));
+    const fields = Array.from(document.querySelectorAll<HTMLElement>("[data-lead-time]"));
+    const prompt = document.querySelector<HTMLElement>("[data-demo-lead-prompt]");
+    const update = () => {
+      const t = audio.currentTime;
+      words.forEach(word => {
+        const active = t >= Number(word.dataset.wordStart) && t < Number(word.dataset.wordEnd);
+        word.classList.toggle("bg-gold", active);
+        word.classList.toggle("text-navy", active);
+      });
+      lines.forEach(line => line.classList.toggle("border-gold", t >= Number(line.dataset.utteranceStart) && t < Number(line.dataset.utteranceStart) + 3));
+      fields.forEach(field => {field.hidden = t < Number(field.dataset.leadTime)});
+      if (prompt) prompt.hidden = t > 0;
+    };
+    audio.addEventListener("timeupdate", update);
+    audio.addEventListener("seeked", update);
+    audio.addEventListener("loadedmetadata", () => {
+      const expected = Number(audio.closest("section")?.getAttribute("data-duration") || "0");
+      if (expected > 0 && Math.abs(audio.duration - expected) > .8) {
+        console.warn("The recording does not match its timed transcript");
+        audio.pause();
+        audio.controls = false;
+      }
+    });
+    update();
+  }
+</script>

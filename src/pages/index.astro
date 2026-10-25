@@ -12,6 +12,7 @@ import MissedCallProblem from "../components/home/MissedCallProblem.astro";
 import FrontDeskFeatures from "../components/home/FrontDeskFeatures.astro";
 import FrontDeskPricing from "../components/home/FrontDeskPricing.astro";
 import OwnWork from "../components/home/OwnWork.astro";
+import OperatorReviews from "../components/home/OperatorReviews.astro";
 import { BUSINESS_NAME, EMAIL, PHONE, SOCIAL_LINKS } from "../config";
 import { SERVICES, filled, type ServiceKey } from "../lib/site";
 import { RECEPTIONIST_FAQ } from "../lib/receptionist-offer";
@@ -88,7 +89,7 @@ const steps = [
         </p>
         <div class="mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
           <a href="tel:+12624010826" data-demo-call class="inline-flex min-h-14 items-center justify-center rounded-lg bg-gold px-6 text-base font-bold text-navy underline decoration-transparent decoration-2 underline-offset-4 hover:decoration-navy sm:text-lg">Call our AI: (262) 401-0826</a>
-          <BookButton variant="gold" size="lg" label="Book a 15-min call" />
+          <BookButton variant="gold" size="lg" label="Request a 15-min call" />
         </div>
         <p class="text-soft mt-4 max-w-lg text-sm">Hear it yourself. No sales pitch. Just make the call.</p>
         <p class="text-soft mt-2 max-w-lg text-sm">The AI identifies itself, asks about a pretend job, and walks through an estimate request. Use a fake name and address. Calls may be recorded. <a href="/demo" class="underline decoration-gold underline-offset-4 font-semibold">What happens on the demo call?</a></p>
@@ -103,6 +104,8 @@ const steps = [
   <MissedCallProblem />
 
   <OwnWork />
+
+  <OperatorReviews />
 
   <FrontDeskFeatures />
 
