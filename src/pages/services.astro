@@ -3,6 +3,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import BookButton from "../components/BookButton.astro";
 import { SERVICES } from "../lib/site";
 import { RECEPTIONIST_OPTIONAL_MODULES } from "../lib/receptionist-offer";
+import { trades } from "../data/industries";
 const details = {
   receptionist: { kicker: "Answer", description: "Have an AI assistant identify itself, answer routine questions, capture the job details and schedule on-site estimates." },
   website: { kicker: "Get found", description: "Give visitors a clear mobile-first experience and a way to request service or contact your business." },
@@ -49,6 +50,18 @@ const details = {
         ))}
       </ul>
     </div>
+  </section>
+  <section class="container-page py-14 sm:py-20" aria-labelledby="industry-title">
+    <p class="text-sm font-bold tracking-widest uppercase text-muted">Who we build for</p>
+    <h2 class="display-2 mt-3" id="industry-title">AI front desks for service trades.</h2>
+    <p class="mt-4 max-w-2xl text-lg text-muted">These are illustrative use cases, not customer results or testimonials.</p>
+    <ul class="mt-9 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      {trades.map(trade => (
+        <li><a href={`/${trade.slug}`} class="flex min-h-16 items-center justify-between gap-3 rounded-lg border border-line p-4 font-bold hover:border-gold hover:underline hover:decoration-gold">
+          {trade.name}<span aria-hidden="true">↗</span>
+        </a></li>
+      ))}
+    </ul>
   </section>
   <section class="container-page grid gap-6 py-16 sm:grid-cols-[1fr_auto] sm:items-center">
     <div>
