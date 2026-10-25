@@ -1,0 +1,60 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import BookButton from "../components/BookButton.astro";
+import { SERVICES } from "../lib/site";
+import { RECEPTIONIST_OPTIONAL_MODULES } from "../lib/receptionist-offer";
+const details = {
+  receptionist: { kicker: "Answer", description: "Have an AI assistant identify itself, answer routine questions, capture the job details and schedule on-site estimates." },
+  website: { kicker: "Get found", description: "Give visitors a clear mobile-first experience and a way to request service or contact your business." },
+  commercial: { kicker: "Stand out", description: "Create video assets that show what your company actually does, using real work instead of generic stock claims." },
+};
+---
+<BaseLayout title="Our Services | OJ Solutions" description="AI receptionists, websites, commercials and independently scoped business automation for home-service operators in southeast Wisconsin.">
+  <section class="on-navy">
+    <div class="container-page py-16 sm:py-24">
+      <p class="text-sm font-bold uppercase tracking-widest text-gold">OJ Solutions / Services</p>
+      <h1 class="display-1 mt-5 max-w-4xl">More than marketing. <span class="mark-gold">Systems that help you operate.</span></h1>
+      <p class="text-soft mt-6 max-w-2xl text-xl">We started by improving how calls and customer requests are handled in our own service business. Here's what we can build around yours.</p>
+    </div>
+  </section>
+  <section class="container-page py-16 sm:py-24" aria-labelledby="core-service-title">
+    <h2 class="display-2" id="core-service-title">Our main services</h2>
+    <div class="mt-10 grid gap-5 md:grid-cols-3">
+      {SERVICES.map((service, i) => (
+        <article class="flex flex-col justify-between rounded-lg border border-line p-6 sm:p-8">
+          <div>
+            <p class="text-sm font-bold tracking-widest uppercase text-muted">{String(i+1).padStart(2,'0')} / {details[service.key].kicker}</p>
+            <h3 class="mt-4 font-heading text-2xl font-bold">{service.name}</h3>
+            <p class="mt-4 text-muted">{details[service.key].description}</p>
+          </div>
+          <a href={service.href} class="mt-8 inline-flex min-h-12 items-center font-bold text-navy underline decoration-gold underline-offset-4">Explore {service.name} <span aria-hidden="true" class="ml-2">↗</span></a>
+        </article>
+      ))}
+    </div>
+  </section>
+  <section class="bg-navy text-white" aria-labelledby="stack-title">
+    <div class="container-page grid gap-12 py-16 sm:py-24 lg:grid-cols-[.8fr_1.2fr]">
+      <div>
+        <p class="text-sm font-bold uppercase tracking-widest text-gold">Optional / Scoped separately</p>
+        <h2 id="stack-title" class="display-2 mt-4">Tools behind the front desk.</h2>
+        <p class="text-soft mt-5">Not every business needs the same stack. These supporting systems can be quoted separately around the way your business actually operates.</p>
+      </div>
+      <ul role="list" class="border-t border-white/25">
+        {RECEPTIONIST_OPTIONAL_MODULES.map((service, i) => (
+          <li class="border-b border-white/25 py-5">
+            <p class="text-sm text-gold">{String(i+1).padStart(2,'0')}</p>
+            <h3 class="mt-2 text-xl font-bold">{service.title}</h3>
+            <p class="text-soft mt-2">{service.description}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+  <section class="container-page grid gap-6 py-16 sm:grid-cols-[1fr_auto] sm:items-center">
+    <div>
+      <h2 class="display-2">Talk with another operator.</h2>
+      <p class="mt-4 text-lg text-muted">Request a 15-minute consultation to discuss the services you need. Your preferred time is not booked until we confirm.</p>
+    </div>
+    <BookButton variant="navy" size="lg" label="Request a 15-minute call" />
+  </section>
+</BaseLayout>
