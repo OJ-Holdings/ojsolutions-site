@@ -13,6 +13,8 @@ import { mediaAvailable } from "../lib/media";
 
 const longCut = mediaAvailable("/media/commercial-hero.mp4") ? "/media/commercial-hero.mp4" : "/media/commercial-30.mp4";
 const shortCut = mediaAvailable("/media/commercial-v2-cut15.mp4") ? "/media/commercial-v2-cut15.mp4" : "/media/commercial-15.mp4";
+const longPoster = mediaAvailable("/media/commercial-hero-poster.webp") && mediaAvailable("/media/commercial-hero.mp4") ? "/media/commercial-hero-poster.webp" : "/media/commercial-30-poster.webp";
+const shortPoster = mediaAvailable("/media/commercial-v2-cut15-poster.webp") && mediaAvailable("/media/commercial-v2-cut15.mp4") ? "/media/commercial-v2-cut15-poster.webp" : "/media/commercial-15-poster.webp";
 
 // Only promise to come on site when SHOOT_AREA is set in src/config.ts.
 // TODO(Jacob): decide how out-of-area clients work (they send footage?
@@ -94,7 +96,7 @@ const faq = [
         playsinline
         width="720"
         height="1280"
-        poster="/media/commercial-30-poster.webp"
+        poster={longPoster}
         class="block size-full object-cover"
       >
         <source src={longCut} type="video/mp4" />
@@ -124,7 +126,7 @@ const faq = [
           playsinline
           width="720"
           height="1280"
-          poster="/media/commercial-15-poster.webp"
+          poster={shortPoster}
           class="block size-full object-cover"
         >
           <source src={shortCut} type="video/mp4" />
