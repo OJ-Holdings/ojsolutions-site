@@ -8,6 +8,7 @@ import BookButton from "../components/BookButton.astro";
 import Icon from "../components/Icon.astro";
 import CallDemo from "../components/home/CallDemo.astro";
 import DemoCallout from "../components/home/DemoCallout.astro";
+import MissedCallProblem from "../components/home/MissedCallProblem.astro";
 import FrontDeskFeatures from "../components/home/FrontDeskFeatures.astro";
 import FrontDeskPricing from "../components/home/FrontDeskPricing.astro";
 import OwnWork from "../components/home/OwnWork.astro";
@@ -24,18 +25,39 @@ const serviceIcon: Record<ServiceKey, "phone" | "browser" | "camera"> = {
 const site = Astro.site ?? new URL("http://localhost:4321");
 const jsonLd = {
   "@context": "https://schema.org",
-  "@type": "Organization",
-  name: BUSINESS_NAME,
-  url: new URL("/", site).href,
-  logo: new URL("/icon-512.png", site).href,
-  ...(filled(EMAIL) && { email: EMAIL }),
-  ...(filled(PHONE) && { telephone: PHONE }),
-  founder: [
-    { "@type": "Person", name: "Jacob" },
-    { "@type": "Person", name: "Oscar" },
+  "@graph": [
+    {
+      "@type": ["Organization", "ProfessionalService"],
+      "@id": new URL("/#organization", site).href,
+      name: BUSINESS_NAME,
+      url: new URL("/", site).href,
+      logo: new URL("/icon-512.png", site).href,
+      ...(filled(EMAIL) && { email: EMAIL }),
+      ...(filled(PHONE) && { telephone: PHONE }),
+      areaServed: ["Kenosha", "Racine", "Pleasant Prairie", "Southeast Wisconsin"].map(name => ({ "@type": "Place", name })),
+      founder: [{ "@type": "Person", name: "Jacob" }, { "@type": "Person", name: "Oscar" }],
+      ...(Object.values(SOCIAL_LINKS).some(filled) && { sameAs: Object.values(SOCIAL_LINKS).filter(filled) }),
+    },
+    {
+      "@type": "Service",
+      "@id": new URL("/ai-receptionist#service", site).href,
+      name: "AI Receptionist Pro",
+      serviceType: "AI receptionist and call handling for home-service businesses",
+      provider: { "@id": new URL("/#organization", site).href },
+      areaServed: ["Kenosha", "Racine", "Pleasant Prairie", "Southeast Wisconsin"].map(name => ({ "@type": "Place", name })),
+      url: new URL("/ai-receptionist", site).href,
+      description: "AI assistant that identifies itself, captures inquiry details and supports on-site estimate scheduling.",
+    },
+    {
+      "@type": "FAQPage",
+      mainEntity: RECEPTIONIST_FAQ.map(({ q, a }) => ({
+        "@type": "Question",
+        name: q,
+        acceptedAnswer: { "@type": "Answer", text: a },
+      })),
+    },
   ],
-  sameAs: Object.values(SOCIAL_LINKS).filter(filled),
-};
+}
 
 const steps = [
   { title: "We set up your front desk", body: "We configure the AI for your existing number, services, hours, and calendar." },
@@ -69,7 +91,7 @@ const steps = [
           <BookButton variant="gold" size="lg" label="Book a 15-min call" />
         </div>
         <p class="text-soft mt-4 max-w-lg text-sm">Hear it yourself. No sales pitch. Just make the call.</p>
-        <p class="text-soft mt-2 max-w-lg text-sm">The AI identifies itself, asks about a pretend job, and walks through an estimate request. Use a fake name and address. Calls may be recorded.</p>
+        <p class="text-soft mt-2 max-w-lg text-sm">The AI identifies itself, asks about a pretend job, and walks through an estimate request. Use a fake name and address. Calls may be recorded. <a href="/demo" class="underline decoration-gold underline-offset-4 font-semibold">What happens on the demo call?</a></p>
         <p class="mt-5 text-sm font-bold tracking-wide text-white">Built by business owners, for business owners.</p>
       </div>
       <div id="demo" class="scroll-mt-24"><CallDemo /></div>
@@ -77,6 +99,8 @@ const steps = [
   </section>
 
   <DemoCallout />
+
+  <MissedCallProblem />
 
   <OwnWork />
 
@@ -142,14 +166,7 @@ const steps = [
     line="Hear the live demo at (262) 401-0826, or book a quick call."
   />
 </BaseLayout>
-<script>
-  const trackDemoTap = () => {
-    const w = window as typeof window & { dataLayer?: Array<Record<string, unknown>>; gtag?: (...args: unknown[]) => void };
-    w.dataLayer?.push({ event: "demo_call_tap" });
-    w.gtag?.("event", "demo_call_tap");
-  };
-  document.querySelectorAll<HTMLAnchorElement>("[data-demo-call]").forEach((a) => a.addEventListener("click", trackDemoTap));
-</script>
+
 <style>
   /* Gold underline under each step. GSAP draws them in on scroll. */
   .clause {
