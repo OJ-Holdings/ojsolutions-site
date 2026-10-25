@@ -1,9 +1,8 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { EMAIL } from "../config";
-import { filled, formatPrice } from "../lib/site";
-import { MONTHLY_PRICE, SETUP_PRICE } from "../config";
-import { RECEPTIONIST_CORE, RECEPTIONIST_TERMS_NOTICE } from "../lib/receptionist-offer";
+import { filled } from "../lib/site";
+import { RECEPTIONIST_PRICING, RECEPTIONIST_TERMS_NOTICE } from "../lib/receptionist-pricing";
 
 const email = filled(EMAIL) ? EMAIL.trim() : "";
 const submitUrl = "https://vgckpcktsfuithqggknd.supabase.co/functions/v1/oj-solutions-consultations";
@@ -89,15 +88,17 @@ const submitUrl = "https://vgckpcktsfuithqggknd.supabase.co/functions/v1/oj-solu
             </select>
           </div>
           <div id="receptionist-offer-summary" class="mt-2 rounded-lg border border-line bg-white p-4">
-            <p class="font-heading text-base font-bold">AI Receptionist Pro · {formatPrice(MONTHLY_PRICE)}/month + {formatPrice(SETUP_PRICE)} setup</p>
-            <details class="mt-2">
-              <summary class="min-h-11 font-semibold text-navy underline decoration-gold underline-offset-4">View included features and optional modules</summary>
-              <ul class="mt-2 list-disc space-y-1 pl-6 text-sm text-muted">
-                {RECEPTIONIST_CORE.map((feature) => <li>{feature.title}</li>)}
-              </ul>
-              <p class="mt-3 text-sm text-muted">Missed-call text-back, advanced CRM pipelines, review requests and follow-up automation are quoted separately.</p>
-              <p class="mt-2 text-sm text-muted">{RECEPTIONIST_TERMS_NOTICE}</p>
-            </details>
+            <p class="font-heading text-lg font-bold">AI Receptionist · Two plans</p>
+            <div class="mt-3 grid gap-3 sm:grid-cols-2">
+              {RECEPTIONIST_PRICING.plans.map(plan => (
+                <div class="rounded-lg border border-line p-3">
+                  <p class="font-bold">{plan.title} · ${plan.price}/month</p>
+                  <p class="mt-1 text-sm text-muted">{plan.tagline}</p>
+                </div>
+              ))}
+            </div>
+            <p class="mt-3 text-sm text-muted">{RECEPTIONIST_PRICING.setup.note}</p>
+            <p class="mt-2 text-sm text-muted">{RECEPTIONIST_TERMS_NOTICE}</p>
           </div>
           <div>
             <label class="book-label" for="booking-notes">What would you like to improve?</label>
