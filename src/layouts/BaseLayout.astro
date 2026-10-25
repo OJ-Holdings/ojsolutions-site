@@ -22,13 +22,15 @@ interface Props {
   noindex?: boolean;
   /** Hide the header "Book a call" button. */
   hideBookButton?: boolean;
+  /** Allow the conversion homepage to provide its own navigation and footer. */
+  hideChrome?: boolean;
   /** Extra structured data for search engines. */
   jsonLd?: Record<string, unknown>;
   /** Service pages tag the header Book a call button with their service. */
   service?: ServiceKey;
 }
 
-const { title, description, noindex = false, hideBookButton = false, jsonLd, service } = Astro.props;
+const { title, description, noindex = false, hideBookButton = false, hideChrome = false, jsonLd, service } = Astro.props;
 
 const site = Astro.site ?? new URL("http://localhost:4321");
 const path = Astro.url.pathname.replace(/\.html$/, "").replace(/(.)\/$/, "$1").replace(/\/index$/, "/");
@@ -78,11 +80,9 @@ const ogImage = new URL("/og-image.png", site).href;
     >
       Skip to content
     </a>
-    <Header hideBookButton={hideBookButton} service={service} />
-    <main id="main" tabindex="-1" class="flex-1 focus:outline-none">
-      <slot />
-    </main>
-    <Footer />
+    {!hideChrome && <Header hideBookButton={hideBookButton} service={service} />}
+    {hideChrome ? <slot /> : <main id="main" tabindex="-1" class="flex-1 focus:outline-none"><slot /></main>}
+    {!hideChrome && <Footer />}
     <script is:inline>
       // Outreach links carry tags like ?src=ig&rep=jacob&utm_source=facebook.
       // Remember them for this visit and add them to every Book a call link,
