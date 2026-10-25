@@ -19,7 +19,7 @@ import {
 } from "../config";
 import { SHOW_PLACEHOLDERS, filled, formatPrice, placeholder } from "../lib/site";
 import { mediaAvailable } from "../lib/media";
-import { RECEPTIONIST_CORE, RECEPTIONIST_TERMS_NOTICE } from "../lib/receptionist-offer";
+import { RECEPTIONIST_CORE, RECEPTIONIST_TERMS_NOTICE, RECEPTIONIST_FAQ } from "../lib/receptionist-offer";
 
 const hasAudio = mediaAvailable(DEMO_AUDIO_SRC);
 const hasVideo = mediaAvailable(DEMO_VIDEO_SRC);
@@ -47,30 +47,7 @@ const steps = [
 
 
 
-const costAnswer = `${formatPrice(SETUP_PRICE)} one-time setup, then ${formatPrice(MONTHLY_PRICE)} per month for AI Receptionist Pro.`;
 
-const faq = [
-  {
-    q: "Will it sound like a robot?",
-    a: hasAudio ? `Don't take our word for it. <a href="#hear-it">Listen to the real call above</a>.` : "",
-  },
-  {
-    q: "What happens with calls it can't handle?",
-    a: "It captures their details and flags the request for a prompt callback.",
-  },
-  { q: "What does it cost?", a: costAnswer },
-
-  {
-    q: "How long does setup take?",
-    // TODO(Jacob): answer in FAQ_ANSWERS.receptionistSetupTime (src/config.ts).
-    // Until then this is a PLACEHOLDER on preview builds and hidden on production.
-    a: filled(FAQ_ANSWERS.receptionistSetupTime) ? FAQ_ANSWERS.receptionistSetupTime : placeholder("how long setup takes"),
-  },
-
-  // TODO(Jacob): answer these two in src/config.ts (FAQ_ANSWERS). Hidden until then.
-  { q: "Do I need a new phone number?", a: FAQ_ANSWERS.receptionistNewNumber },
-  { q: "Is there a long contract?", a: FAQ_ANSWERS.receptionistContract },
-];
 ---
 
 <ServiceLayout
@@ -82,7 +59,7 @@ const faq = [
   highlight="Your phone is."
   subhead="An AI receptionist that answers calls around the clock, captures customer details, and books on-site estimates while you are busy doing the work."
   problemHeading="Every missed call is a lead you already paid for."
-  faq={faq}
+  faq={RECEPTIONIST_FAQ}
   ctaHeading="See it answer a call"
   ctaLine="Hear our AI live at (262) 401-0826, then talk about setting it up for your business."
 >
