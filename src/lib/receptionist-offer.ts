@@ -20,12 +20,19 @@ export const RECEPTIONIST_OPTIONAL_MODULES = [
   { title: "Commercials and video advertising", description: "Present real work through professionally produced video assets." },
 ] as const;
 
+const [starterPlan, proPlan] = RECEPTIONIST_PRICING.plans;
+const costAnswer =
+  "Starter is $" + starterPlan.price + "/month, Pro is $" + proPlan.price +
+  "/month. One-time setup is quoted between $" + RECEPTIONIST_PRICING.setup.from +
+  " and $" + RECEPTIONIST_PRICING.setup.to +
+  " according to configuration. Usage, integration and contract details are reviewed before purchase.";
+
 export const RECEPTIONIST_FAQ = [
   { q:"Is it a real person?", a:"No. It identifies itself as an AI assistant at the beginning of every call." },
   { q:"Do I need a new phone number?", a:"No. You can keep your business number and configure the AI as overflow or as your front desk." },
   { q:"What if a caller wants a human?", a:"The AI collects their details and flags the request for a callback." },
   { q:"Does it quote job prices?", a:"It uses approved service details. The default process is to arrange an estimate, not guess a price." },
-  { q:"What does it cost?", a:"Starter is $297/month, Pro is $597/month. One-time setup is quoted between $0 and $497 according to configuration. Usage, integration and contract details are reviewed before purchase." },
+  { q:"What does it cost?", a:costAnswer },
   { q:"How long does setup take?", a:"We confirm a setup timeline after reviewing your requirements." },
   { q:"Is there a long contract?", a:"The contract term and cancellation conditions are explained before you sign." },
   { q:"Where are you based?", a:"Kenosha, Wisconsin. We focus on service businesses in southeast Wisconsin." },
