@@ -12,7 +12,8 @@ import FrontDeskFeatures from "../components/home/FrontDeskFeatures.astro";
 import FrontDeskPricing from "../components/home/FrontDeskPricing.astro";
 import OwnWork from "../components/home/OwnWork.astro";
 import { BUSINESS_NAME, EMAIL, PHONE, SOCIAL_LINKS, MONTHLY_PRICE, SETUP_PRICE } from "../config";
-import { SERVICES, filled, formatPrice, type ServiceKey } from "../lib/site";
+import { SERVICES, filled, type ServiceKey } from "../lib/site";
+import { RECEPTIONIST_FAQ } from "../lib/receptionist-offer";
 
 const serviceIcon: Record<ServiceKey, "phone" | "browser" | "camera"> = {
   receptionist: "phone",
@@ -42,16 +43,7 @@ const steps = [
   { title: "You get the lead", body: "See who called, what they need, and when the estimate is booked." },
 ];
 
-const faq = [
-  { q: "Is it a real person?", a: "No. It identifies itself as an AI assistant at the beginning of every call." },
-  { q: "Do I need a new phone number?", a: "No. Keep your business number. Use the AI as overflow or as your full front desk." },
-  { q: "What if a caller wants a human?", a: "The AI collects their details and flags the request for a callback." },
-  { q: "Does it quote prices?", a: "We configure your service information. The default is to book an on-site estimate instead of guessing a price." },
-  { q: "What does it cost?", a: `AI Receptionist Pro starts at ${formatPrice(MONTHLY_PRICE)}/month with a ${formatPrice(SETUP_PRICE)} one-time setup fee.` },
-  { q: "How fast is setup?", a: "We confirm the timeline after learning how your business and phones work." },
-  { q: "Is there a contract?", a: "We review the agreement and cancellation terms before you sign." },
-  { q: "Where are you based?", a: "Kenosha, Wisconsin. Serving local service businesses across southeast Wisconsin." },
-];
+
 ---
 
 <BaseLayout
@@ -143,7 +135,7 @@ const faq = [
 
   <FrontDeskPricing />
 
-  <FaqSection items={faq} title="Questions before you call" />
+  <FaqSection items={RECEPTIONIST_FAQ} title="Questions before you call" />
 
   <FinalCta
     heading="You do the work. We get the phone."
