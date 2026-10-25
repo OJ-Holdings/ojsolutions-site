@@ -47,7 +47,16 @@ const path = Astro.url.pathname.replace(/\.html$/, "").replace(/\/$/, "") || "/"
           </ul>
         </details>
       </nav>
-      {!hideBookButton && <BookButton size="header" variant="gold" service={service} />}
+      <a href="tel:+12624010826"
+        class="inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-lg border border-gold px-2 text-gold hover:bg-gold hover:text-navy sm:px-3"
+        aria-label="Call the OJ Solutions AI demo at (262) 401-0826" title="Call our AI demo">
+        <Icon name="phone" class="size-5 shrink-0" />
+        <span class="hidden font-semibold lg:inline">Call (262) 401-0826</span>
+      </a>
+      {!hideBookButton && <>
+        <BookButton size="header" variant="gold" service={service} label="Book" class="min-[410px]:hidden" />
+        <BookButton size="header" variant="gold" service={service} label="Book a call" class="hidden min-[410px]:inline-flex" />
+      </>}
     </div>
   </div>
 </header>
