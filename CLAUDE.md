@@ -1,63 +1,60 @@
-# OJ Solutions website
+# OJ Solutions website — development rules
 
-Rules for every Claude Code session working on this repo (Jacob's or Oscar's). Follow them for every change, including small copy edits.
+## Source of truth
 
-## About the business
+The founders approved the **AI-front-desk-first website master brief** on October 25, 2026. These instructions supersede the former three-equal-services positioning in this repository. Keep all facts grounded in the founders' brief and any verified repository configuration. Do not invent clients, testimonials, metrics, guarantees, deadlines, domains, pricing tiers, or integrations.
 
-OJ Solutions fixes what's slowing businesses down. We sell three done-for-you services:
+## Positioning
 
-1. AI Receptionist: answers every call 24/7, answers questions, quotes from the owner's pricing, books the appointment onto their calendar, creates the contact in a CRM, and texts back missed calls. It handles most calls on its own and transfers anything it can't handle to the owner's phone or staff. Runs on GoHighLevel. We set it up and manage it.
-2. Websites: new sites or rebuilds, built for phones first, with click-to-call and booking built in.
-3. Commercials: video ads and commercials for social media, websites, and paid ads. We plan, film, and edit.
+OJ Solutions is an AI front-desk agency based in Kenosha, Wisconsin. Its flagship offer is an AI receptionist for home-service businesses (usually owner-operated, 1–15 employees) that answers calls, identifies itself as AI, captures caller details, books available on-site estimate slots, and alerts the owner. The founders run OJ Exterior Care and built the system for their own business first.
 
-We serve any business of any size. The founders are Jacob and Oscar. We also run our own pressure washing and window cleaning company, and we built and tested all of this on our own business first. That is our story and our reason to be trusted. We currently have zero clients.
+**Brand:** OJ Solutions · Your AI front desk. / Built by business owners, for business owners.
+**Primary action:** call the demo at **(262) 401-0826**, linking to \`tel:+12624010826\`.
+**Secondary action:** book/request a 15-minute consultation.
+**Geography:** Kenosha, Racine, Pleasant Prairie, and southeast Wisconsin. Do not imply national coverage.
+**Pricing:** AI Receptionist Pro, **$797/month**, **$2,000 one-time setup**. Don't invent other tiers, trials, discounts, or guarantees.
 
-## Who visits and why
+## Offer hierarchy
 
-Most visitors come from our cold calls, cold emails, Instagram and Facebook DMs, and Facebook group posts. They're usually on a phone, checking whether we're legit. Every outreach message pitches ONE service and links to that service's page, so each service page must work on its own as a landing page. Every page has one conversion: book a call.
+1. AI receptionist is the flagship and the focus of the homepage.
+2. Behind-the-front-desk modules are addons/configurable options: missed-call recovery, CRM/pipeline, online booking, review requests, follow-ups, websites/forms, reports.
+3. The earlier service pages for Websites and Commercials remain in the repository for continuity; do not present them as equal flagship offers on the AI-first homepage.
 
-## Tech
+## Voice and trust
 
-- Astro (latest stable) + Tailwind CSS, fully static output. No backend, no database, no CMS.
-- Hosted on Vercel from GitHub. The `ojsolutions-site` project builds `main` with `npm run build`, publishes `dist`, and uses Node.js 24. `netlify.toml` remains for the prior Netlify setup.
-- Mobile-first. Design at 375px wide first, then scale up.
-- Fast: no animation libraries, minimal JS, optimized images. Target Lighthouse 95+ on mobile. This site is also our portfolio for the website service, so it has to be fast and clean.
-- Accessible: semantic HTML, alt text, visible focus states, WCAG AA contrast.
-- SEO: unique title and meta description per page, an Open Graph image (navy background, OJ mark, "Built by business owners, for business owners."), @astrojs/sitemap, robots.txt.
-- The three service pages share one reusable ServiceLayout, so adding a service later is one new page.
-- All editable business info lives in one file, `src/config.ts`: BUSINESS_NAME, LEGAL_ENTITY, EMAIL, PHONE, BOOKING_URL, GHL_CALENDAR_EMBED, GHL_CHAT_WIDGET, DEMO_AUDIO_SRC, DEMO_VIDEO_SRC, STATS_SOURCE_URL, GUARANTEE_TEXT, SHOW_PRICING, SETUP_PRICE, MONTHLY_PRICE, WEBSITE_PRICE_FROM, COMMERCIAL_PRICE_FROM, WEBSITE_EXAMPLES, COMMERCIAL_EXAMPLES, SHOOT_AREA, social links, and the FAQ answers still owed. Unknown values stay empty.
-- If a config value is empty, hide whatever depends on it. Visitors never see a broken link, an empty player, or placeholder text.
+Plainspoken owner-to-owner, short sentences. Focus on answered calls, captured leads, and booked estimates, never vague technology buzzwords. The AI discloses that it's an AI assistant. Avoid definitive 100% uptime, job guarantees, and quoting job prices. The default workflow is to book an on-site estimate, not invent a price.
 
-## Booking and tracking
+The live phone demo and OJ Exterior Care are the available proof. There are **no verified external testimonials or customer results** to publish. An illustrative caller named Mike Reynolds is fictional. Do not publish any real customer's identifying details. The historical 16 five-star OJ Exterior Care review count must be reverified before use.
 
-- Every "Book a call" button goes to /book when GHL_CALENDAR_EMBED is set, otherwise to BOOKING_URL. If neither is set, it links to mailto:EMAIL. (Logic: `bookingHref` in `src/lib/site.ts`.)
-- Buttons on service pages add ?service=receptionist, ?service=website, or ?service=commercial. Home page buttons add nothing.
-- /book shows the embedded GHL calendar and passes the page's full query string (service, src, rep, and any utm_ tags) through to the calendar embed URL, so those tags land on the contact in GHL.
-- Outreach links point at a service page and may carry src, rep, and utm_ tags (e.g. /ai-receptionist?src=ig&rep=jacob). A small script in BaseLayout remembers those tags for the visit and adds them to every Book a call link, so they still reach /book after the visitor clicks around.
-- If GHL_CHAT_WIDGET is set, that script is injected on every page.
+## Design system
 
-## Brand
+- Ink \`#0A0A0C\`, bone \`#F4F1EA\`, gold \`#C4A452\`, secondary navy \`#12203A\`, muted steel \`#8A93A0\`.
+- Green \`#1FBF6B\` is for answered/booked states; red \`#E5484D\` only for missed-call alerts. No decorative stoplight palette.
+- Inter Tight, Instrument Serif (editorial italic), JetBrains Mono (small labels).
+- Premium, tactical, cinematic, restrained. No glowing robots, purple AI imagery, stock call-center staff, invented photos, or fabricated company marks.
+- Use the **existing actual logo** under \`src/assets/brand/oj-mark.png\` or public icons. Do not redraw the monogram.
+- Mobile-first at 360px, WCAG AA, keyboard access, visible focus, reduced-motion support, no autoplay sound.
+- Aim for Lighthouse 90+ and fast mobile loading; do not claim those targets were achieved until measured.
 
-- Colors: Navy #0B1F3A (primary), Gold #C4A452 (accent), White #FFFFFF (background). Neutrals only for secondary text (#4A5568) and borders (#E5E7EB). No other colors. (Tailwind's default palette is switched off in `src/styles/global.css`; use `navy`, `gold`, `white`, `muted`, `line`.)
-- Gold fails contrast as text on white, so never use it as text on white. Gold is for small accents (rules, icons, underline highlights) and for text or buttons on navy.
-- Buttons: navy background with white text on white sections; gold background with navy text on navy sections.
-- Flat only. No gradients, glows, drop shadows, glassmorphism, blur, neon, purple, or stock photos. Whitespace and 1px borders do the work. Corner radius 8px max.
-- Fonts: Montserrat for headings (it matches the logo wordmark), Inter for body. Self-hosted with @fontsource.
-- Logo: `logo.png` in the project root is the master file and is just the OJ mark. `scripts/brand-assets.py` makes the transparent mark (`src/assets/brand/oj-mark.png`), the favicons (32px, 180px apple-touch, 512px), and the share image from it. In the header, use the mark image plus "OJ Solutions" as live text in Montserrat (OJ bold, Solutions medium). The mark is navy, so it only sits on white. Never alter the logo design itself.
+## Build details
 
-## Writing rules (every word on the site)
+- Keep Astro 7 + Tailwind CSS 4 and the existing project structure. Vercel builds from GitHub and \`main\` is production. Do not merge or deploy to production without approval.
+- The AI-front-desk home page in \`src/pages/index.astro\` has a scoped visual system and custom site chrome. \`BaseLayout\` supports \`hideChrome\` so other pages can retain their old shared header/footer during migration.
+- \`src/config.ts\` holds pricing, phone, demo MP3, booking data, and site configuration. If demo audio is absent, invite people to call the live demo rather than rendering a broken player.
+- \`/ai-receptionist\` remains a valid supporting page with the same offer and prices. Additional \`/demo\`, \`/how-it-works\`, \`/pricing\`, \`/about\` routes can be built after homepage review.
+- Booking currently falls back to an email request when no GoHighLevel calendar or booking URL is configured. Never imply the calendar is connected before it is.
+- Tracking hooks on the new homepage emit \`demo_call_tap\`, \`booking_tap\`, and \`demo_audio_play\` to a dataLayer/gtag **only when those analytics integrations are present**.
 
-- Business owners talking to business owners. Plain, short, confident. Never sound like an agency.
-- No em dashes anywhere. Never use: leverage, seamless, cutting-edge, revolutionize, game-changer, unlock, elevate, supercharge, "in today's fast-paced world."
-- Never invent anything: no testimonials, reviews, star ratings, client logos, "trusted by" claims, results numbers, or stats. We have zero clients and the site cannot imply otherwise. "Our work" sections show only our own real projects from config.
-- The only stats allowed, and only on /ai-receptionist: in a 2025 CallRail survey of 1,000 consumers, 78% said they've abandoned a business after an unanswered call and 82% said they'd call a competitor instead. They must show a visible source link from STATS_SOURCE_URL. If that is empty, hide the stats.
-- Each service page has one enemy. Receptionist: missed calls leaking leads the owner already paid for. Websites: a site that loses visitors. Commercials: being invisible in the feed. The home page covers all three without making any one the whole story. Never trash agencies or competitors.
-- Never say the AI replaces staff or answers 100% of calls. It handles most calls and sends the rest to the owner.
-- If something needs a fact we haven't given you, leave a TODO(Jacob) comment in the code and keep it off the rendered page. Do not guess.
+## Founder confirmation and launch blockers
 
-## Working in this repo
+**Must confirm before production release:**
+- \`SITE_URL\` currently says \`https://ojsolutions.org\`; the new brief specifically left \`[DOMAIN]\` unconfirmed. Do not treat the old config as new founder approval.
+- \`EMAIL\` currently says \`ojsolutionshq@gmail.com\`; get approval before it is presented as the official business email.
+- GHL booking calendar and/or approved booking URL, with legally reviewed consent language.
+- Actual logo SVG and genuine field photos if available, plus approved demo MP3 and approved fictionalized transcript.
+- Contract duration, cancellation, data ownership, setup time.
+- Privacy/Terms, recording disclosures and SMS/A2P consent reviewed for applicable law.
+- GA4/Meta Pixel IDs if analytics are desired.
+- Reverify any published review count.
 
-- `npm run dev` starts the local site at http://localhost:4321. `npm run build` must finish with no errors before anything is pushed.
-- Pushing to `main` deploys to Vercel automatically. The prior Netlify integration may also deploy from `main`. Don't push without being asked.
-- Where things live: business info in `src/config.ts`; link and booking helpers in `src/lib/site.ts`; shared page pieces in `src/components/`; page frames in `src/layouts/` (`BaseLayout` for every page, `ServiceLayout` for service pages); pages in `src/pages/`.
-- To find everything still waiting on an answer: search the code for `TODO(Jacob)`.
+Bracketed placeholders must stay clearly labeled in a preview; eliminate them or replace them with approved content before production.
