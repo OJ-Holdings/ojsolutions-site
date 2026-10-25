@@ -25,3 +25,39 @@ jobs:
         run: npm run build
       - name: Verify routes, disclosure and booking contract
         run: node scripts/verify-site.mjs
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22.22.0"
+          cache: npm
+      - name: Install site and Playwright test tooling
+        run: |
+          npm ci
+          npm install --no-save --ignore-scripts playwright@1.56.1
+          if command -v google-chrome >/dev/null 2>&1; then
+            echo "CHROME_PATH=$(command -v google-chrome)" >> "$GITHUB_ENV"
+          else
+            npx playwright install --only-shell chromium
+          fi
+      - name: Build preview for browser QA
+        env:
+          VERCEL_ENV: production
+        run: npm run build
+      - name: Run responsive/browser conversion smoke test
+        run: |
+          npm run preview -- --host 127.0.0.1 --port 4321 > /tmp/oj-astro-preview.log 2>&1 &
+          for attempt in $(seq 1 40); do
+            curl --silent --fail http://127.0.0.1:4321/ > /dev/null && break || sleep 1
+          done
+          node scripts/browser-smoke.mjs
+      - name: Upload visual QA screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: oj-mobile-visual-smoke
+          path: test-results/
+          if-no-files-found: ignore
