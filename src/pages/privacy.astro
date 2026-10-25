@@ -8,7 +8,7 @@ import LegalContact from "../components/LegalContact.astro";
 import { BUSINESS_NAME, EMAIL, LEGAL_ENTITY, PHONE } from "../config";
 import { filled } from "../lib/site";
 
-const LAST_UPDATED = "October 17, 2026";
+const LAST_UPDATED = "October 25, 2026";
 const entity = filled(LEGAL_ENTITY) ? LEGAL_ENTITY.trim() : BUSINESS_NAME;
 const named = entity === BUSINESS_NAME ? entity : `${entity} ("${BUSINESS_NAME}")`;
 const hasContact = filled(EMAIL) || filled(PHONE);
@@ -43,8 +43,10 @@ const hasContact = filled(EMAIL) || filled(PHONE);
             such as your IP address, browser type, and the pages you visit, to keep the site running and secure.
           </li>
           <li>
-            <strong>Booking and chat tools.</strong> Our booking calendar and chat are provided by a third party
-            (GoHighLevel). Those tools may use cookies to work properly.
+            <strong>Consultation requests.</strong> Our 15-minute request form collects your preferred date
+            and time, name and email, and any optional phone, business name, service, and message. This is stored in the
+            secure OJ Workspace database operated through our infrastructure provider. Requests aren't confirmed
+            appointments until we contact you.
           </li>
           <li>
             <strong>AI receptionist demo calls.</strong> When you call our AI front desk, it identifies itself as an AI

@@ -1,118 +1,237 @@
 ---
-// The /book page. Every "Book a call" button on the site comes here.
-// - GHL_CALENDAR_EMBED set: the GoHighLevel calendar, embedded.
-// - Only BOOKING_URL set: a button to that booking page.
-// - Neither, on preview builds: a visible PLACEHOLDER box.
-// - Neither, on production: a "Book by email" button, with the address
-//   written out under it.
-// The email address is always shown plainly.
-//
-// Everything after the "?" in the address (service, src, rep, utm_ tags)
-// is passed through to the calendar, so it lands on the contact in GHL.
 import BaseLayout from "../layouts/BaseLayout.astro";
-import Button from "../components/Button.astro";
-import Icon from "../components/Icon.astro";
-import { BOOKING_URL, EMAIL } from "../config";
-import { SHOW_PLACEHOLDERS, calendarEmbed, filled, webAddress } from "../lib/site";
+import { EMAIL } from "../config";
+import { filled } from "../lib/site";
 
-const embed = calendarEmbed();
-const bookingUrl = embed ? null : webAddress(BOOKING_URL);
 const email = filled(EMAIL) ? EMAIL.trim() : "";
-// Production with no calendar yet: booking happens by email.
-const bookByEmail = !embed && !bookingUrl && !SHOW_PLACEHOLDERS && email !== "";
+const submitUrl = "https://vgckpcktsfuithqggknd.supabase.co/functions/v1/oj-solutions-consultations";
 ---
-
 <BaseLayout
-  title="Book a Call | OJ Solutions"
-  description="Pick a time for a short call with OJ Solutions. We'll look at your business and tell you what we'd fix first."
+  title="Request a 15-Minute Consultation | OJ Solutions"
+  description="Choose a preferred 15-minute consultation time with OJ Solutions. Submit your details and our team will confirm it. No linked external calendar."
   hideBookButton
 >
-  <section class="on-navy" aria-labelledby="book-title">
-    <div class="container-page pt-12 pb-14 sm:pt-16 sm:pb-20">
-      <h1 id="book-title" class="display-1">Book a call</h1>
-      <p class="text-soft mt-5 max-w-xl text-lg sm:text-xl">
-        Pick a time that works for you. We'll look at your business and tell you what we'd fix first.
+  <section class="on-navy" aria-labelledby="booking-title">
+    <div class="container-page pt-12 pb-12 sm:pt-16 sm:pb-16">
+      <p class="mb-3 text-sm font-bold tracking-widest text-gold uppercase">OJ Solutions / Talk to an operator</p>
+      <h1 class="display-1" id="booking-title">Pick a time. Let's talk.</h1>
+      <p class="text-soft mt-5 max-w-2xl text-lg sm:text-xl">
+        Select a preferred 15-minute time, tell us about your business, and submit your request.
+        We'll contact you to confirm. No account or external calendar needed.
       </p>
     </div>
   </section>
 
-  <section class="pt-10 pb-16 sm:pt-14 sm:pb-24" aria-label="Booking calendar">
-    <div class="container-page">
-      {
-        embed ? (
-          <div class="overflow-hidden rounded-lg border border-line">
-            <iframe
-              id={embed.id}
-              data-src={embed.src}
-              title="Booking calendar"
-              class="block min-h-[880px] w-full border-0"
-              loading="eager"
-            />
-            <noscript>
-              <iframe src={embed.src} title="Booking calendar" class="block min-h-[880px] w-full border-0" />
-            </noscript>
+  <section class="container-page py-12 sm:py-16" aria-labelledby="calendar-title">
+    <div class="booking-grid">
+      <div class="time-panel">
+        <p class="book-eyebrow">01 / SELECT A TIME</p>
+        <h2 class="font-heading text-3xl font-bold" id="calendar-title">What works for you?</h2>
+        <p class="mt-3 text-muted">Weekdays, 9:00 AM–4:45 PM Central. Choose a date from tomorrow through the next 30 days. Times shown are <strong>preferences, not confirmed availability.</strong></p>
+        <label for="booking-date" class="book-label">Preferred date</label>
+        <input type="date" id="booking-date" class="book-input" aria-describedby="booking-date-help" required />
+        <p id="booking-date-help" class="mt-2 text-sm text-muted">Monday–Friday only · America/Chicago</p>
+        <fieldset class="mt-7">
+          <legend class="book-label">Preferred 15-minute start time</legend>
+          <div class="slot-grid" id="time-slots" role="group" aria-label="Choose a preferred start time">
+            <p class="text-muted">Choose a weekday to see times.</p>
           </div>
-        ) : bookingUrl ? (
-          <Button href={bookingUrl.href} size="lg" data-book>
-            Pick a time
-            <Icon name="arrow-right" class="size-5" />
-          </Button>
-        ) : bookByEmail ? (
-          <div>
-            <Button href={`mailto:${email}?subject=${encodeURIComponent("Book a call")}`} size="lg">
-              <Icon name="mail" class="size-5" />
-              Book by email
-            </Button>
-            <p class="mt-5 text-lg">
-              <a href={`mailto:${email}`} class="link break-all">
-                {email}
-              </a>
-            </p>
-          </div>
-        ) : (
-          SHOW_PLACEHOLDERS && <div class="flex min-h-[28rem] flex-col items-center justify-center gap-4 rounded-lg border border-dashed border-navy p-6 text-center">
-            <Icon name="calendar" class="size-8 text-navy" />
-            <p class="max-w-md font-heading text-lg font-bold">
-              PLACEHOLDER: GoHighLevel booking calendar goes here.
-            </p>
-            {/* TODO(Jacob): paste the GHL calendar embed link into GHL_CALENDAR_EMBED in src/config.ts. */}
-          </div>
-        )
-      }
+        </fieldset>
+        <div class="mt-6 rounded-lg border border-line bg-white p-4 text-sm text-muted">
+          <strong>How confirmation works:</strong> This calendar isn't connected to either founder's schedule.
+          Your time is a request until someone from OJ Solutions confirms it.
+        </div>
+      </div>
 
-      {
-        email && !bookByEmail && (
-          <p class="mt-8 text-lg text-muted">
-            Prefer email?{" "}
-            <a href={`mailto:${email}`} class="link break-all">
-              {email}
-            </a>
-          </p>
-        )
-      }
+      <div class="details-panel">
+        <p class="book-eyebrow">02 / YOUR DETAILS</p>
+        <h2 class="font-heading text-3xl font-bold">Tell us a little about your business.</h2>
+        <p class="mt-3 text-muted">We'll only use these details to respond to your consultation request.</p>
+        <form id="consultation-form" data-submit-url={submitUrl} class="mt-7 space-y-5" novalidate>
+          <div class="form-hidden" aria-hidden="true">
+            <label for="booking-website">Leave this field blank</label>
+            <input type="text" id="booking-website" name="website" tabindex="-1" autocomplete="off"/>
+          </div>
+          <div>
+            <label class="book-label" for="booking-name">Your name *</label>
+            <input class="book-input" id="booking-name" name="name" autocomplete="name" maxlength="160" required placeholder="First and last name" />
+          </div>
+          <div>
+            <label class="book-label" for="booking-email">Email *</label>
+            <input class="book-input" type="email" id="booking-email" name="email" autocomplete="email" maxlength="200" required placeholder="you@business.com" />
+          </div>
+          <div>
+            <label class="book-label" for="booking-phone">Phone</label>
+            <input class="book-input" type="tel" id="booking-phone" name="phone" autocomplete="tel" maxlength="35" placeholder="(262) 555-0100" />
+          </div>
+          <div>
+            <label class="book-label" for="booking-business">Business name</label>
+            <input class="book-input" id="booking-business" name="business" autocomplete="organization" maxlength="160" placeholder="Your company" />
+          </div>
+          <div>
+            <label class="book-label" for="booking-service">What can we help with?</label>
+            <select class="book-input" id="booking-service" name="service">
+              <option value="AI receptionist">AI receptionist</option>
+              <option value="Websites">Websites</option>
+              <option value="Commercials">Commercials and video ads</option>
+              <option value="Automation">Automation / follow-up systems</option>
+              <option value="General consultation">Something else</option>
+            </select>
+          </div>
+          <div>
+            <label class="book-label" for="booking-notes">What would you like to improve?</label>
+            <textarea class="book-input" id="booking-notes" name="notes" rows="3" maxlength="1000" placeholder="Tell us about missed calls, your website, marketing, or another challenge..."></textarea>
+          </div>
+          <p class="text-sm text-muted" id="selected-summary">First select your preferred date and time.</p>
+          <button type="submit" id="submit-request" class="submit-book" disabled>Request this 15-minute call ↗</button>
+          <p class="text-sm text-muted">Submitting a request does not reserve a time or opt you into marketing messages. We'll respond directly to confirm.</p>
+          <div id="booking-feedback" role="status" aria-live="polite" class="booking-feedback" hidden></div>
+        </form>
+        {email && <p class="mt-8 text-muted">Prefer email? <a href={"mailto:" + email + "?subject=" + encodeURIComponent("15-minute consultation request")} class="link">{email}</a></p>}
+      </div>
     </div>
   </section>
 
-  {
-    embed && (
-      <>
-        <script is:inline>
-          // Pass this page's query string (service, src, rep, utm_*) to the calendar,
-          // plus any outreach tags remembered from earlier pages this visit.
-          (() => {
-            const frame = document.querySelector("iframe[data-src]");
-            if (!frame) return;
-            const url = new URL(frame.dataset.src);
-            new URLSearchParams(location.search).forEach((value, key) => url.searchParams.set(key, value));
-            try {
-              const saved = JSON.parse(sessionStorage.getItem("oj-tracking") || "{}");
-              for (const [key, value] of Object.entries(saved)) if (!url.searchParams.has(key)) url.searchParams.set(key, value);
-            } catch {}
-            frame.src = url.toString();
-          })();
-        </script>
-        <script is:inline src="https://link.msgsndr.com/js/form_embed.js" defer />
-      </>
-    )
-  }
+  <script>
+    const dateInput = document.querySelector<HTMLInputElement>("#booking-date");
+    const slotsEl = document.querySelector<HTMLElement>("#time-slots");
+    const form = document.querySelector<HTMLFormElement>("#consultation-form");
+    const select = document.querySelector<HTMLSelectElement>("#booking-service");
+    const feedback = document.querySelector<HTMLElement>("#booking-feedback");
+    const summary = document.querySelector<HTMLElement>("#selected-summary");
+    const sendButton = document.querySelector<HTMLButtonElement>("#submit-request");
+    let time = "";
+    const centralDate = () => {
+      const parts = new Intl.DateTimeFormat("en-US", { timeZone: "America/Chicago", year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(new Date());
+      const part = (type: string) => parts.find(item => item.type === type)?.value || "";
+      return part("year") + "-" + part("month") + "-" + part("day");
+    };
+    const shift = (iso: string, offset: number) => {
+      const dt = new Date(iso + "T12:00:00Z");
+      dt.setUTCDate(dt.getUTCDate() + offset);
+      return dt.toISOString().slice(0, 10);
+    };
+    const weekday = (iso: string) => {
+      const day = new Date(iso + "T12:00:00Z").getUTCDay();
+      return day >= 1 && day <= 5;
+    };
+    const shortTime = (value: string) => {
+      const [hh, mm] = value.split(":").map(Number);
+      return ((hh % 12) || 12) + ":" + String(mm).padStart(2, "0") + (hh < 12 ? " AM" : " PM");
+    };
+    function setFeedback(message: string, isError = false) {
+      if (!feedback) return;
+      feedback.textContent = message;
+      feedback.hidden = !message;
+      feedback.setAttribute("role", isError ? "alert" : "status");
+    }
+    function updateSummary() {
+      if (sendButton) sendButton.disabled = !time || !dateInput?.value;
+      if (summary) summary.textContent = time && dateInput?.value
+        ? "Preferred: " + dateInput.value + " at " + shortTime(time) + " Central · 15 minutes · Pending confirmation"
+        : "First select your preferred date and time.";
+    }
+    function drawSlots() {
+      if (!dateInput || !slotsEl) return;
+      time = "";
+      slotsEl.replaceChildren();
+      if (!dateInput.value) {
+        slotsEl.textContent = "Choose a date to see times.";
+      } else if (!weekday(dateInput.value)) {
+        slotsEl.textContent = "Please choose Monday through Friday.";
+      } else {
+        for (let hour = 9; hour <= 16; hour++) for (let minute = 0; minute < 60; minute += 15) {
+          const value = String(hour).padStart(2, "0") + ":" + String(minute).padStart(2, "0");
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = "slot-button";
+          button.textContent = shortTime(value);
+          button.setAttribute("aria-pressed", "false");
+          button.addEventListener("click", () => {
+            time = value;
+            slotsEl.querySelectorAll<HTMLButtonElement>("button").forEach(b => {
+              const selected = b === button;
+              b.setAttribute("aria-pressed", String(selected));
+              b.classList.toggle("selected", selected);
+            });
+            updateSummary();
+          });
+          slotsEl.append(button);
+        }
+      }
+      updateSummary();
+    }
+    if (dateInput) {
+      const today = centralDate();
+      dateInput.min = shift(today, 1);
+      dateInput.max = shift(today, 30);
+      dateInput.addEventListener("change", () => { setFeedback(""); drawSlots(); });
+    }
+    if (select) {
+      const requested = new URLSearchParams(location.search).get("service");
+      const mapping: Record<string, string> = { receptionist: "AI receptionist", website: "Websites", commercial: "Commercials", solutions: "General consultation" };
+      if (requested && mapping[requested]) select.value = mapping[requested];
+    }
+    form?.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      if (!dateInput || !time || !sendButton || !form || !form.checkValidity() || dateInput.value < dateInput.min || dateInput.value > dateInput.max || !weekday(dateInput.value)) {
+        setFeedback("Please choose a valid weekday and 15-minute time, then complete your name and email.", true);
+        form?.reportValidity();
+        return;
+      }
+      sendButton.disabled = true;
+      sendButton.textContent = "Sending request…";
+      setFeedback("");
+      const data = new FormData(form);
+      const payload = {
+        name: String(data.get("name") || ""), email: String(data.get("email") || ""),
+        phone: String(data.get("phone") || ""), business: String(data.get("business") || ""),
+        service: String(data.get("service") || ""), notes: String(data.get("notes") || ""),
+        website: String(data.get("website") || ""), date: dateInput.value, time,
+      };
+      try {
+        const controller = new AbortController();
+        const timeout = window.setTimeout(() => controller.abort(), 15000);
+        let response: Response;
+        try {
+          response = await fetch(form.dataset.submitUrl || "", {
+            method: "POST", headers: { "content-type": "application/json" },
+            body: JSON.stringify(payload), signal: controller.signal,
+          });
+        } finally { window.clearTimeout(timeout); }
+        const result = await response.json().catch(() => ({})) as { message?: string; error?: string; ok?: boolean };
+        if (!response.ok || !result.ok) throw new Error(result.error || "We couldn't save your request.");
+        setFeedback("Request received for " + dateInput.value + " at " + shortTime(time) + " Central. This is not yet confirmed; OJ Solutions will contact you.", false);
+        form.reset();
+        dateInput.value = "";
+        drawSlots();
+        sendButton.textContent = "Request received";
+        return;
+      } catch (error) {
+        setFeedback(error instanceof Error ? error.message : "Could not send the request. Please email us.", true);
+      }
+      sendButton.disabled = false;
+      sendButton.textContent = "Request this 15-minute call ↗";
+    });
+  </script>
+  <style>
+    .booking-grid { display:grid; grid-template-columns: minmax(0,1fr) minmax(0,.95fr); gap:clamp(28px,5vw,85px); }
+    .time-panel,.details-panel { min-width:0; }
+    .book-eyebrow { font-size:.75rem; letter-spacing:.13em; color:#98742a; font-weight:800; margin:0 0 16px; }
+    .book-label { display:block; margin:26px 0 8px; font-size:.95rem; font-weight:800; }
+    .book-input { display:block; width:100%; border:1px solid #b7bfc8; background:#fff; color:#0c213c; padding:12px 14px; border-radius:7px; min-height:50px; font-size:1rem; }
+    .book-input:focus-visible,.slot-button:focus-visible,.submit-book:focus-visible { outline:3px solid #c6a24a; outline-offset:3px; }
+    textarea.book-input { resize:vertical; }
+    .slot-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; padding-top:8px; }
+    .slot-button { border:1px solid #c9cdd3; background:white; color:#142a45; border-radius:6px; font-size:.82rem; padding:11px 6px; min-height:44px; text-align:center; cursor:pointer; }
+    .slot-button:hover,.slot-button.selected { border-color:#c3a14c; background:#102441; color:#fff; }
+    .submit-book { width:100%; border:0; border-radius:8px; min-height:54px; color:#071d36; background:#c5a44c; padding:13px 18px; font-size:1.05rem; font-weight:800; cursor:pointer; }
+    .submit-book:disabled { cursor:not-allowed; opacity:.55; }
+    .booking-feedback { border:1px solid #8eab91; color:#123f20; background:#ecf9ef; border-radius:6px; padding:14px; margin-top:18px; font-weight:600; }
+    .booking-feedback[role="alert"] { border-color:#bc746e; background:#fff1f0; color:#8b2222; }
+    .booking-feedback[hidden] { display:none; }
+    .form-hidden { position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden; }
+    @media(max-width:850px) { .booking-grid {grid-template-columns:1fr; gap:52px;} }
+    @media(max-width:410px) { .slot-grid {grid-template-columns:repeat(3,minmax(0,1fr));} }
+  </style>
 </BaseLayout>

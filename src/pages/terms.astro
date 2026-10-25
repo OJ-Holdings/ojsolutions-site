@@ -9,7 +9,7 @@ import LegalContact from "../components/LegalContact.astro";
 import { BUSINESS_NAME, LEGAL_ENTITY } from "../config";
 import { filled } from "../lib/site";
 
-const LAST_UPDATED = "October 17, 2026";
+const LAST_UPDATED = "October 25, 2026";
 const entity = filled(LEGAL_ENTITY) ? LEGAL_ENTITY.trim() : BUSINESS_NAME;
 const named = entity === BUSINESS_NAME ? entity : `${entity} ("${BUSINESS_NAME}")`;
 ---
@@ -52,8 +52,9 @@ const named = entity === BUSINESS_NAME ? entity : `${entity} ("${BUSINESS_NAME}"
 
         <h2>Other websites and tools</h2>
         <p>
-          The site links to and uses tools from other companies, such as our booking calendar, chat, and social media.
-          We're not responsible for their content or how they handle your information. Their own terms and policies apply.
+          Our consultation form accepts preferred 15-minute times only. A submission does not reserve a slot.
+          We'll contact you to confirm it. Other services such as website hosting and social media
+          may involve outside providers under their own terms and policies.
         </p>
 
         <h2>Text messages (SMS)</h2>
