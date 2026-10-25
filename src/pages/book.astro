@@ -89,7 +89,7 @@ const submitUrl = "https://vgckpcktsfuithqggknd.supabase.co/functions/v1/oj-solu
           </div>
           <p class="text-sm text-muted" id="selected-summary">First select your preferred date and time.</p>
           <button type="submit" id="submit-request" class="submit-book" disabled>Request this 15-minute call ↗</button>
-          <p class="text-sm text-muted">Submitting a request does not reserve a time or automatically sign you up for marketing messages. We will contact you to confirm the request. [RESPONSE WINDOW — FOUNDERS TO CONFIRM]</p>
+          <p class="text-sm text-muted">Submitting a request does not reserve a time or automatically sign you up for marketing messages. We will contact you to confirm the request.</p>
           <div id="booking-feedback" role="status" aria-live="polite" class="booking-feedback" hidden></div>
         </form>
         {email && <p class="mt-8 text-muted">Prefer email? <a href={"mailto:" + email + "?subject=" + encodeURIComponent("15-minute consultation request")} class="link">{email}</a></p>}
