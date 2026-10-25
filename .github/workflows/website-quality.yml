@@ -20,6 +20,8 @@ jobs:
       - name: Check Astro and TypeScript
         run: npm run check
       - name: Build production website
+        env:
+          VERCEL_ENV: production
         run: npm run build
       - name: Verify routes, disclosure and booking contract
         run: node scripts/verify-site.mjs
