@@ -20,13 +20,15 @@ export const BUSINESS_NAME: string = "OJ Solutions";
 // TODO(Jacob): add the legal entity name once it's registered.
 export const LEGAL_ENTITY: string = "";
 
+// TODO(founders): Approve the existing business email for public display.
 export const EMAIL: string = "ojsolutionshq@gmail.com";
 
 // Format it the way you want it shown, e.g. "(555) 123-4567".
-// TODO(Jacob): add the business phone number. Hidden until set.
-export const PHONE: string = "";
+// Approved live AI demonstration number. Do not show a personal or Exterior Care business line.
+export const PHONE: string = "(262) 401-0826";
 
 // The canonical address used for the sitemap, search results, and share previews.
+// TODO(founders): Verify the configured domain against the approved website master brief.
 export const SITE_URL: string = "https://ojsolutions.org";
 
 /* ---------- Booking ---------- */
@@ -71,17 +73,17 @@ export const DEMO_VIDEO_SRC: string = "";
 export const STATS_SOURCE_URL: string =
   "https://www.callrail.com/blog/missed-calls-cost-businesses-more-than-ever";
 
-// The guarantee line shown next to the Book a call button on the
+// An optional legally and commercially approved guarantee line beside the Book a call button on the
 // AI Receptionist page. Hidden if empty.
-export const GUARANTEE_TEXT: string =
-  "We track every call and every booking. If it isn't making you money, we won't keep you on as a client.";
+// No guarantee is approved for publication. Keep empty until founders approve any precise terms.
+export const GUARANTEE_TEXT: string = "";
 
 // Pricing for the AI Receptionist. The "What does it cost?" FAQ always
 // uses these two numbers. SHOW_PRICING only turns on the separate
 // Pricing section.
-export const SHOW_PRICING: boolean = false;
-export const SETUP_PRICE: number = 1000;
-export const MONTHLY_PRICE: number = 497;
+export const SHOW_PRICING: boolean = true;
+export const SETUP_PRICE: number = 2000;
+export const MONTHLY_PRICE: number = 797;
 
 /* ---------- Websites and Commercials pages ---------- */
 
