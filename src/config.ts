@@ -82,8 +82,9 @@ export const GUARANTEE_TEXT: string = "";
 // uses these two numbers. SHOW_PRICING only turns on the separate
 // Pricing section.
 export const SHOW_PRICING: boolean = true;
-export const SETUP_PRICE: number = 2000;
-export const MONTHLY_PRICE: number = 797;
+// Legacy values: public pricing now comes from src/lib/receptionist-pricing.ts.
+export const SETUP_PRICE: number = 0;
+export const MONTHLY_PRICE: number = 597;
 
 /* ---------- Websites and Commercials pages ---------- */
 
