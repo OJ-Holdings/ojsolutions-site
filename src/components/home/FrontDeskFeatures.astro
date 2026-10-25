@@ -6,7 +6,7 @@ import { RECEPTIONIST_OPTIONAL_MODULES } from "../../lib/receptionist-offer";
 const features = [
   ["01", "24/7 answering", "Your AI receptionist can pick up while you're on the job, closed, or tied up with a customer."],
   ["02", "Lead capture", "It asks for the caller's name, address, service, and preferred timeframe."],
-  ["03", "On-site estimate booking", "It schedules an available estimate on your connected calendar instead of guessing prices."],
+  ["03", "On-site estimate booking · Pro", "With Pro, your AI can offer available estimate times on your configured business calendar."],
   ["04", "Instant lead alerts", "You receive the information from the call without digging through voicemail."],
   ["05", "Basic contacts and call history", "Store caller details, recordings and transcripts. Advanced CRM pipelines are optional."],
   ["06", "Keep your business number", "Use it as overflow or as your primary front desk. You choose how calls are handled."],
@@ -14,7 +14,7 @@ const features = [
 
 ---
 <Section id="front-desk" labelledby="front-desk-title">
-  <SectionHeading id="front-desk-title" title="A front desk that works while you do" intro="No missed-call guessing game. Calls answered, details captured, estimates scheduled." />
+  <SectionHeading id="front-desk-title" title="A front desk that works while you do" intro="Starter answers and captures leads. Pro adds scheduling and follow-up automations." />
   <div class="mt-12 grid gap-0 border-t border-line sm:grid-cols-2 lg:grid-cols-3">
     {features.map(([num, name, description]) => (
       <article class="border-b border-line px-1 py-7 sm:pr-8 lg:py-9">
@@ -29,8 +29,8 @@ const features = [
   <div class="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)] lg:gap-20">
     <div>
       <h2 id="more-tools-title" class="display-2">Everything behind the front desk.</h2>
-      <p class="text-soft mt-6 max-w-lg text-lg">The receptionist is the first step. Add the follow-up systems your business needs as you grow.</p>
-      <p class="text-soft mt-4 text-base">These are optional add-ons, not included in the published AI Receptionist Pro price. Core call history and basic contacts are included.</p>
+      <p class="text-soft mt-6 max-w-lg text-lg">Starter handles incoming calls and lead capture. Pro adds on-site estimate scheduling and follow-up workflows. More integrations are available when your business needs them.</p>
+      <p class="text-soft mt-4 text-base">The Pro plan already includes missed-call text-back, review requests, follow-up workflows and reporting. The tools listed here are additional, separately scoped services.</p>
     </div>
     <div class="rule-soft border-t">
       {RECEPTIONIST_OPTIONAL_MODULES.map((module, i) => (

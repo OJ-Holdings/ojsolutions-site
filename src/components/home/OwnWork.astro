@@ -12,6 +12,9 @@ import houseAfter from "../../assets/photos/exterior-house-wash-after.jpg";
 import stepsBefore from "../../assets/photos/exterior-steps-before.jpg";
 import stepsAfter from "../../assets/photos/exterior-steps-after.jpg";
 import siding from "../../assets/photos/exterior-siding-before-after.jpg";
+import { mediaAvailable } from "../../lib/media";
+const commercialPreview = mediaAvailable("/media/commercial-v2-cut15.mp4") ? "/media/commercial-v2-cut15.mp4" : "/media/commercial-loop.mp4";
+const commercialPoster = mediaAvailable("/media/commercial-v2-cut15-poster.webp") && mediaAvailable("/media/commercial-v2-cut15.mp4") ? "/media/commercial-v2-cut15-poster.webp" : "/media/commercial-loop-poster.webp";
 ---
 
 <section id="why-us" class="operator-section on-navy" aria-labelledby="why-title">
@@ -91,10 +94,10 @@ import siding from "../../assets/photos/exterior-siding-before-after.jpg";
             preload="none"
             width="540"
             height="960"
-            poster="/media/commercial-loop-poster.webp"
+            poster={commercialPoster}
             aria-label="Muted excerpt of an OJ Exterior Care commercial"
           >
-            <source src="/media/commercial-loop.mp4" type="video/mp4" />
+            <source src={commercialPreview} type="video/mp4" />
           </video>
           <div class="photo-shade" aria-hidden="true"></div>
           <figcaption class="gallery-caption gallery-caption-small">

@@ -29,6 +29,18 @@ assert.match(home, /Operator Advantage|We don't just build for businesses/i, "Mi
 assert.match(home, /href=["']\/services["']/, "Full services link missing");
 assert.match(home, /data-call-demo/, "Animated phone demo was removed");
 
+// One published price source: never quietly revert to the old $797/$2,000 offer.
+const aiLanding = html("ai-receptionist");
+for (const [path, page] of [["homepage", home], ["receptionist", aiLanding]]) {
+  assert.match(page, /\$297\b/, path + " missing approved Starter price");
+  assert.match(page, /\$597\b/, path + " missing approved Pro price");
+  assert.doesNotMatch(page, /\$797\b|\$2,000\b/, path + " displays withdrawn prices");
+}
+assert.match(home, /missed-call text-back, review requests, follow-up workflows and reporting/i,
+  "Homepage incorrectly describes Pro inclusions as optional add-ons");
+assert.match(home, /Google reviews of\s*<strong>OJ Exterior Care<\/strong>/i,
+  "Founder-company reviews must be explicitly attributed to the separate exterior-care business");
+
 const book = html("book");
 assert.match(book, /id=["']consultation-form["']/);
 assert.match(book, /id=["']booking-sms-consent["'][^>]*type=["']checkbox["']|type=["']checkbox["'][^>]*id=["']booking-sms-consent["']/);
