@@ -8,6 +8,7 @@ import CommercialExamples from "../components/CommercialExamples.astro";
 import PriceFrom from "../components/PriceFrom.astro";
 import { COMMERCIAL_PRICE_FROM, FAQ_ANSWERS, SHOOT_AREA } from "../config";
 import { filled } from "../lib/site";
+import Icon from "../components/Icon.astro";
 
 // Only promise to come on site when SHOOT_AREA is set in src/config.ts.
 // TODO(Jacob): decide how out-of-area clients work (they send footage?
@@ -81,23 +82,67 @@ const faq = [
   ctaHeading="Let's get you on camera"
   ctaLine="Book a short call and we'll plan what to film."
 >
+  <figure slot="hero-aside" class="mx-auto w-full max-w-[21rem] lg:mr-0">
+    <div class="rule-soft aspect-[9/16] overflow-hidden rounded-lg border bg-navy">
+      <video
+        controls
+        preload="none"
+        playsinline
+        width="720"
+        height="1280"
+        poster="/media/commercial-30-poster.webp"
+        class="block size-full object-cover"
+      >
+        <source src="/media/commercial-30.mp4" type="video/mp4" />
+        <a href="/media/commercial-30.mp4" class="link">Watch our commercial</a>
+      </video>
+    </div>
+    <figcaption class="mt-3 flex items-center gap-2 font-semibold">
+      <span class="flex size-6 items-center justify-center rounded-sm bg-gold text-navy" aria-hidden="true">
+        <Icon name="volume" class="size-4" />
+      </span>
+      Our own commercial. Sound on.
+    </figcaption>
+  </figure>
+
   <Fragment slot="problem">
     <p class="mt-6 max-w-2xl text-lg text-muted">
       If you're only posting photos, or not posting at all, you're invisible in the feed while your competitors show up.
     </p>
   </Fragment>
 
-  <Section id="included" labelledby="included-title">
+  <CommercialExamples>
+    <figure class="flex flex-col gap-5 sm:flex-row sm:items-end sm:gap-8">
+      <div class="rule-soft aspect-[9/16] w-full max-w-[13.5rem] overflow-hidden rounded-lg border bg-navy">
+        <video
+          controls
+          preload="none"
+          playsinline
+          width="720"
+          height="1280"
+          poster="/media/commercial-15-poster.webp"
+          class="block size-full object-cover"
+        >
+          <source src="/media/commercial-15.mp4" type="video/mp4" />
+          <a href="/media/commercial-15.mp4" class="link">Watch the short version</a>
+        </video>
+      </div>
+      <figcaption class="max-w-xs">
+        <span class="block font-heading text-xl font-bold">Short version</span>
+        <span class="text-soft mt-1 block">The same commercial, cut down.</span>
+      </figcaption>
+    </figure>
+  </CommercialExamples>
+
+  <Section id="included" labelledby="included-title" border={false}>
     <SectionHeading id="included-title" title="What's included" intro="We plan it, film it, and edit it." />
     <FeatureGrid items={included} />
   </Section>
 
-  <Section id="how-it-works" labelledby="how-title">
-    <SectionHeading id="how-title" title="How it works" />
-    <Steps steps={steps} />
+  <Section id="how-it-works" labelledby="how-title" tone="navy">
+    <SectionHeading id="how-title" title="How it works" tone="navy" />
+    <Steps steps={steps} tone="navy" />
   </Section>
-
-  <CommercialExamples />
 
   <PriceFrom price={COMMERCIAL_PRICE_FROM} noun="project" />
 </ServiceLayout>

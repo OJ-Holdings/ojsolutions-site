@@ -20,13 +20,15 @@ export const BUSINESS_NAME: string = "OJ Solutions";
 // TODO(Jacob): add the legal entity name once it's registered.
 export const LEGAL_ENTITY: string = "";
 
+// TODO(founders): Approve the existing business email for public display.
 export const EMAIL: string = "ojsolutionshq@gmail.com";
 
 // Format it the way you want it shown, e.g. "(555) 123-4567".
-// TODO(Jacob): add the business phone number. Hidden until set.
-export const PHONE: string = "";
+// Approved live AI demonstration number. Do not show a personal or Exterior Care business line.
+export const PHONE: string = "(262) 401-0826";
 
 // The canonical address used for the sitemap, search results, and share previews.
+// TODO(founders): Verify the configured domain against the approved website master brief.
 export const SITE_URL: string = "https://ojsolutions.org";
 
 /* ---------- Booking ---------- */
@@ -35,14 +37,14 @@ export const SITE_URL: string = "https://ojsolutions.org";
 // code and copy the link inside src="...". It looks like:
 // "https://api.leadconnectorhq.com/widget/booking/AbC123xyz"
 // (Pasting the whole embed code also works.)
-// When this is set, every "Book a call" button goes to /book, which shows
-// the calendar right on our site.
+// Every "Book a call" button goes to /book. When this is set, /book shows
+// the calendar right on our site. Until then /book shows a placeholder.
 // TODO(Jacob): paste the GHL calendar embed link.
 export const GHL_CALENDAR_EMBED: string = "";
 
 // A plain booking page link (for example a GHL booking link opened in its
-// own page). Only used when GHL_CALENDAR_EMBED is empty.
-// If both are empty, "Book a call" opens an email to EMAIL instead.
+// own page). Only used when GHL_CALENDAR_EMBED is empty: /book then shows
+// a button to it in place of the calendar.
 export const BOOKING_URL: string = "";
 
 // The GoHighLevel chat widget code. Paste the whole <script ...></script>
@@ -71,15 +73,17 @@ export const DEMO_VIDEO_SRC: string = "";
 export const STATS_SOURCE_URL: string =
   "https://www.callrail.com/blog/missed-calls-cost-businesses-more-than-ever";
 
-// Your guarantee, written exactly how you want it shown.
-// Hidden if empty. TODO(Jacob): decide on a guarantee, if any.
+// An optional legally and commercially approved guarantee line beside the Book a call button on the
+// AI Receptionist page. Hidden if empty.
+// No guarantee is approved for publication. Keep empty until founders approve any precise terms.
 export const GUARANTEE_TEXT: string = "";
 
-// Pricing for the AI Receptionist. The prices only show when
-// SHOW_PRICING is true.
-export const SHOW_PRICING: boolean = false;
-export const SETUP_PRICE: number = 1000;
-export const MONTHLY_PRICE: number = 500;
+// Pricing for the AI Receptionist. The "What does it cost?" FAQ always
+// uses these two numbers. SHOW_PRICING only turns on the separate
+// Pricing section.
+export const SHOW_PRICING: boolean = true;
+export const SETUP_PRICE: number = 2000;
+export const MONTHLY_PRICE: number = 797;
 
 /* ---------- Websites and Commercials pages ---------- */
 
@@ -142,10 +146,13 @@ export const FAQ_ANSWERS = {
 /* ---------- Social links ---------- */
 
 // Remove a link (set it to "") to hide it.
+// All three are off for now: the Instagram and TikTok profiles don't exist
+// and the YouTube channel has no videos. The old links were
+// youtube.com/@ojsolutionshq, instagram.com/ojsolutionshq, tiktok.com/@ojsolutionshq.
 export const SOCIAL_LINKS: { youtube: string; instagram: string; tiktok: string } = {
-  youtube: "https://www.youtube.com/@ojsolutionshq",
-  instagram: "https://www.instagram.com/ojsolutionshq",
-  tiktok: "https://www.tiktok.com/@ojsolutionshq",
+  youtube: "",
+  instagram: "",
+  tiktok: "",
 };
 
 /* ---------- Types (no need to edit) ---------- */

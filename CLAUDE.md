@@ -1,3 +1,17 @@
+# Approved update: AI front desk focus (2026-10-25)
+
+The founder-supplied website master brief is the current source of truth for offer positioning and public claims. **Keep the existing redesign branch's navy-and-gold visual language, GSAP animated phone dialogue, booking calendar, and the real OJ Exterior Care imagery.** Extend the site rather than rebuilding this demo.
+
+- Flagship is the AI receptionist for local home-service businesses in Kenosha, Racine and Pleasant Prairie, WI. Secondary offerings (websites, commercials) can remain, but should not eclipse the receptionist.
+- Main CTA: tel:+12624010826, displayed (262) 401-0826. Secondary CTA: booking request. Demo animation is fictional sample data, not an actual recording.
+- The AI must introduce itself as AI in example dialogue. Lead details: name, address, service, timeframe. Schedule on-site estimates instead of quoting unverified prices.
+- Approved starting price: $797/month + $2,000 setup. Never reintroduce the previous $497 or $1,000 prices. No guarantee, discount or cancellation promise is currently approved.
+- Do not invent customer proof, guarantees, contract duration, setup timelines, achievements or client results. Keep any existing true photos and mark examples as our own business.
+- Existing canonical domain and contact email remain configured, but the founders must confirm they are ready to publish. GHL calendar, real approved recording, transcripts and legal terms remain launch blockers.
+- Preserve Astro + Tailwind, existing reusable components, and accessible reduced-motion behavior. Changes go through a PR; do not push to the production branch without review.
+
+---
+
 # OJ Solutions website
 
 Rules for every Claude Code session working on this repo (Jacob's or Oscar's). Follow them for every change, including small copy edits.
@@ -6,7 +20,7 @@ Rules for every Claude Code session working on this repo (Jacob's or Oscar's). F
 
 OJ Solutions fixes what's slowing businesses down. We sell three done-for-you services:
 
-1. AI Receptionist: answers every call 24/7, answers questions, quotes from the owner's pricing, books the appointment onto their calendar, creates the contact in a CRM, and texts back missed calls. It handles most calls on its own and transfers anything it can't handle to the owner's phone or staff. Runs on GoHighLevel. We set it up and manage it.
+1. AI Receptionist: answers your calls 24/7, answers questions, quotes from the owner's pricing, books the appointment onto their calendar, creates the contact in a CRM, and texts back missed calls. It handles most calls on its own and transfers anything it can't handle to the owner's phone or staff. Runs on GoHighLevel. We set it up and manage it.
 2. Websites: new sites or rebuilds, built for phones first, with click-to-call and booking built in.
 3. Commercials: video ads and commercials for social media, websites, and paid ads. We plan, film, and edit.
 
@@ -19,18 +33,20 @@ Most visitors come from our cold calls, cold emails, Instagram and Facebook DMs,
 ## Tech
 
 - Astro (latest stable) + Tailwind CSS, fully static output. No backend, no database, no CMS.
-- Hosted on Vercel from GitHub. The `ojsolutions-site` project builds `main` with `npm run build`, publishes `dist`, and uses Node.js 24. `netlify.toml` remains for the prior Netlify setup.
+- Hosted on Vercel from GitHub (live at ojsolutions.org). The `ojsolutions-site` Vercel project builds with `npm run build`, publishes `dist`, and uses Node.js 24. `vercel.json` holds the Vercel settings (clean URLs, response headers). Vercel already serves `/_astro/*` with a one-year immutable cache, so don't add one. Netlify is not used anymore.
 - Mobile-first. Design at 375px wide first, then scale up.
-- Fast: no animation libraries, minimal JS, optimized images. Target Lighthouse 95+ on mobile. This site is also our portfolio for the website service, so it has to be fast and clean.
+- Fast: minimal JS, optimized images. Target Lighthouse 95+ on mobile. This site is also our portfolio for the website service, so it has to be fast and clean.
+- Motion: GSAP is allowed on the homepage only. Service pages, and every other page, stay animation-library-free and use CSS. All motion respects prefers-reduced-motion.
 - Accessible: semantic HTML, alt text, visible focus states, WCAG AA contrast.
 - SEO: unique title and meta description per page, an Open Graph image (navy background, OJ mark, "Built by business owners, for business owners."), @astrojs/sitemap, robots.txt.
 - The three service pages share one reusable ServiceLayout, so adding a service later is one new page.
 - All editable business info lives in one file, `src/config.ts`: BUSINESS_NAME, LEGAL_ENTITY, EMAIL, PHONE, BOOKING_URL, GHL_CALENDAR_EMBED, GHL_CHAT_WIDGET, DEMO_AUDIO_SRC, DEMO_VIDEO_SRC, STATS_SOURCE_URL, GUARANTEE_TEXT, SHOW_PRICING, SETUP_PRICE, MONTHLY_PRICE, WEBSITE_PRICE_FROM, COMMERCIAL_PRICE_FROM, WEBSITE_EXAMPLES, COMMERCIAL_EXAMPLES, SHOOT_AREA, social links, and the FAQ answers still owed. Unknown values stay empty.
-- If a config value is empty, hide whatever depends on it. Visitors never see a broken link, an empty player, or placeholder text.
+- If a config value is empty, hide whatever depends on it. Visitors never see a broken link or an empty player.
+- Exception: answers Jacob still owes (setup time, calendar embed, demo audio, screen recording, client sites) show as visible text starting with "PLACEHOLDER:" on preview and local builds only, listed in `PLACEHOLDERS.md`. Production (`VERCEL_ENV` is "production") hides them (`SHOW_PLACEHOLDERS` in `src/lib/site.ts`). Replace each one when its answer arrives; never fill one with made-up content.
 
 ## Booking and tracking
 
-- Every "Book a call" button goes to /book when GHL_CALENDAR_EMBED is set, otherwise to BOOKING_URL. If neither is set, it links to mailto:EMAIL. (Logic: `bookingHref` in `src/lib/site.ts`.)
+- Every "Book a call" button goes to /book. (Logic: `bookingHref` in `src/lib/site.ts`.) /book shows the GHL calendar when GHL_CALENDAR_EMBED is set, a button to BOOKING_URL when only that is set, and otherwise a PLACEHOLDER on preview builds or a "Book by email" button on production. The email address is always shown plainly.
 - Buttons on service pages add ?service=receptionist, ?service=website, or ?service=commercial. Home page buttons add nothing.
 - /book shows the embedded GHL calendar and passes the page's full query string (service, src, rep, and any utm_ tags) through to the calendar embed URL, so those tags land on the contact in GHL.
 - Outreach links point at a service page and may carry src, rep, and utm_ tags (e.g. /ai-receptionist?src=ig&rep=jacob). A small script in BaseLayout remembers those tags for the visit and adds them to every Book a call link, so they still reach /book after the visitor clicks around.
@@ -58,6 +74,6 @@ Most visitors come from our cold calls, cold emails, Instagram and Facebook DMs,
 ## Working in this repo
 
 - `npm run dev` starts the local site at http://localhost:4321. `npm run build` must finish with no errors before anything is pushed.
-- Pushing to `main` deploys to Vercel automatically. The prior Netlify integration may also deploy from `main`. Don't push without being asked.
+- Pushing to `main` deploys to production on Vercel. Every other pushed branch gets its own Vercel preview link. Don't push without being asked.
 - Where things live: business info in `src/config.ts`; link and booking helpers in `src/lib/site.ts`; shared page pieces in `src/components/`; page frames in `src/layouts/` (`BaseLayout` for every page, `ServiceLayout` for service pages); pages in `src/pages/`.
 - To find everything still waiting on an answer: search the code for `TODO(Jacob)`.

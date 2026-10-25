@@ -1,6 +1,6 @@
 ---
-// The one conversion on every page. Where it goes is decided in
-// src/lib/site.ts (bookingHref) from the booking settings in src/config.ts.
+// The one conversion on every page. It always goes to /book
+// (bookingHref in src/lib/site.ts), tagged with the service on service pages.
 import Button from "./Button.astro";
 import { bookingHref, type ServiceKey } from "../lib/site";
 
@@ -16,16 +16,6 @@ const { service, variant = "navy", size = "md", label = "Book a call", class: cl
 const href = bookingHref(service);
 ---
 
-{
-  href && (
-    <Button
-      href={href}
-      variant={variant}
-      size={size}
-      class={className}
-      data-book={href.startsWith("mailto:") ? undefined : ""}
-    >
-      {label}
-    </Button>
-  )
-}
+<Button href={href} variant={variant} size={size} class={className} data-book>
+  {label}
+</Button>

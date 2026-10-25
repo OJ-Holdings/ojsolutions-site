@@ -3,6 +3,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import BookButton from "../components/BookButton.astro";
 import Icon from "../components/Icon.astro";
 import { SERVICES } from "../lib/site";
+
+const links = [{ name: "Home", href: "/" }, ...SERVICES];
 ---
 
 <BaseLayout
@@ -10,32 +12,34 @@ import { SERVICES } from "../lib/site";
   description="That page doesn't exist. Head back to the OJ Solutions home page or pick a service."
   noindex
 >
-  <section class="container-page pt-12 pb-20 sm:pt-20 sm:pb-28">
-    <div class="max-w-2xl">
-      <span class="block h-1 w-10 rounded-sm bg-gold" aria-hidden="true"></span>
-      <h1 class="mt-4 text-[2.25rem] leading-[1.1] font-bold tracking-tight sm:text-5xl">This page doesn't exist.</h1>
-      <p class="mt-4 text-lg text-muted">The link may be old or mistyped. Here's where you can go instead.</p>
-      <ul role="list" class="mt-8 border-b border-line">
-        <li class="border-t border-line">
-          <a href="/" class="flex min-h-14 items-center justify-between gap-3 font-semibold text-navy hover:underline hover:decoration-gold hover:decoration-2 hover:underline-offset-4">
-            Home
-            <Icon name="arrow-right" class="size-4 text-muted" />
-          </a>
-        </li>
-        {
-          SERVICES.map((s) => (
-            <li class="border-t border-line">
-              <a href={s.href} class="flex min-h-14 items-center justify-between gap-3 font-semibold text-navy hover:underline hover:decoration-gold hover:decoration-2 hover:underline-offset-4">
-                {s.name}
-                <Icon name="arrow-right" class="size-4 text-muted" />
-              </a>
-            </li>
-          ))
-        }
-      </ul>
-      <div class="mt-10">
-        <BookButton size="lg" />
+  <section class="on-navy" aria-labelledby="not-found-title">
+    <div class="container-page grid gap-12 pt-12 pb-20 sm:pt-20 sm:pb-28 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:gap-16">
+      <div>
+        <h1 id="not-found-title" class="display-1 max-w-[12ch]">This page doesn't exist.</h1>
+        <p class="text-soft mt-6 max-w-md text-lg sm:text-xl">
+          The link may be old or mistyped. Here's where you can go instead.
+        </p>
+        <div class="mt-9">
+          <BookButton variant="gold" size="lg" />
+        </div>
       </div>
+      <nav aria-labelledby="not-found-title" class="lg:pt-3">
+        <ul role="list" class="rule-soft border-b">
+          {
+            links.map((l) => (
+              <li class="rule-soft border-t">
+                <a
+                  href={l.href}
+                  class="group flex min-h-16 items-center justify-between gap-3 font-heading text-xl font-bold text-white hover:underline hover:decoration-gold hover:decoration-2 hover:underline-offset-4 sm:text-2xl"
+                >
+                  {l.name}
+                  <Icon name="arrow-right" class="size-5 text-gold transition-transform group-hover:translate-x-1" />
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
     </div>
   </section>
 </BaseLayout>

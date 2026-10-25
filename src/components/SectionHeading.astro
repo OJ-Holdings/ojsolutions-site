@@ -1,16 +1,16 @@
 ---
-// Gold rule + section title + optional intro line.
+// Section title + optional intro line. Works on white and navy sections.
 interface Props {
   title: string;
   id?: string;
   intro?: string;
+  tone?: "white" | "navy";
 }
 
-const { title, id, intro } = Astro.props;
+const { title, id, intro, tone = "white" } = Astro.props;
 ---
 
-<div class="max-w-2xl">
-  <span class="block h-1 w-10 rounded-sm bg-gold" aria-hidden="true"></span>
-  <h2 id={id} class="mt-4 text-[1.75rem] font-bold tracking-tight sm:text-4xl">{title}</h2>
-  {intro && <p class="mt-4 text-lg text-muted">{intro}</p>}
+<div class="max-w-3xl">
+  <h2 id={id} class="display-2">{title}</h2>
+  {intro && <p class:list={["mt-5 max-w-2xl text-lg sm:text-xl", tone === "navy" ? "text-soft" : "text-muted"]}>{intro}</p>}
 </div>

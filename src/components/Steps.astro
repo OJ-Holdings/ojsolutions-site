@@ -1,30 +1,49 @@
 ---
-// Numbered "how it works" steps.
+// Numbered "how it works" steps on a track: down the left on phones,
+// across the top on wide screens. Works on white and navy sections.
 interface Props {
   steps: { title: string; body: string }[];
+  tone?: "white" | "navy";
 }
 
-const { steps } = Astro.props;
+const { steps, tone = "white" } = Astro.props;
+const navy = tone === "navy";
 ---
 
-<ol role="list" class="mt-10 grid gap-8 md:grid-cols-3 md:gap-6">
+<ol role="list" class="steps mt-12 grid gap-0 md:grid-cols-3 md:gap-8">
   {
     steps.map((step, i) => (
-      <li class="flex gap-4 md:flex-col md:rounded-lg md:border md:border-line md:p-6">
+      <li class="relative grid grid-cols-[2.5rem_1fr] gap-x-5 pb-10 last:pb-0 md:block md:pb-0">
         <span
-          class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-navy font-heading text-lg font-bold text-white"
+          class:list={[
+            "track absolute top-10 bottom-0 left-5 w-px md:top-5 md:right-[-2rem] md:bottom-auto md:left-10 md:h-px md:w-auto",
+            navy ? "bg-white/20" : "bg-line",
+          ]}
+          aria-hidden="true"
+        />
+        <span
+          class:list={[
+            "relative flex size-10 items-center justify-center rounded-md font-heading text-lg font-bold",
+            navy ? "bg-gold text-navy" : "bg-navy text-white",
+          ]}
           aria-hidden="true"
         >
           {i + 1}
         </span>
-        <div>
-          <h3 class="text-xl font-bold">
+        <div class="md:mt-6">
+          <h3 class="text-xl font-bold sm:text-2xl">
             <span class="sr-only">Step {i + 1}: </span>
             {step.title}
           </h3>
-          <p class="mt-2 text-muted">{step.body}</p>
+          <p class:list={["mt-2 text-lg", navy ? "text-soft" : "text-muted"]}>{step.body}</p>
         </div>
       </li>
     ))
   }
 </ol>
+
+<style>
+  .steps > li:last-child .track {
+    display: none;
+  }
+</style>

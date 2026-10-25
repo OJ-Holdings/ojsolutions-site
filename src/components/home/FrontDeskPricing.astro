@@ -1,0 +1,36 @@
+---
+import Section from "../Section.astro";
+import BookButton from "../BookButton.astro";
+import { MONTHLY_PRICE, SETUP_PRICE } from "../../config";
+import { formatPrice } from "../../lib/site";
+const included = [
+  "24/7 AI call answering",
+  "Caller's name, address, service and timeframe",
+  "On-site estimate scheduling",
+  "Lead notifications",
+  "Call recordings and transcripts in CRM",
+  "Overflow or full-front-desk configuration",
+];
+---
+<Section id="pricing" labelledby="pricing-title">
+  <div class="grid gap-10 lg:grid-cols-[1fr_1fr] lg:items-start lg:gap-20">
+    <div>
+      <p class="mb-4 text-sm font-bold tracking-widest text-muted uppercase">Straightforward pricing</p>
+      <h2 id="pricing-title" class="display-2">Your AI front desk. One clear starting offer.</h2>
+      <p class="mt-6 max-w-xl text-lg text-muted">Set up around your business, not some generic script. We discuss any extra modules before you commit.</p>
+      <p class="mt-6 text-lg font-bold">Built by business owners, for business owners.</p>
+    </div>
+    <div class="rounded-lg border border-line p-6 sm:p-9">
+      <p class="font-heading text-xl font-bold">AI Receptionist Pro</p>
+      <p class="mt-6 font-heading text-5xl font-bold tracking-tight">{formatPrice(MONTHLY_PRICE)}<span class="ml-2 font-sans text-base font-normal text-muted">/ month</span></p>
+      <p class="mt-3 text-lg text-muted">One-time setup: <strong class="text-navy">{formatPrice(SETUP_PRICE)}</strong></p>
+      <ul role="list" class="mt-8 space-y-3 border-t border-line pt-7 text-lg">
+        {included.map((item) => (
+          <li class="flex gap-3"><span aria-hidden="true" class="font-bold">✓</span><span>{item}</span></li>
+        ))}
+      </ul>
+      <div class="mt-8"><BookButton service="receptionist" size="lg" label="Book a 15-minute call" /></div>
+      <p class="mt-4 text-sm text-muted">Final setup timeline, agreement, and cancellation terms are reviewed before purchase.</p>
+    </div>
+  </div>
+</Section>

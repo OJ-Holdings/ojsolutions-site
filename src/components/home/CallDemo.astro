@@ -1,0 +1,491 @@
+---
+// Homepage hero demo: a call comes in, the AI receptionist talks with the
+// caller, and the booking lands on the calendar. It is an example, labeled
+// as one, with no business names or phone numbers.
+//
+// Without JavaScript, or with reduced motion, it shows the finished state:
+// the whole transcript and the booking on the calendar. GSAP (homepage only)
+// plays the call on a loop while it is on screen, with a pause button.
+const transcript = [
+  { who: "ai", text: "Hi, I'm the AI receptionist. How can I help?" },
+  { who: "caller", text: "Do you have anything open this week?" },
+  { who: "ai", text: "I have Thursday at 10 or Friday at 2. Which works better?" },
+  { who: "caller", text: "Thursday at 10." },
+  { who: "ai", text: "You're booked for Thursday at 10." },
+];
+const days = ["Mon", "Tue", "Wed", "Thu", "Fri"];
+const hours = ["9", "10", "11", "12"];
+// Time already taken this week: [day index, hour index]
+const busy = [
+  [0, 0],
+  [1, 2],
+  [2, 1],
+  [4, 0],
+  [4, 3],
+];
+---
+
+<figure class="call-demo" data-call-demo>
+  <figcaption class="sr-only">
+    Example call: an AI receptionist answers, talks with the caller, and books the appointment on the calendar.
+  </figcaption>
+
+  <div class="stage" aria-hidden="true">
+    <div class="phone">
+      <span class="speaker"></span>
+      <div class="screen">
+        <p class="status">
+          <span>Example call</span>
+          <span class="live"><span class="live-dot"></span>On the line</span>
+        </p>
+
+        <div class="scene ring" data-scene="ring">
+          <span class="avatar">
+            <span class="pulse"></span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+              ><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"></path></svg
+            >
+          </span>
+          <span class="caller">New caller</span>
+          <span class="sub">Incoming call</span>
+          <span class="answering"><span class="live-dot"></span>AI receptionist answering</span>
+        </div>
+
+        <div class="scene chat" data-scene="chat">
+          <p class="chat-head">
+            <span class="mini-avatar">AI</span>
+            <span><strong>AI receptionist</strong><span class="sub">On the call</span></span>
+          </p>
+          <ol class="bubbles">
+            {transcript.map((line) => <li class:list={["bubble", line.who]}>{line.text}</li>)}
+          </ol>
+        </div>
+      </div>
+    </div>
+
+    <div class="calendar">
+      <p class="cal-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+          ><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M3 10h18M8 3v4M16 3v4"></path></svg
+        >
+        This week
+      </p>
+      <div class="cal-grid">
+        <span></span>
+        {days.map((d) => <span class="day">{d}</span>)}
+        {
+          hours.map((h, row) => (
+            <>
+              <span class="hour">{h}</span>
+              {days.map((_, col) => (
+                <span class:list={["slot", busy.some(([c, r]) => c === col && r === row) && "busy"]}>
+                  {col === 3 && row === 1 && <span class="event" data-event />}
+                </span>
+              ))}
+            </>
+          ))
+        }
+      </div>
+      <p class="booked" data-booked>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+          ><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg
+        >
+        Booked: Thursday at 10
+      </p>
+    </div>
+  </div>
+
+  <button type="button" class="toggle" data-toggle hidden aria-pressed="false">
+    <svg class="icon-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"
+      ><rect x="6" y="5" width="4" height="14" rx="1"></rect><rect x="14" y="5" width="4" height="14" rx="1"></rect></svg
+    >
+    <svg class="icon-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"></path></svg>
+    <span class="label">Pause the example call</span>
+  </button>
+</figure>
+
+<style>
+  .call-demo {
+    --phone-w: 15.5rem;
+    position: relative;
+    width: 100%;
+    max-width: 23rem;
+    margin-inline: auto;
+    padding-bottom: 9.5rem;
+  }
+  @media (min-width: 640px) {
+    .call-demo {
+      --phone-w: 17.5rem;
+      max-width: 27rem;
+    }
+  }
+  .stage {
+    position: relative;
+  }
+
+  /* The phone: flat, 1px lines, corners at the brand's 8px. */
+  .phone {
+    position: relative;
+    width: var(--phone-w);
+    margin-left: auto;
+    margin-right: 0.5rem;
+    padding: 1.5rem 0.625rem 0.75rem;
+    border: 1px solid color-mix(in srgb, var(--color-white) 34%, var(--color-navy));
+    border-radius: 8px;
+    background: var(--color-navy);
+  }
+  .speaker {
+    position: absolute;
+    top: 0.625rem;
+    left: 50%;
+    width: 2.75rem;
+    height: 0.3125rem;
+    translate: -50% 0;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--color-white) 30%, var(--color-navy));
+  }
+  .screen {
+    position: relative;
+    aspect-ratio: 9 / 17;
+    overflow: hidden;
+    border-radius: 4px;
+    background: var(--color-white);
+    color: var(--color-navy);
+  }
+  .status {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.625rem 0.75rem;
+    border-bottom: 1px solid var(--color-line);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+  .live {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    color: var(--color-navy);
+  }
+  .live-dot {
+    width: 0.4375rem;
+    height: 0.4375rem;
+    border-radius: 999px;
+    background: var(--color-gold);
+  }
+
+  .scene {
+    position: absolute;
+    inset: 2.4rem 0 0;
+  }
+  .ring {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 18%;
+    text-align: center;
+    visibility: hidden;
+  }
+  .avatar {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 4.25rem;
+    height: 4.25rem;
+    border-radius: 999px;
+    background: var(--color-navy);
+    color: var(--color-gold);
+  }
+  .avatar svg {
+    width: 1.75rem;
+    height: 1.75rem;
+  }
+  .pulse {
+    position: absolute;
+    inset: 0;
+    border: 2px solid var(--color-gold);
+    border-radius: 999px;
+    opacity: 0;
+  }
+  .caller {
+    margin-top: 1.25rem;
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+  .sub {
+    display: block;
+    font-size: 0.8125rem;
+    color: var(--color-muted);
+  }
+  .answering {
+    position: absolute;
+    bottom: 1.25rem;
+    left: 50%;
+    translate: -50% 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    white-space: nowrap;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    background: var(--color-navy);
+    color: var(--color-white);
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .chat {
+    display: flex;
+    flex-direction: column;
+    padding: 0.75rem;
+  }
+  .chat-head {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding-bottom: 0.75rem;
+    font-size: 0.8125rem;
+    line-height: 1.25;
+  }
+  .mini-avatar {
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 999px;
+    background: var(--color-navy);
+    color: var(--color-gold);
+    font-family: var(--font-heading);
+    font-size: 0.6875rem;
+    font-weight: 700;
+  }
+  .bubbles {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .bubble {
+    max-width: 86%;
+    padding: 0.5rem 0.6875rem;
+    font-size: 0.78rem;
+    line-height: 1.35;
+    border-radius: 8px;
+  }
+  .bubble.ai {
+    align-self: flex-start;
+    border-bottom-left-radius: 2px;
+    background: var(--color-navy);
+    color: var(--color-white);
+  }
+  .bubble.caller {
+    align-self: flex-end;
+    border: 1px solid var(--color-line);
+    border-bottom-right-radius: 2px;
+    background: var(--color-white);
+  }
+
+  /* The calendar card overlaps the phone's lower left corner. */
+  .calendar {
+    position: absolute;
+    left: 0;
+    top: calc(100% - 2.25rem);
+    width: 13.25rem;
+    padding: 0.875rem;
+    border: 1px solid color-mix(in srgb, var(--color-white) 34%, var(--color-navy));
+    border-radius: 8px;
+    background: var(--color-navy);
+    color: var(--color-white);
+  }
+  @media (min-width: 640px) {
+    .calendar {
+      width: 14.5rem;
+    }
+  }
+  .cal-head {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-heading);
+    font-size: 0.875rem;
+    font-weight: 700;
+  }
+  .cal-head svg {
+    width: 1rem;
+    height: 1rem;
+    color: var(--color-gold);
+  }
+  .cal-grid {
+    display: grid;
+    grid-template-columns: 1.25rem repeat(5, 1fr);
+    gap: 3px;
+    margin-top: 0.75rem;
+    font-size: 0.625rem;
+  }
+  .day,
+  .hour {
+    color: color-mix(in srgb, var(--color-white) 78%, var(--color-navy));
+    text-align: center;
+    line-height: 1.6;
+  }
+  .hour {
+    text-align: left;
+    line-height: 1.375rem;
+  }
+  .slot {
+    position: relative;
+    height: 1.375rem;
+    border-radius: 3px;
+    background: color-mix(in srgb, var(--color-white) 7%, var(--color-navy));
+  }
+  .slot.busy {
+    background: color-mix(in srgb, var(--color-white) 24%, var(--color-navy));
+  }
+  .event {
+    position: absolute;
+    inset: 0;
+    border-radius: 3px;
+    background: var(--color-gold);
+  }
+  .booked {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+  .booked svg {
+    width: 0.9rem;
+    height: 0.9rem;
+    color: var(--color-gold);
+  }
+
+  .toggle {
+    position: absolute;
+    right: 0.5rem;
+    bottom: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border: 1px solid color-mix(in srgb, var(--color-white) 34%, var(--color-navy));
+    border-radius: 6px;
+    color: var(--color-white);
+    cursor: pointer;
+  }
+  .toggle:hover {
+    border-color: var(--color-gold);
+  }
+  .toggle[hidden] {
+    display: none;
+  }
+  .toggle svg {
+    width: 1rem;
+    height: 1rem;
+  }
+  .toggle .label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .toggle .icon-play,
+  .toggle[aria-pressed="true"] .icon-pause {
+    display: none;
+  }
+  .toggle[aria-pressed="true"] .icon-play {
+    display: block;
+  }
+</style>
+
+<script>
+  // Plays the example call on a loop, only while it's on screen, and only
+  // when the visitor hasn't asked for reduced motion.
+  const root = document.querySelector<HTMLElement>("[data-call-demo]");
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+  if (root && !reduce.matches) {
+    const q = <T extends Element = HTMLElement>(sel: string) => root.querySelector<T>(sel)!;
+    const toggle = q<HTMLButtonElement>("[data-toggle]");
+    let tl: gsap.core.Timeline | null = null;
+    let userPaused = false;
+    let onScreen = false;
+
+    const build = async () => {
+      const { gsap } = await import("gsap");
+      const ring = q("[data-scene=ring]");
+      const chat = q("[data-scene=chat]");
+      const bubbles = root.querySelectorAll(".bubble");
+      const pulse = q(".pulse");
+      const answering = q(".answering");
+      const event = q("[data-event]");
+      const booked = q("[data-booked]");
+
+      tl = gsap.timeline({ repeat: -1, repeatDelay: 0.6, defaults: { ease: "expo.out" } });
+      tl
+        // Clear the last call away
+        .to([chat, event, booked], { autoAlpha: 0, duration: 0.45, ease: "power2.out" })
+        .set(bubbles, { autoAlpha: 0, y: 10 })
+        .set(answering, { autoAlpha: 0 })
+        .set(event, { scaleY: 0.2, y: -14 })
+        // A call comes in
+        .fromTo(ring, { autoAlpha: 0, y: 8 }, { autoAlpha: 1, y: 0, duration: 0.6 })
+        .fromTo(pulse, { scale: 1, opacity: 0.9 }, { scale: 1.9, opacity: 0, duration: 1.1, ease: "power1.out", repeat: 2 }, "<")
+        .to(answering, { autoAlpha: 1, duration: 0.4 }, "-=1.6")
+        // The AI picks up
+        .to(ring, { autoAlpha: 0, duration: 0.35, ease: "power2.in" }, "+=0.2")
+        .to(chat, { autoAlpha: 1, duration: 0.4 });
+      bubbles.forEach((b, i) => {
+        tl!.to(b, { autoAlpha: 1, y: 0, duration: 0.5 }, i === 0 ? "+=0.1" : b.classList.contains("caller") ? "+=0.9" : "+=1.1");
+      });
+      tl
+        // The booking lands on the calendar
+        .to(event, { autoAlpha: 1, scaleY: 1, y: 0, duration: 0.7, ease: "back.out(2)" }, "+=0.35")
+        .to(booked, { autoAlpha: 1, duration: 0.4 }, "-=0.3")
+        .to({}, { duration: 3.2 });
+
+      toggle.hidden = false;
+      if (!onScreen) tl.pause();
+    };
+
+    const sync = () => {
+      if (!tl) return;
+      if (onScreen && !userPaused) tl.play();
+      else tl.pause();
+    };
+
+    toggle.addEventListener("click", () => {
+      userPaused = !userPaused;
+      toggle.setAttribute("aria-pressed", String(userPaused));
+      toggle.querySelector(".label")!.textContent = userPaused ? "Play the example call" : "Pause the example call";
+      sync();
+    });
+
+    let started = false;
+    new IntersectionObserver(
+      (entries) => {
+        onScreen = entries.some((e) => e.isIntersecting);
+        if (onScreen && !started) {
+          started = true;
+          build();
+        }
+        sync();
+      },
+      { rootMargin: "80px" },
+    ).observe(root);
+
+    // If reduced motion gets switched on mid-visit, stop on the finished call.
+    reduce.addEventListener("change", () => {
+      if (!reduce.matches || !tl) return;
+      tl.progress(1).pause();
+      toggle.hidden = true;
+    });
+  }
+</script>

@@ -1,3 +1,5 @@
+> **October 2026 AI-front-desk enhancement:** The `feat/extend-animated-demo-redesign` branch builds on `redesign` and preserves `src/components/home/CallDemo.astro`'s animated phone conversation and calendar. It adds prominent live demo calling, receptionist capabilities, and approved $797/month + $2,000 setup pricing. Do not substitute the unrelated dark-black concept from PR #2 for the existing navy-and-gold site. Confirm GHL calendar, legal terms, live domain/email, and real demo media before launch.
+
 # OJ Solutions website
 
 The website for OJ Solutions: a home page, one page per service (AI Receptionist, Websites, Commercials), a booking page, Privacy, Terms, and a "page not found" page.
@@ -20,7 +22,7 @@ It's built with **Astro** (turns our files into a fast, plain website) and **Tai
 | `public/` | Files served exactly as they are: favicons, the share image, and demo media in `media/`. |
 | `scripts/brand-assets.py` | Rebuilds the logo mark, favicons, and share image from `logo.png`. Only needed if the logo changes. |
 | `logo.png` | The master logo file (the OJ mark). |
-| `netlify.toml` | Tells Netlify how to build the site. You shouldn't need to touch it. |
+| `vercel.json` | Vercel settings, like clean addresses (/websites instead of /websites.html). You shouldn't need to touch it. |
 | `CLAUDE.md` | The rules Claude Code follows when working on this site (brand, writing rules, booking). |
 | `dist/` and `node_modules/` | Created automatically. Don't edit them, and they're never uploaded to GitHub. |
 
@@ -103,7 +105,7 @@ https://yourdomain.com/websites?src=email&rep=oscar&utm_campaign=fall
 - `rep` is who reached out (`jacob` or `oscar`).
 - Any `utm_` tags work too.
 
-The site remembers these while the person browses, and passes them to the calendar along with which service page they booked from (`service=receptionist`, `website`, or `commercial`). This only works once `GHL_CALENDAR_EMBED` (or `BOOKING_URL`) is set. With email booking there's nothing to pass them to.
+The site remembers these while the person browses, and passes them to the calendar along with which service page they booked from (`service=receptionist`, `website`, or `commercial`). This only works once `GHL_CALENDAR_EMBED` is set. Until then /book shows a placeholder.
 
 ---
 
@@ -132,8 +134,6 @@ Vercel uses Node.js 24. The project is configured for Astro, and `SITE_URL` in `
 ### Custom domain DNS
 
 The domain is registered outside Vercel. In the registrar's DNS settings, point the apex (`@`) to Vercel's current A record and `www` to Vercel's current CNAME target. Confirm the exact values in Vercel's **Domains** settings before changing DNS. Keep existing MX and mail-related TXT records so email continues to work. Vercel serves `www.ojsolutions.org` as a redirect to `ojsolutions.org`.
-
-The existing `netlify.toml` remains in the repo for the prior Netlify setup. Do not change DNS or disconnect any existing host until the Vercel domain status is valid and the production deployment has been checked.
 
 ---
 

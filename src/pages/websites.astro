@@ -6,6 +6,9 @@ import Steps from "../components/Steps.astro";
 import FeatureGrid from "../components/FeatureGrid.astro";
 import WebsiteExamples from "../components/WebsiteExamples.astro";
 import PriceFrom from "../components/PriceFrom.astro";
+import Icon from "../components/Icon.astro";
+import { Image } from "astro:assets";
+import ourSite from "../assets/work/ojexteriorcare-phone.jpg";
 import { FAQ_ANSWERS, WEBSITE_PRICE_FROM } from "../config";
 
 const included = [
@@ -74,6 +77,41 @@ const faq = [
   ctaHeading="Let's look at your site"
   ctaLine="Book a short call. We'll go over what you have and what we'd change."
 >
+  <figure slot="hero-aside" class="mx-auto w-full max-w-[19rem] lg:mr-0">
+    <a
+      href="https://www.ojexteriorcare.com"
+      target="_blank"
+      rel="noopener"
+      class="group rule-soft relative block rounded-lg border bg-navy px-2.5 pt-6 pb-3 hover:border-gold"
+    >
+      <span class="absolute top-2.5 left-1/2 h-1.5 w-11 -translate-x-1/2 rounded-full bg-white/30" aria-hidden="true"
+      ></span>
+      <Image
+        src={ourSite}
+        alt="The services section of ojexteriorcare.com on a phone"
+        widths={[300, 560, 780]}
+        sizes="(min-width: 1024px) 18rem, 80vw"
+        loading="eager"
+        class="block h-auto w-full rounded-sm"
+      />
+      <span class="sr-only">Visit ojexteriorcare.com (opens in a new tab)</span>
+    </a>
+    <figcaption class="mt-4">
+      <span class="block font-heading text-lg font-bold">ojexteriorcare.com</span>
+      <span class="text-soft mt-1 block">The site for OJ Exterior Care, our own pressure washing and window cleaning company.</span>
+      <a
+        href="https://www.ojexteriorcare.com"
+        target="_blank"
+        rel="noopener"
+        class="link mt-2 inline-flex min-h-11 items-center gap-1.5"
+      >
+        Visit the live site
+        <Icon name="arrow-right" class="size-4" />
+        <span class="sr-only">(opens in a new tab)</span>
+      </a>
+    </figcaption>
+  </figure>
+
   <Fragment slot="problem">
     <div class="mt-6 max-w-2xl space-y-4 text-lg text-muted">
       <p>
@@ -84,7 +122,9 @@ const faq = [
     </div>
   </Fragment>
 
-  <Section id="included" labelledby="included-title">
+  <WebsiteExamples />
+
+  <Section id="included" labelledby="included-title" border={false}>
     <SectionHeading
       id="included-title"
       title="What's included"
@@ -93,12 +133,10 @@ const faq = [
     <FeatureGrid items={included} />
   </Section>
 
-  <Section id="how-it-works" labelledby="how-title">
-    <SectionHeading id="how-title" title="How it works" />
-    <Steps steps={steps} />
+  <Section id="how-it-works" labelledby="how-title" tone="navy">
+    <SectionHeading id="how-title" title="How it works" tone="navy" />
+    <Steps steps={steps} tone="navy" />
   </Section>
-
-  <WebsiteExamples />
 
   <PriceFrom price={WEBSITE_PRICE_FROM} noun="site" />
 </ServiceLayout>

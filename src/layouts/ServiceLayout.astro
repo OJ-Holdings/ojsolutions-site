@@ -4,6 +4,10 @@
 // to action. Every Book a call button on the page is tagged with the
 // service, e.g. /book?service=website.
 //
+// Slots: "hero-secondary" sits next to the hero's Book a call button,
+// "hero-aside" puts proof beside the hero copy, "problem" fills the problem
+// section, and the default slot holds the page's own sections.
+//
 // To add a service: copy src/pages/websites.astro, change the words,
 // and add the service to SERVICES in src/lib/site.ts.
 import BaseLayout from "./BaseLayout.astro";
@@ -50,9 +54,10 @@ const {
 <BaseLayout title={title} description={description} service={service}>
   <Hero title={heading} highlight={highlight} subhead={subhead} eyebrow={eyebrow} service={service}>
     <slot name="hero-secondary" slot="secondary" />
+    {Astro.slots.has("hero-aside") && <Fragment slot="aside"><slot name="hero-aside" /></Fragment>}
   </Hero>
 
-  <Section id="problem" labelledby="problem-title">
+  <Section id="problem" labelledby="problem-title" border={false}>
     <SectionHeading id="problem-title" title={problemHeading} />
     <slot name="problem" />
   </Section>

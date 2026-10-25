@@ -1,10 +1,6 @@
 // Shared helpers that turn src/config.ts into links and labels.
 // Business info belongs in src/config.ts, not here.
-import {
-  BOOKING_URL,
-  EMAIL,
-  GHL_CALENDAR_EMBED,
-} from "../config";
+import { GHL_CALENDAR_EMBED } from "../config";
 
 export type ServiceKey = "receptionist" | "website" | "commercial";
 
@@ -44,6 +40,21 @@ export function filled(value: unknown): boolean {
   return Boolean(value);
 }
 
+/**
+ * Placeholders only show on preview and local builds. On the production
+ * site (Vercel sets VERCEL_ENV to "production") they're hidden.
+ */
+export const SHOW_PLACEHOLDERS: boolean = process.env.VERCEL_ENV !== "production";
+
+/**
+ * A visible stand-in for an answer we don't have yet. The text always starts
+ * with "PLACEHOLDER:" so it's easy to search for. Returns HTML, for FAQ answers.
+ * On production it returns "", so an FAQ question with no answer isn't shown.
+ */
+export function placeholder(what: string): string {
+  return SHOW_PLACEHOLDERS ? `<span class="placeholder">PLACEHOLDER: ${what}</span>` : "";
+}
+
 /** 1500 -> "$1,500" */
 export function formatPrice(amount: number): string {
   return "$" + amount.toLocaleString("en-US", { maximumFractionDigits: 0 });
@@ -68,29 +79,13 @@ export function calendarEmbed(): { src: string; id: string } | null {
 }
 
 /**
- * Where every "Book a call" button goes:
- * 1. /book when the GHL calendar embed is set
- * 2. otherwise BOOKING_URL
- * 3. otherwise an email to EMAIL
- * Service pages pass their service so the booking is tagged.
- * Returns null only if there is nowhere to send people.
+ * Where every "Book a call" button goes: always /book.
+ * Service pages pass their service so the booking is tagged,
+ * e.g. /book?service=website. /book shows the GHL calendar when
+ * GHL_CALENDAR_EMBED is set, and the email address under it.
  */
-export function bookingHref(service?: ServiceKey): string | null {
-  if (calendarEmbed()) {
-    return service ? `/book?service=${service}` : "/book";
-  }
-  const bookingUrl = webAddress(BOOKING_URL);
-  if (bookingUrl) {
-    if (service) bookingUrl.searchParams.set("service", service);
-    return bookingUrl.href;
-  }
-  if (filled(EMAIL)) {
-    const subject = service
-      ? `Book a call: ${SERVICES.find((s) => s.key === service)?.name}`
-      : "Book a call";
-    return `mailto:${EMAIL.trim()}?subject=${encodeURIComponent(subject)}`;
-  }
-  return null;
+export function bookingHref(service?: ServiceKey): string {
+  return service ? `/book?service=${service}` : "/book";
 }
 
 /**

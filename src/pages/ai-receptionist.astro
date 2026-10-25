@@ -5,6 +5,7 @@ import SectionHeading from "../components/SectionHeading.astro";
 import Steps from "../components/Steps.astro";
 import FeatureGrid from "../components/FeatureGrid.astro";
 import BookButton from "../components/BookButton.astro";
+import PlaceholderBox from "../components/PlaceholderBox.astro";
 import {
   DEMO_AUDIO_SRC,
   DEMO_AUDIO_TRANSCRIPT,
@@ -16,7 +17,7 @@ import {
   SHOW_PRICING,
   STATS_SOURCE_URL,
 } from "../config";
-import { filled, formatPrice } from "../lib/site";
+import { SHOW_PLACEHOLDERS, filled, formatPrice, placeholder } from "../lib/site";
 import { mediaAvailable } from "../lib/media";
 
 const hasAudio = mediaAvailable(DEMO_AUDIO_SRC);
@@ -34,19 +35,19 @@ const steps = [
     body: "Someone calls your business. Day, night, weekend, or while you're on a job.",
   },
   {
-    title: "It answers, quotes, and books",
-    body: "The AI picks up, answers their questions, quotes from your prices, and books the appointment.",
+    title: "It answers, captures, and books",
+    body: "The AI picks up, identifies itself, captures the caller's details, and books an available on-site estimate.",
   },
   {
     title: "It lands where you work",
-    body: "The appointment shows up on your calendar and the contact in your CRM. Anything it can't handle rings your phone.",
+    body: "The estimate appears on your calendar and the contact in your CRM. Human callbacks can be flagged as urgent.",
   },
 ];
 
 const included = [
   {
     title: "AI receptionist",
-    body: "Answers every call 24/7, answers common questions, and quotes from your pricing.",
+    body: "Answers calls around the clock, identifies itself as AI, and handles common questions about your services.",
   },
   {
     title: "Booking to your calendar",
@@ -66,9 +67,7 @@ const included = [
   },
 ];
 
-const costAnswer = showPricing
-  ? `A one-time setup fee of ${formatPrice(SETUP_PRICE)}, then a flat ${formatPrice(MONTHLY_PRICE)} a month.`
-  : "A one-time setup fee plus a flat monthly fee. We go over exact numbers on the call, after we look at how many calls you're missing.";
+const costAnswer = `${formatPrice(SETUP_PRICE)} one-time setup, then ${formatPrice(MONTHLY_PRICE)} per month for AI Receptionist Pro.`;
 
 const faq = [
   {
@@ -77,34 +76,87 @@ const faq = [
   },
   {
     q: "What happens with calls it can't handle?",
-    a: "It transfers them to your phone or to your staff.",
+    a: "It captures their details and flags the request for a prompt callback.",
   },
   { q: "What does it cost?", a: costAnswer },
-  // TODO(Jacob): answer these three in src/config.ts (FAQ_ANSWERS). Hidden until then.
+
+  {
+    q: "How long does setup take?",
+    // TODO(Jacob): answer in FAQ_ANSWERS.receptionistSetupTime (src/config.ts).
+    // Until then this is a PLACEHOLDER on preview builds and hidden on production.
+    a: filled(FAQ_ANSWERS.receptionistSetupTime) ? FAQ_ANSWERS.receptionistSetupTime : placeholder("how long setup takes"),
+  },
+
+  // TODO(Jacob): answer these two in src/config.ts (FAQ_ANSWERS). Hidden until then.
   { q: "Do I need a new phone number?", a: FAQ_ANSWERS.receptionistNewNumber },
-  { q: "How long does setup take?", a: FAQ_ANSWERS.receptionistSetupTime },
   { q: "Is there a long contract?", a: FAQ_ANSWERS.receptionistContract },
 ];
 ---
 
 <ServiceLayout
   service="receptionist"
-  title="AI Receptionist That Answers Every Call | OJ Solutions"
-  description="An AI receptionist that answers every call 24/7, quotes from your prices, books jobs on your calendar, and texts back missed calls. We set it up and run it."
+  title="AI Receptionist That Answers Your Calls | OJ Solutions"
+  description="An AI receptionist that answers your calls, captures leads, and books available on-site estimates. Hear the live demo."
   eyebrow="AI Receptionist"
   heading="Your marketing isn't broken. Your phone is."
   highlight="Your phone is."
-  subhead="We set up an AI receptionist that answers every call 24/7, quotes from your prices, and books the job on your calendar while you're busy doing the work."
+  subhead="An AI receptionist that answers calls around the clock, captures customer details, and books on-site estimates while you are busy doing the work."
   problemHeading="Every missed call is a lead you already paid for."
   faq={faq}
   ctaHeading="See it answer a call"
-  ctaLine="Book a short call and we'll show you how it would work for your business."
+  ctaLine="Hear our AI live at (262) 401-0826, then talk about setting it up for your business."
 >
+  <Fragment slot="hero-secondary">
+    <a href="tel:+12624010826" class="link inline-flex min-h-11 items-center text-lg font-bold">
+      Call our AI: (262) 401-0826
+    </a>
+    {hasAudio && (
+      <a href="#hear-it" class="link inline-flex min-h-11 items-center text-lg">Hear the recorded demo</a>
+    )}
+  </Fragment>
+
   {
-    hasAudio && (
-      <a slot="hero-secondary" href="#hear-it" class="link inline-flex min-h-11 items-center text-lg">
-        Hear a real call
-      </a>
+    (hasAudio || hasVideo || SHOW_PLACEHOLDERS) && (
+      <div slot="hero-aside" id="hear-it" class="rule-soft scroll-mt-24 rounded-lg border p-5 sm:p-7">
+        <h2 class="font-heading text-xl font-bold sm:text-2xl">Hear a real call</h2>
+        {hasAudio && <p class="text-soft mt-1">A real call to our AI receptionist, recorded on our own system.</p>}
+        {
+          hasAudio ? (
+            <div class="mt-5">
+              <audio controls preload="metadata" src={DEMO_AUDIO_SRC.trim()} class="w-full">
+                <a href={DEMO_AUDIO_SRC.trim()} class="link">
+                  Download the call recording
+                </a>
+              </audio>
+              {filled(DEMO_AUDIO_TRANSCRIPT) && (
+                <details class="group mt-3">
+                  <summary class="link inline-flex min-h-11 items-center">Read the transcript</summary>
+                  <p class="text-soft mt-3 whitespace-pre-line">{DEMO_AUDIO_TRANSCRIPT.trim()}</p>
+                </details>
+              )}
+            </div>
+          ) : (
+            <PlaceholderBox class="mt-5" label="demo call recording (audio player)" icon="volume" />
+          )
+        }
+        {
+          hasVideo ? (
+            <figure class="mt-5">
+              <video controls muted playsinline preload="metadata" src={videoSrc} class="w-full rounded-md" />
+              <figcaption class="text-soft mt-3">
+                Screen recording: the calendar event and the contact card the call created.
+              </figcaption>
+            </figure>
+          ) : (
+            <PlaceholderBox
+              class="mt-5"
+              label="20 to 30 second screen recording of the booking the call created"
+              icon="play"
+              aspect="16 / 9"
+            />
+          )
+        }
+      </div>
     )
   }
 
@@ -115,16 +167,16 @@ const faq = [
     </p>
     {
       hasStats && (
-        <figure class="mt-10 max-w-3xl">
+        <figure class="mt-12 max-w-4xl">
           <p class="font-semibold">In a 2025 CallRail survey of 1,000 consumers:</p>
-          <div class="mt-4 grid gap-4 sm:grid-cols-2">
-            <div class="rounded-lg border border-line p-6">
-              <p class="font-heading text-5xl font-bold tracking-tight">78%</p>
-              <p class="mt-2 text-muted">said they've abandoned a business after an unanswered call.</p>
+          <div class="mt-6 grid gap-8 border-y border-line py-8 sm:grid-cols-2 sm:gap-0 sm:divide-x sm:divide-line">
+            <div class="sm:pr-10">
+              <p class="font-heading text-6xl font-bold tracking-tight sm:text-7xl">78%</p>
+              <p class="mt-3 text-lg text-muted">said they've abandoned a business after an unanswered call.</p>
             </div>
-            <div class="rounded-lg border border-line p-6">
-              <p class="font-heading text-5xl font-bold tracking-tight">82%</p>
-              <p class="mt-2 text-muted">said they'd call a competitor instead.</p>
+            <div class="sm:pl-10">
+              <p class="font-heading text-6xl font-bold tracking-tight sm:text-7xl">82%</p>
+              <p class="mt-3 text-lg text-muted">said they'd call a competitor instead.</p>
             </div>
           </div>
           <figcaption class="mt-4 text-[0.9375rem] text-muted">
@@ -138,68 +190,15 @@ const faq = [
     }
   </Fragment>
 
-  <Section id="how-it-works" labelledby="how-title">
-    <SectionHeading id="how-title" title="How it works" />
-    <Steps steps={steps} />
+  <Section id="how-it-works" labelledby="how-title" tone="navy">
+    <SectionHeading id="how-title" title="How it works" tone="navy" />
+    <Steps steps={steps} tone="navy" />
   </Section>
 
-  {
-    (hasAudio || hasVideo) && (
-      <Section id="hear-it" labelledby="hear-title">
-        <SectionHeading
-          id="hear-title"
-          title={hasAudio ? "Hear a real call" : "See what a booked call looks like"}
-          intro={hasAudio ? "A real call to our AI receptionist, recorded on our own system." : undefined}
-        />
-        <div class="mt-8 grid max-w-3xl gap-8">
-          {hasAudio && (
-            <div class="rounded-lg border border-line p-5 sm:p-6">
-              <audio controls preload="metadata" src={DEMO_AUDIO_SRC.trim()} class="w-full">
-                <a href={DEMO_AUDIO_SRC.trim()} class="link">
-                  Download the call recording
-                </a>
-              </audio>
-              {filled(DEMO_AUDIO_TRANSCRIPT) && (
-                <details class="group mt-4">
-                  <summary class="link inline-flex min-h-11 items-center">Read the transcript</summary>
-                  <p class="mt-3 whitespace-pre-line text-muted">{DEMO_AUDIO_TRANSCRIPT.trim()}</p>
-                </details>
-              )}
-            </div>
-          )}
-          {hasVideo && (
-            <figure>
-              <video
-                controls
-                muted
-                playsinline
-                preload="metadata"
-                src={videoSrc}
-                class="w-full rounded-lg border border-line"
-              />
-              <figcaption class="mt-3 text-muted">
-                Screen recording: the calendar event and the contact card the call created.
-              </figcaption>
-            </figure>
-          )}
-        </div>
-      </Section>
-    )
-  }
-
-  <Section id="included" labelledby="included-title">
+  <Section id="included" labelledby="included-title" border={false}>
     <SectionHeading id="included-title" title="What's included" />
     <FeatureGrid items={included} />
   </Section>
-
-  {
-    filled(GUARANTEE_TEXT) && (
-      <Section id="guarantee" labelledby="guarantee-title">
-        <SectionHeading id="guarantee-title" title="Our guarantee" />
-        <p class="mt-6 max-w-2xl text-lg whitespace-pre-line">{GUARANTEE_TEXT.trim()}</p>
-      </Section>
-    )
-  }
 
   {
     showPricing && (

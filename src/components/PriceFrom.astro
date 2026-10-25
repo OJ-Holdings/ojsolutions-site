@@ -14,21 +14,25 @@ const { price, noun } = Astro.props;
 const hasPrice = filled(price);
 ---
 
-<Section id="pricing" labelledby="pricing-title">
-  <SectionHeading id="pricing-title" title="Pricing" />
-  <div class="mt-8 max-w-2xl rounded-lg border border-line p-6 sm:p-8">
-    {
-      hasPrice ? (
-        <>
-          <p class="text-muted">Starting at</p>
-          <p class="mt-1 font-heading text-4xl font-bold tracking-tight sm:text-5xl">{formatPrice(price as number)}</p>
-          <p class="mt-4 text-muted">
-            The exact price depends on what your {noun} needs. We'll give you a number after a quick call.
+<Section id="pricing" labelledby="pricing-title" border={false}>
+  <div class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] lg:gap-16">
+    <SectionHeading id="pricing-title" title="Pricing" />
+    <div class="border-t-2 border-gold pt-6">
+      {
+        hasPrice ? (
+          <>
+            <p class="text-muted">Starting at</p>
+            <p class="mt-1 font-heading text-5xl font-bold tracking-tight sm:text-6xl">{formatPrice(price as number)}</p>
+            <p class="mt-4 max-w-xl text-lg text-muted">
+              The exact price depends on what your {noun} needs. We'll give you a number after a quick call.
+            </p>
+          </>
+        ) : (
+          <p class="max-w-2xl font-heading text-2xl leading-snug font-medium sm:text-3xl">
+            Every {noun} is different, so we quote after a quick call.
           </p>
-        </>
-      ) : (
-        <p class="text-lg">Every {noun} is different, so we quote after a quick call.</p>
-      )
-    }
+        )
+      }
+    </div>
   </div>
 </Section>

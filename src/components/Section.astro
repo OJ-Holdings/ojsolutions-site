@@ -1,20 +1,27 @@
 ---
-// A page section. White sections are split by a 1px line.
+// A page section. tone="navy" is a navy band with white text.
+// White sections that follow another white section get a 1px line on top.
 interface Props {
   id?: string;
   /** id of the heading that names this section */
   labelledby?: string;
+  tone?: "white" | "navy";
   border?: boolean;
   class?: string;
 }
 
-const { id, labelledby, border = true, class: className = "" } = Astro.props;
+const { id, labelledby, tone = "white", border = tone === "white", class: className = "" } = Astro.props;
 ---
 
 <section
   id={id}
   aria-labelledby={labelledby}
-  class:list={["py-14 sm:py-20", border && "border-t border-line", className]}
+  class:list={[
+    "py-16 sm:py-24",
+    tone === "navy" && "on-navy",
+    border && (tone === "navy" ? "rule-soft border-t" : "border-t border-line"),
+    className,
+  ]}
 >
   <div class="container-page">
     <slot />

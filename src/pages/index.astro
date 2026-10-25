@@ -1,22 +1,24 @@
 ---
-import { Image } from "astro:assets";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import Hero from "../components/Hero.astro";
 import Section from "../components/Section.astro";
 import SectionHeading from "../components/SectionHeading.astro";
-import Steps from "../components/Steps.astro";
 import FaqSection from "../components/FaqSection.astro";
 import FinalCta from "../components/FinalCta.astro";
+import BookButton from "../components/BookButton.astro";
 import Icon from "../components/Icon.astro";
-import { BUSINESS_NAME, EMAIL, FAQ_ANSWERS, FOUNDERS_PHOTO, PHONE, SOCIAL_LINKS } from "../config";
-import { SERVICES, filled } from "../lib/site";
+import CallDemo from "../components/home/CallDemo.astro";
+import DemoCallout from "../components/home/DemoCallout.astro";
+import FrontDeskFeatures from "../components/home/FrontDeskFeatures.astro";
+import FrontDeskPricing from "../components/home/FrontDeskPricing.astro";
+import OwnWork from "../components/home/OwnWork.astro";
+import { BUSINESS_NAME, EMAIL, PHONE, SOCIAL_LINKS, MONTHLY_PRICE, SETUP_PRICE } from "../config";
+import { SERVICES, filled, formatPrice, type ServiceKey } from "../lib/site";
 
-// Optional "Why us" photo from src/assets/photos/ (set in src/config.ts).
-const photos = import.meta.glob<{ default: ImageMetadata }>("../assets/photos/*.{jpg,jpeg,png,webp,avif}");
-const photoKey = Object.keys(photos).find(
-  (key) => filled(FOUNDERS_PHOTO.file) && key.endsWith("/" + FOUNDERS_PHOTO.file.trim()),
-);
-const photo = photoKey && filled(FOUNDERS_PHOTO.alt) ? (await photos[photoKey]()).default : null;
+const serviceIcon: Record<ServiceKey, "phone" | "browser" | "camera"> = {
+  receptionist: "phone",
+  website: "browser",
+  commercial: "camera",
+};
 
 const site = Astro.site ?? new URL("http://localhost:4321");
 const jsonLd = {
@@ -35,115 +37,162 @@ const jsonLd = {
 };
 
 const steps = [
-  {
-    title: "Book a call",
-    body: "Pick a time that works for you. It's a short call.",
-  },
-  {
-    title: "We find the biggest leak",
-    body: "We look at your business and find the one thing costing you the most.",
-  },
-  {
-    title: "We fix that first",
-    body: "Then you decide if you want more. No package you have to buy into.",
-  },
+  { title: "We set up your front desk", body: "We configure the AI for your existing number, services, hours, and calendar." },
+  { title: "It answers and books", body: "The AI identifies itself, captures the caller's request, and schedules an estimate." },
+  { title: "You get the lead", body: "See who called, what they need, and when the estimate is booked." },
 ];
 
 const faq = [
-  {
-    q: "Do I have to buy all three?",
-    a: "No. Most businesses should start with whichever one fixes their biggest problem. You can add more later if it makes sense.",
-  },
-  {
-    q: "How does it start?",
-    a: "With a short call. We look at your business and tell you what we'd fix first.",
-  },
-  {
-    q: "Where are you based?",
-    a: FAQ_ANSWERS.whereBased, // TODO(Jacob): answer in src/config.ts. Hidden until then.
-  },
+  { q: "Is it a real person?", a: "No. It identifies itself as an AI assistant at the beginning of every call." },
+  { q: "Do I need a new phone number?", a: "No. Keep your business number. Use the AI as overflow or as your full front desk." },
+  { q: "What if a caller wants a human?", a: "The AI collects their details and flags the request for a callback." },
+  { q: "Does it quote prices?", a: "We configure your service information. The default is to book an on-site estimate instead of guessing a price." },
+  { q: "What does it cost?", a: `AI Receptionist Pro starts at ${formatPrice(MONTHLY_PRICE)}/month with a ${formatPrice(SETUP_PRICE)} one-time setup fee.` },
+  { q: "How fast is setup?", a: "We confirm the timeline after learning how your business and phones work." },
+  { q: "Is there a contract?", a: "We review the agreement and cancellation terms before you sign." },
+  { q: "Where are you based?", a: "Kenosha, Wisconsin. Serving local service businesses across southeast Wisconsin." },
 ];
 ---
 
 <BaseLayout
-  title="OJ Solutions | AI Receptionist, Websites, and Commercials"
-  description="We fix what's slowing your business down: missed calls, a website that doesn't bring in work, and marketing nobody watches. Built by business owners."
+  title="OJ Solutions | Your AI Front Desk for Home-Service Businesses"
+  description="An AI receptionist that answers calls, captures leads, and books estimates for home-service businesses in southeast Wisconsin. Hear our live demo."
   jsonLd={jsonLd}
 >
-  <Hero
-    title="Built by business owners, for business owners."
-    highlight="business owners."
-    subhead="We fix what's slowing you down: missed calls, a website that doesn't bring in work, and marketing nobody watches."
-  />
+  <section class="on-navy overflow-hidden" aria-labelledby="hero-title">
+    <div
+      class="container-page grid gap-14 pt-12 pb-20 sm:pt-16 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:items-center lg:gap-10 lg:pt-20 lg:pb-28"
+    >
+      <div>
+        <p class="mb-5 text-sm font-bold tracking-widest text-gold uppercase">Your AI front desk · Kenosha, WI</p>
+        <h1 id="hero-title" class="display-1 max-w-[13ch] sm:max-w-none lg:max-w-[12ch]">
+          Built by business owners, for <span class="mark-gold whitespace-nowrap">business owners.</span>
+        </h1>
+        <p class="text-soft mt-6 max-w-xl text-lg sm:mt-8 sm:text-xl">
+          Our AI receptionist answers your calls around the clock, captures customer details, and books on-site
+          estimates while you're out doing the work.
+        </p>
+        <div class="mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+          <a href="tel:+12624010826" data-demo-call class="inline-flex min-h-14 items-center justify-center rounded-lg bg-gold px-6 text-base font-bold text-navy underline decoration-transparent decoration-2 underline-offset-4 hover:decoration-navy sm:text-lg">Call our AI: (262) 401-0826</a>
+          <BookButton variant="gold" size="lg" label="Book a 15-min call" />
+        </div>
+        <p class="text-soft mt-4 text-sm">Hear it yourself. No sales pitch. Just make the call.</p>
+      </div>
+      <div id="demo" class="scroll-mt-24"><CallDemo /></div>
+    </div>
+  </section>
 
-  <Section id="services" labelledby="services-title">
+  <DemoCallout />
+
+  <OwnWork />
+
+  <FrontDeskFeatures />
+
+  <Section id="services" labelledby="services-title" border={false}>
     <SectionHeading
       id="services-title"
-      title="What we fix"
-      intro="Three services, all done for you. Start with the one that fixes your biggest problem."
+      title="More ways we help"
+      intro="The AI receptionist comes first. We also build websites and commercial content so customers can find you and get in touch."
     />
-    <ul role="list" class="mt-10 grid gap-4 md:grid-cols-3">
+    <ul role="list" class="mt-12 border-b border-line sm:mt-16">
       {
         SERVICES.map((s) => (
-          <li class="group relative flex flex-col rounded-lg border border-line p-6 hover:border-navy sm:p-7">
-            <h3 class="text-xl font-bold">
-              <a href={s.href} class="after:absolute after:inset-0 after:rounded-lg">
-                {s.name}
-              </a>
-            </h3>
-            <p class="mt-2 flex-1 text-muted">{s.problem}</p>
-            <p
-              class="mt-6 inline-flex items-center gap-1.5 font-semibold text-navy group-hover:underline group-hover:decoration-gold group-hover:decoration-2 group-hover:underline-offset-4"
-              aria-hidden="true"
-            >
-              See how it works
-              <Icon name="arrow-right" class="size-4" />
+          <li class="group relative grid gap-5 border-t border-line py-8 sm:py-10 md:grid-cols-[auto_minmax(0,1fr)_14rem] md:items-center md:gap-10">
+            <span class="flex size-12 items-center justify-center rounded-lg bg-navy text-gold transition-colors group-hover:bg-gold group-hover:text-navy">
+              <Icon name={serviceIcon[s.key]} class="size-6" />
+            </span>
+            <p class="font-heading text-[1.5rem] leading-[1.2] font-medium tracking-tight text-balance sm:text-[2rem] lg:text-[2.25rem]">
+              {s.problem}
             </p>
+            <a
+              href={s.href}
+              class="inline-flex min-h-11 items-center gap-2 font-heading text-lg font-bold decoration-gold decoration-2 underline-offset-4 group-hover:underline after:absolute after:inset-0 md:justify-self-end"
+            >
+              {s.name}
+              <Icon name="arrow-right" class="size-5 transition-transform group-hover:translate-x-1" />
+            </a>
           </li>
         ))
       }
     </ul>
   </Section>
 
-  <Section id="how-we-work" labelledby="how-title">
-    <SectionHeading id="how-title" title="How we work" />
-    <Steps steps={steps} />
-  </Section>
-
-  <Section id="why-us" labelledby="why-title">
-    <div class:list={["grid gap-10", photo && "md:grid-cols-2 md:items-center md:gap-14"]}>
+  <Section id="how-we-work" labelledby="how-title" tone="navy">
+    <div class="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,2.4fr)] lg:gap-16">
+      <h2 id="how-title" class="display-2">How the AI front desk works</h2>
       <div>
-        <SectionHeading id="why-title" title="We run businesses too" />
-        <div class="mt-6 max-w-2xl space-y-4 text-lg text-muted">
-          <p>
-            We're Jacob and Oscar. Besides OJ Solutions, we run our own businesses, including a pressure washing and
-            window cleaning company.
-          </p>
-          <p>
-            Everything we sell, we built for our own business first and tested it there before offering it to anyone
-            else. So when we talk about missed calls, websites, and getting seen online, we're talking about problems we
-            deal with ourselves.
-          </p>
-        </div>
+        <p class="how-statement font-heading text-[2.125rem] leading-[1.12] font-bold tracking-tight sm:text-5xl lg:text-[3.75rem]" aria-hidden="true" data-statement>
+          {steps.map((step) => <><span class="clause">{step.title}.</span>{" "}</>)}
+        </p>
+        <ol role="list" class="mt-12 grid gap-8 sm:grid-cols-3 sm:gap-8">
+          {
+            steps.map((step, i) => (
+              <li class="rule-soft border-t pt-5">
+                <span class="font-heading text-lg font-bold text-gold" aria-hidden="true">{i + 1}</span>
+                <h3 class="sr-only">Step {i + 1}: {step.title}</h3>
+                <p class="text-soft mt-2 text-lg">{step.body}</p>
+              </li>
+            ))
+          }
+        </ol>
       </div>
-      {
-        photo && (
-          <Image
-            src={photo}
-            alt={FOUNDERS_PHOTO.alt}
-            widths={[400, 640, 960, 1280]}
-            sizes="(min-width: 768px) 50vw, 100vw"
-            class="h-auto w-full rounded-lg border border-line"
-          />
-        )
-      }
     </div>
   </Section>
 
-  <FaqSection items={faq} />
+  <FrontDeskPricing />
+
+  <FaqSection items={faq} title="Questions before you call" />
 
   <FinalCta
-    heading="Let's find what's slowing you down"
-    line="A short call. We'll tell you what we'd fix first."
+    heading="You do the work. We get the phone."
+    line="Hear the live demo at (262) 401-0826, or book a quick call."
   />
 </BaseLayout>
+<script>
+  const trackDemoTap = () => {
+    const w = window as typeof window & { dataLayer?: Array<Record<string, unknown>>; gtag?: (...args: unknown[]) => void };
+    w.dataLayer?.push({ event: "demo_call_tap" });
+    w.gtag?.("event", "demo_call_tap");
+  };
+  document.querySelectorAll<HTMLAnchorElement>("[data-demo-call]").forEach((a) => a.addEventListener("click", trackDemoTap));
+</script>
+<style>
+  /* Gold underline under each step. GSAP draws them in on scroll. */
+  .clause {
+    background: linear-gradient(var(--color-gold), var(--color-gold)) no-repeat 0 92% / 100% 0.09em;
+    padding-bottom: 0.04em;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
+  .how-statement:global(.is-armed) .clause {
+    background-size: 0% 0.09em;
+  }
+</style>
+
+<script>
+  // Homepage only: draw the gold underline under each step, one after
+  // another, the first time "How we work" scrolls into view.
+  const statement = document.querySelector<HTMLElement>("[data-statement]");
+  if (statement && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    statement.classList.add("is-armed");
+    const io = new IntersectionObserver(
+      async (entries) => {
+        if (!entries.some((e) => e.isIntersecting)) return;
+        io.disconnect();
+        try {
+          const { gsap } = await import("gsap");
+          gsap.to(statement.querySelectorAll(".clause"), {
+            backgroundSize: "100% 0.09em",
+            duration: 1,
+            ease: "expo.out",
+            stagger: 0.5,
+          });
+        } catch {
+          statement.classList.remove("is-armed");
+        }
+      },
+      { threshold: 0.5 },
+    );
+    io.observe(statement);
+  }
+</script>
