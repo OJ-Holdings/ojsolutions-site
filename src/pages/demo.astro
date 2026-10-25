@@ -2,6 +2,7 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import CallDemo from "../components/home/CallDemo.astro";
 import BookButton from "../components/BookButton.astro";
+import RecordedCall from "../components/demo/RecordedCall.astro";
 ---
 <BaseLayout title="Try the AI Receptionist Demo | OJ Solutions" description="Hear OJ Solutions' AI receptionist by calling the live demo number. View a clearly labeled fictional conversation before calling.">
   <section class="on-navy" aria-labelledby="demo-title">
@@ -23,6 +24,7 @@ import BookButton from "../components/BookButton.astro";
       <CallDemo />
     </div>
   </section>
+  <RecordedCall />
   <section class="container-page py-14 sm:py-20" aria-labelledby="transcript-title">
     <div class="max-w-3xl">
       <p class="mb-4 text-sm font-bold uppercase tracking-widest text-muted">Fictional illustrated transcript</p>
