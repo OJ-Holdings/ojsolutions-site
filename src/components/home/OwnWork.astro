@@ -1,106 +1,90 @@
 ---
-// "We run businesses too": our own story, before/after photos from our own
-// pressure washing company (never client results), and our own commercial
-// as a muted loop.
+/**
+ * The Operator Advantage — OJ Solutions' founder credibility story.
+ *
+ * Proof is exclusively the founders' real OJ Exterior Care work:
+ * matched before/after photos and an in-house commercial. These are not
+ * fabricated client testimonials, booked-job claims or third-party results.
+ */
 import { Image } from "astro:assets";
 import houseBefore from "../../assets/photos/exterior-house-wash-before.jpg";
 import houseAfter from "../../assets/photos/exterior-house-wash-after.jpg";
 import stepsBefore from "../../assets/photos/exterior-steps-before.jpg";
 import stepsAfter from "../../assets/photos/exterior-steps-after.jpg";
 import siding from "../../assets/photos/exterior-siding-before-after.jpg";
-
-// Each before/after pair keeps the photo's real proportions side by side.
-const pairs = [
-  {
-    caption: "House wash: siding and front entry",
-    before: { src: houseBefore, alt: "Before the house wash: gray siding and the front entry" },
-    after: { src: houseAfter, alt: "After the house wash: the same siding and front entry, clean" },
-    // The difference is faint at phone width, so these stack on phones.
-    stackOnPhones: true,
-  },
-  {
-    caption: "Concrete front steps",
-    before: { src: stepsBefore, alt: "Before: dirty concrete front steps with white railings" },
-    after: { src: stepsAfter, alt: "After: the same concrete front steps, clean" },
-    stackOnPhones: false,
-  },
-];
 ---
 
-<section id="why-us" class="on-navy rule-soft border-t" aria-labelledby="why-title">
-  <div class="container-page py-16 sm:py-24">
-    <div class="own-work grid gap-x-12 gap-y-12 lg:gap-x-16">
-      <div class="area-copy">
-        <h2 id="why-title" class="display-2">We run businesses too</h2>
-        <div class="text-soft mt-6 max-w-xl space-y-4 text-lg">
-          <p>
-            We're Jacob and Oscar. Besides OJ Solutions, we run our own businesses, including a pressure washing and
-            window cleaning company.
+<section id="why-us" class="operator-section on-navy" aria-labelledby="why-title">
+  <div class="container-page operator-shell">
+    <div class="operator-intro" data-reveal>
+      <div class="section-index">
+        <span class="index-line" aria-hidden="true"></span>
+        <span>THE OPERATOR ADVANTAGE</span>
+        <span class="index-end">01 / BUILT FROM EXPERIENCE</span>
+      </div>
+
+      <div class="operator-headline-layout">
+        <h2 id="why-title" class="operator-title">
+          We don't just build for businesses.
+          <span class="operator-title-accent">We run one.</span>
+        </h2>
+        <div class="intro-story">
+          <span class="story-rule" aria-hidden="true"></span>
+          <p class="intro-lead">
+            Before OJ Solutions, there was OJ Exterior Care.
           </p>
           <p>
-            Everything we sell, we built for our own business first and tested it there before offering it to anyone
-            else. So when we talk about missed calls, websites, and getting seen online, we're talking about problems we
-            deal with ourselves.
+            We're Jacob and Oscar. We run an exterior cleaning company in the Kenosha and Racine area,
+            so we know what it's like to be halfway through a job when the phone starts ringing.
+          </p>
+          <p>
+            We started building systems around problems we face ourselves. That operator-first
+            thinking is what we bring to the businesses we work with.
           </p>
         </div>
       </div>
+    </div>
 
-      <div class="area-photos">
-        <p class="font-heading text-lg font-bold text-balance">
-          From OJ Exterior Care, our own pressure washing and window cleaning company.
-        </p>
-        <ul role="list" class="mt-6 space-y-10">
-          {
-            pairs.map((pair) => (
-              <li>
-                <figure>
-                  <div
-                    class="pair grid gap-2"
-                    data-stack={pair.stackOnPhones ? "" : undefined}
-                    style={`--before:${pair.before.src.width}fr;--after:${pair.after.src.width}fr`}
-                  >
-                    {[
-                      { label: "Before", img: pair.before },
-                      { label: "After", img: pair.after },
-                    ].map(({ label, img }) => (
-                      <div class="relative overflow-hidden rounded-md">
-                        <Image
-                          src={img.src}
-                          alt={img.alt}
-                          widths={[360, 560, 800, img.src.width]}
-                          sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 92vw"
-                          class="block h-auto w-full"
-                        />
-                        <span class="absolute top-2 left-2 rounded-sm bg-navy px-2 py-0.5 text-xs font-semibold tracking-wide text-white uppercase">
-                          {label}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                  <figcaption class="text-soft mt-3">{pair.caption}</figcaption>
-                </figure>
-              </li>
-            ))
-          }
-          <li>
-            <figure>
-              <Image
-                src={siding}
-                alt="Before and after: gray vinyl siding on a gable wall with green algae, then clean"
-                widths={[360, 560, 800, 1200]}
-                sizes="(min-width: 1024px) 55vw, 92vw"
-                class="block h-auto w-full rounded-md"
-              />
-              <figcaption class="text-soft mt-3">Siding with algae on a gable wall</figcaption>
-            </figure>
-          </li>
-        </ul>
-      </div>
+    <div class="operator-gallery" aria-label="Authentic photos and video from OJ Exterior Care">
+      <figure class="gallery-main gallery-tile" data-reveal>
+        <Image
+          src={houseAfter}
+          alt="The siding and front entry of a home after OJ Exterior Care's house wash"
+          widths={[640, 960, 1280, 1600]}
+          sizes="(min-width: 1024px) 62vw, (min-width: 700px) 58vw, 100vw"
+          loading="lazy"
+          decoding="async"
+          class="gallery-photo"
+        />
+        <div class="photo-shade" aria-hidden="true"></div>
+        <figcaption class="gallery-caption">
+          <span class="image-number">01 / THE WORK</span>
+          <strong>Real jobs. Real field experience.</strong>
+          <span>OJ Exterior Care · House washing</span>
+        </figcaption>
+      </figure>
 
-      <figure class="area-video" data-loop>
-        <div class="rule-soft relative mx-auto aspect-[9/16] w-full max-w-[17.5rem] overflow-hidden rounded-lg border lg:mx-0">
+      <div class="gallery-side">
+        <figure class="gallery-detail gallery-tile" data-reveal>
+          <Image
+            src={houseBefore}
+            alt="The same siding and front entry before an OJ Exterior Care house wash"
+            widths={[360, 560, 800]}
+            sizes="(min-width: 1024px) 32vw, (min-width: 700px) 40vw, 46vw"
+            loading="lazy"
+            decoding="async"
+            class="gallery-photo"
+          />
+          <div class="photo-shade" aria-hidden="true"></div>
+          <figcaption class="gallery-caption gallery-caption-small">
+            <span class="image-number">02 / THE PROCESS</span>
+            <strong>Before the wash</strong>
+          </figcaption>
+        </figure>
+
+        <figure class="gallery-film gallery-tile" data-loop data-reveal>
           <video
-            class="block size-full object-cover"
+            class="gallery-photo video-photo"
             muted
             loop
             playsinline
@@ -108,108 +92,356 @@ const pairs = [
             width="540"
             height="960"
             poster="/media/commercial-loop-poster.webp"
-            aria-label="Clip from our own commercial, playing without sound"
+            aria-label="Muted excerpt of an OJ Exterior Care commercial"
           >
             <source src="/media/commercial-loop.mp4" type="video/mp4" />
           </video>
+          <div class="photo-shade" aria-hidden="true"></div>
+          <figcaption class="gallery-caption gallery-caption-small">
+            <span class="image-number">03 / OUR CONTENT</span>
+            <strong>Made for our own business</strong>
+            <a href="/commercials" class="video-link">Watch with sound <span aria-hidden="true">↗</span></a>
+          </figcaption>
           <button
             type="button"
             data-loop-toggle
             hidden
             aria-pressed="false"
-            class="absolute right-2 bottom-2 inline-flex size-11 items-center justify-center rounded-md bg-navy text-white hover:text-gold"
+            aria-label="Pause the commercial preview"
+            class="video-toggle"
           >
-            <svg class="loop-pause size-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"
-              ><rect x="6" y="5" width="4" height="14" rx="1"></rect><rect x="14" y="5" width="4" height="14" rx="1"></rect></svg
-            >
-            <svg class="loop-play hidden size-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"
-              ><path d="M8 5.5v13l11-6.5z"></path></svg
-            >
-            <span class="sr-only" data-loop-label>Pause the clip</span>
+            <svg class="loop-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <rect x="6" y="5" width="4" height="14" rx="1"></rect>
+              <rect x="14" y="5" width="4" height="14" rx="1"></rect>
+            </svg>
+            <svg class="loop-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" hidden>
+              <path d="M8 5.5v13l11-6.5z"></path>
+            </svg>
           </button>
+        </figure>
+      </div>
+    </div>
+
+    <div class="operator-principles" data-reveal aria-label="Our approach">
+      <div class="principle">
+        <span class="principle-num">01</span>
+        <div>
+          <h3>We've stood where you stand.</h3>
+          <p>Out on jobs, juggling customer calls and the actual work.</p>
         </div>
-        <figcaption class="mx-auto mt-4 max-w-[17.5rem] lg:mx-0">
-          <span class="block font-semibold">Our own commercial.</span>
-          <a href="/commercials" class="link mt-1 inline-flex min-h-11 items-center">Watch it with sound</a>
+      </div>
+      <div class="principle">
+        <span class="principle-num">02</span>
+        <div>
+          <h3>We solve practical problems.</h3>
+          <p>We build useful systems, not technology for its own sake.</p>
+        </div>
+      </div>
+      <div class="principle">
+        <span class="principle-num">03</span>
+        <div>
+          <h3>We build for the operator.</h3>
+          <p>Clearer workflows, fewer distractions and better follow-through.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="comparison-section" data-reveal>
+      <div class="comparison-heading">
+        <div>
+          <p class="section-kicker"><span class="kicker-dash" aria-hidden="true"></span> REAL WORK / BEFORE & AFTER</p>
+          <h3 class="comparison-title">The work <em>speaks for itself.</em></h3>
+        </div>
+        <p>
+          These are photographs of our own exterior cleaning work—not purchased
+          portfolio images or results claimed from someone else's company.
+        </p>
+      </div>
+
+      <figure class="comparison-figure">
+        <div class="photo-compare" data-compare style="--split: 50%">
+          <Image
+            src={stepsAfter}
+            alt="Concrete front steps with white railings after cleaning"
+            widths={[640, 960, 1280, 1600]}
+            sizes="(min-width: 1200px) 1100px, 100vw"
+            class="compare-photo"
+            loading="lazy"
+            decoding="async"
+          />
+          <div class="compare-before" aria-hidden="true">
+            <Image
+              src={stepsBefore}
+              alt=""
+              widths={[640, 960, 1280, 1600]}
+              sizes="(min-width: 1200px) 1100px, 100vw"
+              class="compare-photo"
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+          <span class="compare-tag compare-tag-before" aria-hidden="true">BEFORE</span>
+          <span class="compare-tag compare-tag-after" aria-hidden="true">AFTER</span>
+          <input
+            class="compare-input"
+            data-compare-input
+            type="range"
+            min="0"
+            max="100"
+            step="1"
+            value="50"
+            aria-label="Compare the before and after photos of the same cleaned concrete steps"
+            aria-valuetext="Half before and half after"
+          />
+          <span class="compare-divider" aria-hidden="true">
+            <span class="compare-handle">
+              <svg viewBox="0 0 40 24" fill="none" aria-hidden="true">
+                <path d="M12 6 6 12l6 6M28 6l6 6-6 6M6 12h28" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+          </span>
+        </div>
+        <figcaption class="comparison-caption">
+          <span><strong>FIELD NOTE / 001</strong> · Concrete front steps</span>
+          <span class="caption-instruction">Drag the handle or use the arrow keys to compare <span aria-hidden="true">↔</span></span>
         </figcaption>
       </figure>
 
-      <p class="area-close text-soft max-w-3xl text-lg sm:text-xl">
-        We're a for-profit company and we're upfront about that. But the real reason we do this is that we firmly
-        believe a lot of businesses are missing out on what AI can do to improve every part of how they run, and we want
-        to help change that.
-      </p>
+      <figure class="siding-detail">
+        <Image
+          src={siding}
+          alt="Side-by-side before and after photographs of algae-covered vinyl siding cleaned by OJ Exterior Care"
+          widths={[480, 760, 1100, 1400]}
+          sizes="(min-width: 1024px) 38vw, 100vw"
+          loading="lazy"
+          decoding="async"
+          class="siding-image"
+        />
+        <figcaption>
+          <span class="image-number">ADDITIONAL FIELD WORK</span>
+          <strong>Proof is in the details.</strong>
+          <p>Siding cleaned on a gable wall—another project from our own exterior-care operations.</p>
+        </figcaption>
+      </figure>
+    </div>
+
+    <div class="operator-transition" data-reveal>
+      <div class="transition-text">
+        <p class="section-kicker"><span class="kicker-dash" aria-hidden="true"></span> FROM THE FIELD TO THE FRONT DESK</p>
+        <h3>We built our first AI receptionist because <em>we needed it ourselves.</em></h3>
+        <p>
+          We understand why missed calls matter. So we started with our own business and built
+          a better way to capture inquiries while we're busy doing the work.
+        </p>
+      </div>
+      <a href="#front-desk" class="transition-cta">
+        See how the front desk works
+        <span aria-hidden="true">↗</span>
+      </a>
     </div>
   </div>
 </section>
 
 <style>
-  .own-work {
-    grid-template-areas: "copy" "photos" "video" "close";
+  .operator-section {
+    --operator-gold: #c4a452;
+    --operator-navy: #0b1f3a;
+    --operator-ink: #07162a;
+    --operator-muted: #c3cbd5;
+    overflow: clip;
+    background: var(--operator-navy);
+    color: white;
   }
-  @media (min-width: 1024px) {
-    .own-work {
-      grid-template-columns: 5fr 7fr;
-      grid-template-rows: auto 1fr auto;
-      grid-template-areas: "copy photos" "video photos" "close close";
-    }
+  .operator-shell { padding-top: clamp(80px, 11vw, 152px); padding-bottom: clamp(80px, 10vw, 140px); }
+  .section-index { display: flex; align-items: center; gap: 15px; color: var(--operator-gold); font-size: .72rem; letter-spacing: .16em; font-weight: 750; }
+  .index-line, .kicker-dash { display: inline-block; width: 32px; height: 1px; background: var(--operator-gold); flex-shrink: 0; }
+  .index-end { margin-left: auto; color: #aebdcb; letter-spacing: .12em; font-weight: 500; }
+  .operator-headline-layout { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr); gap: clamp(30px, 7vw, 104px); margin-top: 43px; align-items: end; }
+  .operator-title { font-family: var(--font-heading); font-weight: 800; letter-spacing: -.052em; line-height: 1.03; font-size: clamp(2.65rem, 5.45vw, 5.45rem); max-width: 820px; text-wrap: balance; }
+  .operator-title-accent { display: block; color: var(--operator-gold); font-family: Georgia, 'Times New Roman', serif; font-style: italic; font-weight: 400; letter-spacing: -.045em; margin-top: .1em; }
+  .intro-story { max-width: 390px; color: var(--operator-muted); font-size: clamp(1rem, 1.35vw, 1.12rem); line-height: 1.68; }
+  .story-rule { display: block; width: 66px; height: 2px; background: var(--operator-gold); margin-bottom: 25px; }
+  .intro-story p { margin: 0 0 17px; }
+  .intro-story .intro-lead { color: white; font-size: 1.23rem; font-weight: 700; line-height: 1.4; }
+  .operator-gallery { display: grid; grid-template-columns: minmax(0, 1.48fr) minmax(0, .82fr); gap: 14px; margin-top: clamp(50px, 6vw, 88px); }
+  .gallery-tile { position: relative; overflow: hidden; isolation: isolate; background: #263b50; }
+  .gallery-main { height: clamp(470px, 53vw, 690px); }
+  .gallery-side { display: grid; grid-template-rows: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; min-height: 0; }
+  .gallery-photo { width: 100%; height: 100%; object-fit: cover; display: block; position: absolute; inset: 0; transition: transform .8s cubic-bezier(.2,.7,.1,1); }
+  .gallery-main:hover .gallery-photo, .gallery-detail:hover .gallery-photo { transform: scale(1.035); }
+  .gallery-detail, .gallery-film { min-height: 0; }
+  .gallery-film .video-photo { object-position: 50% 44%; }
+  .photo-shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(2,12,29,0) 33%, rgba(2,12,29,.88) 100%); pointer-events: none; }
+  .gallery-caption { position: absolute; bottom: 30px; left: 32px; right: 32px; display: grid; justify-items: start; gap: 5px; }
+  .image-number { font-size: .67rem; letter-spacing: .14em; font-weight: 750; color: #e5c676; }
+  .gallery-caption strong { color: white; font-family: var(--font-heading); font-size: clamp(1.35rem, 2.5vw, 2.3rem); letter-spacing: -.035em; line-height: 1.15; max-width: 420px; }
+  .gallery-caption > span:last-child:not(.image-number) { color: #dee5ec; font-size: .86rem; }
+  .gallery-caption-small { left: 24px; right: 24px; bottom: 22px; }
+  .gallery-caption-small strong { font-size: clamp(1rem, 1.4vw, 1.28rem); }
+  .video-link { color: white; text-decoration: underline; text-decoration-color: var(--operator-gold); text-decoration-thickness: 2px; text-underline-offset: 4px; font-size: .82rem; font-weight: 750; min-height: 44px; display: inline-flex; align-items: center; gap: 7px; z-index: 2; position: relative; }
+  .video-link:hover { color: #e5c676; }
+  .video-toggle { position: absolute; top: 14px; right: 14px; z-index: 3; display: grid; place-items: center; color: white; width: 44px; height: 44px; background: rgba(7,22,42,.88); border: 1px solid rgba(255,255,255,.42); cursor: pointer; border-radius: 6px; }
+  .video-toggle svg { width: 18px; height: 18px; }
+  .video-toggle [hidden] { display: none; }
+  .video-toggle:hover { background: #233b54; }
+  .operator-principles { margin-top: 48px; border-top: 1px solid rgba(255,255,255,.25); border-bottom: 1px solid rgba(255,255,255,.25); display: grid; grid-template-columns: repeat(3, 1fr); }
+  .principle { display: grid; grid-template-columns: auto 1fr; align-items: start; gap: 15px; padding: 29px 24px 31px 0; }
+  .principle + .principle { border-left: 1px solid rgba(255,255,255,.22); padding-left: 25px; }
+  .principle-num { color: var(--operator-gold); font-weight: 750; font-size: .8rem; padding-top: 2px; }
+  .principle h3 { font-size: 1.05rem; font-weight: 800; letter-spacing: -.02em; line-height: 1.22; }
+  .principle p { color: var(--operator-muted); margin-top: 9px; line-height: 1.55; font-size: .89rem; }
+  .comparison-section { padding-top: clamp(86px, 11vw, 155px); }
+  .comparison-heading { display: grid; grid-template-columns: 1.25fr .75fr; align-items: end; gap: 56px; margin-bottom: 38px; }
+  .section-kicker { color: var(--operator-gold); font-size: .7rem; line-height: 1.5; font-weight: 750; letter-spacing: .15em; display: flex; align-items: center; gap: 13px; margin-bottom: 22px; }
+  .comparison-title { font-size: clamp(2.3rem, 4.7vw, 4.7rem); line-height: 1.09; font-weight: 850; letter-spacing: -.048em; text-wrap: balance; }
+  .comparison-title em, .operator-transition h3 em { font-family: Georgia, 'Times New Roman', serif; font-weight: 400; font-style: italic; color: var(--operator-gold); }
+  .comparison-heading > p { color: var(--operator-muted); max-width: 390px; line-height: 1.65; margin: 0 0 3px; }
+  .comparison-figure { background: var(--operator-ink); }
+  .photo-compare { height: clamp(350px, 48vw, 635px); position: relative; overflow: hidden; isolation: isolate; background: #526579; user-select: none; -webkit-user-select: none; touch-action: pan-y; }
+  .compare-photo { position: absolute; width: 100%; height: 100%; inset: 0; object-fit: cover; object-position: center 56%; display: block; pointer-events: none; }
+  .compare-before { position: absolute; inset: 0; clip-path: inset(0 calc(100% - var(--split)) 0 0); pointer-events: none; }
+  .compare-tag { position: absolute; top: 21px; z-index: 2; color: white; background: rgba(7,22,42,.89); font-size: .74rem; letter-spacing: .14em; font-weight: 750; padding: 9px 12px; }
+  .compare-tag-before { left: 21px; } .compare-tag-after { right: 21px; }
+  .compare-divider { position: absolute; inset-block: 0; left: var(--split); width: 2px; background: white; transform: translateX(-50%); z-index: 3; pointer-events: none; }
+  .compare-handle { display: grid; place-items: center; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 62px; height: 62px; border-radius: 50%; border: 2px solid var(--operator-gold); background: white; color: var(--operator-navy); box-shadow: 0 0 0 5px rgba(7,22,42,.28); }
+  .compare-handle svg { width: 34px; }
+  .compare-input { position: absolute; z-index: 4; margin: 0; inset: 0; width: 100%; height: 100%; cursor: ew-resize; opacity: 0; touch-action: pan-y; }
+  .photo-compare:has(.compare-input:focus-visible) .compare-handle { outline: 4px solid #f1cd6f; outline-offset: 6px; }
+  .comparison-caption { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px 18px; padding: 21px 25px; color: #d8e0e9; font-size: .83rem; }
+  .comparison-caption strong { color: #e5c676; font-size: .71rem; letter-spacing: .12em; }
+  .caption-instruction { color: #b4c2d0; }
+  .siding-detail { display: grid; grid-template-columns: minmax(0, 1.18fr) minmax(0, .82fr); gap: clamp(25px, 6vw, 75px); align-items: center; margin-top: 40px; padding: 32px; border: 1px solid rgba(255,255,255,.2); }
+  .siding-image { height: auto; width: 100%; display: block; }
+  .siding-detail figcaption { display: grid; align-content: start; gap: 12px; }
+  .siding-detail figcaption strong { font: 800 clamp(1.4rem, 2.5vw, 2.3rem)/1.1 var(--font-heading); letter-spacing: -.04em; }
+  .siding-detail figcaption p { color: var(--operator-muted); max-width: 380px; }
+  .operator-transition { display: flex; align-items: end; justify-content: space-between; gap: 35px; border-top: 1px solid rgba(255,255,255,.25); padding-top: 62px; margin-top: clamp(78px, 10vw, 135px); }
+  .transition-text { max-width: 760px; }
+  .operator-transition h3 { font-size: clamp(2.1rem, 4vw, 3.7rem); font-weight: 800; letter-spacing: -.043em; line-height: 1.13; text-wrap: balance; }
+  .operator-transition .transition-text > p:last-child { color: var(--operator-muted); max-width: 570px; margin-top: 23px; font-size: 1.03rem; }
+  .transition-cta { align-self: center; display: inline-flex; flex: 0 0 auto; align-items: center; justify-content: space-between; gap: 22px; padding: 17px 22px; min-height: 55px; background: var(--operator-gold); color: var(--operator-ink); font-weight: 800; border-radius: 6px; text-decoration: none; }
+  .transition-cta:hover { background: #e7c670; }
+  .transition-cta span { font-size: 1.25rem; }
+  /* Motion enhancement is only added after JavaScript initializes. */
+  @media (prefers-reduced-motion: no-preference) {
+    :global(.operator-motion-ready) [data-reveal] { opacity: 0; transform: translateY(25px); transition: opacity .75s ease, transform .75s ease; }
+    :global(.operator-motion-ready) [data-reveal].is-visible { opacity: 1; transform: none; }
+    .gallery-photo { will-change: transform; }
   }
-  .area-copy {
-    grid-area: copy;
+  @media (max-width: 1023px) {
+    .operator-headline-layout { grid-template-columns: 1fr; gap: 34px; align-items: start; }
+    .intro-story { max-width: 700px; }
+    .operator-gallery { grid-template-columns: 1.4fr .9fr; }
+    .gallery-main { height: 570px; }
+    .operator-principles { grid-template-columns: 1fr; }
+    .principle { padding: 22px 0; }
+    .principle + .principle { border-left: 0; border-top: 1px solid rgba(255,255,255,.19); padding-left: 0; }
+    .comparison-heading { gap: 30px; }
+    .operator-transition { flex-direction: column; align-items: start; }
+    .transition-cta { align-self: flex-start; }
   }
-  .area-photos {
-    grid-area: photos;
+  @media (max-width: 699px) {
+    .index-end { display: none; }
+    .section-index { font-size: .64rem; letter-spacing: .12em; }
+    .operator-title { font-size: clamp(2.55rem, 10.6vw, 4.15rem); }
+    .operator-gallery { grid-template-columns: 1fr; gap: 10px; margin-top: 43px; }
+    .gallery-main { height: clamp(390px, 120vw, 580px); }
+    .gallery-side { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 235px; gap: 10px; }
+    .gallery-caption { left: 18px; right: 18px; bottom: 18px; }
+    .gallery-caption strong { font-size: 1.3rem; }
+    .gallery-caption-small strong { font-size: .95rem; }
+    .gallery-caption-small { left: 12px; right: 12px; bottom: 10px; gap: 2px; }
+    .gallery-caption-small .image-number { font-size: .53rem; letter-spacing: .08em; }
+    .gallery-film .video-photo { object-position: center; }
+    .video-toggle { right: 8px; top: 8px; }
+    .operator-principles { margin-top: 30px; }
+    .comparison-heading { grid-template-columns: 1fr; gap: 15px; }
+    .comparison-heading > p { max-width: 600px; }
+    .photo-compare { height: clamp(315px, 80vw, 480px); }
+    .compare-handle { width: 54px; height: 54px; }
+    .compare-tag { font-size: .62rem; top: 12px; padding: 7px 10px; }
+    .compare-tag-before { left: 10px; } .compare-tag-after { right: 10px; }
+    .comparison-caption { padding: 16px; }
+    .siding-detail { grid-template-columns: 1fr; padding: 15px; gap: 20px; }
+    .siding-detail figcaption { padding: 0 2px 8px; }
+    .operator-transition { padding-top: 44px; }
   }
-  .area-video {
-    grid-area: video;
+  @media (max-width: 380px) {
+    .gallery-side { grid-template-rows: 206px; }
+    .gallery-caption-small strong { font-size: .85rem; }
+    .video-link { font-size: .72rem; }
+    .section-index { gap: 10px; }
+    .operator-title { font-size: 2.38rem; }
   }
-  .area-close {
-    grid-area: close;
-  }
-  .pair {
-    grid-template-columns: var(--before) var(--after);
-  }
-  @media (max-width: 639.98px) {
-    .pair[data-stack] {
-      grid-template-columns: 1fr;
-    }
+  @media (prefers-reduced-motion: reduce) {
+    .gallery-photo { transition: none; transform: none !important; }
   }
 </style>
 
 <script>
-  // Our commercial loops muted while it's on screen. Reduced motion: it
-  // stays on the poster and gets regular controls instead.
-  const figure = document.querySelector<HTMLElement>("[data-loop]");
-  const video = figure?.querySelector("video");
-  const toggle = figure?.querySelector<HTMLButtonElement>("[data-loop-toggle]");
-  if (figure && video && toggle) {
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
-    if (reduce.matches) {
+  // Decorative reveals. Always show content if JS is off or motion is reduced.
+  const operator = document.querySelector<HTMLElement>("#why-us");
+  if (operator && !window.matchMedia("(prefers-reduced-motion: reduce)").matches && "IntersectionObserver" in window) {
+    operator.classList.add("operator-motion-ready");
+    const visibilityObserver = new IntersectionObserver((entries, observer) => {
+      for (const entry of entries) {
+        if (entry.isIntersecting) {
+          (entry.target as HTMLElement).classList.add("is-visible");
+          observer.unobserve(entry.target);
+        }
+      }
+    }, { threshold: 0.1, rootMargin: "0px 0px 48px 0px" });
+    operator.querySelectorAll<HTMLElement>("[data-reveal]").forEach((element) => visibilityObserver.observe(element));
+  }
+
+  // True keyboard + touch/pointer-accessible photo comparison. No external library.
+  const comparison = document.querySelector<HTMLElement>("[data-compare]");
+  const range = comparison?.querySelector<HTMLInputElement>("[data-compare-input]");
+  if (comparison && range) {
+    const update = () => {
+      comparison.style.setProperty("--split", range.value + "%");
+      range.setAttribute("aria-valuetext",
+        Number(range.value) === 50
+          ? "Half before and half after"
+          : range.value + " percent of the before photo shown"
+      );
+    };
+    range.addEventListener("input", update);
+    update();
+  }
+
+  // Preserve the original commercial's muted, viewport-only loop and pause control.
+  const film = document.querySelector<HTMLElement>("[data-loop]");
+  const video = film?.querySelector("video");
+  const toggle = film?.querySelector<HTMLButtonElement>("[data-loop-toggle]");
+  if (video && toggle) {
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduced || !("IntersectionObserver" in window)) {
       video.controls = true;
       video.removeAttribute("aria-label");
     } else {
-      let userPaused = false;
       let onScreen = false;
+      let paused = false;
+      const pauseIcon = toggle.querySelector<SVGElement>(".loop-pause");
+      const playIcon = toggle.querySelector<SVGElement>(".loop-play");
       const sync = () => {
-        if (onScreen && !userPaused) video.play().catch(() => {});
+        if (onScreen && !paused) video.play().catch(() => {});
         else video.pause();
       };
       toggle.hidden = false;
       toggle.addEventListener("click", () => {
-        userPaused = !userPaused;
-        toggle.setAttribute("aria-pressed", String(userPaused));
-        toggle.querySelector(".loop-pause")!.classList.toggle("hidden", userPaused);
-        toggle.querySelector(".loop-play")!.classList.toggle("hidden", !userPaused);
-        toggle.querySelector("[data-loop-label]")!.textContent = userPaused ? "Play the clip" : "Pause the clip";
+        paused = !paused;
+        toggle.setAttribute("aria-pressed", String(paused));
+        toggle.setAttribute("aria-label", paused ? "Play the commercial preview" : "Pause the commercial preview");
+        if (pauseIcon) pauseIcon.hidden = paused;
+        if (playIcon) playIcon.hidden = !paused;
         sync();
       });
-      new IntersectionObserver(
-        (entries) => {
-          onScreen = entries.some((e) => e.isIntersecting);
-          sync();
-        },
-        { threshold: 0.25 },
-      ).observe(video);
+      const observer = new IntersectionObserver(entries => {
+        onScreen = entries.some(entry => entry.isIntersecting);
+        sync();
+      }, { threshold: 0.25 });
+      observer.observe(video);
     }
   }
 </script>
