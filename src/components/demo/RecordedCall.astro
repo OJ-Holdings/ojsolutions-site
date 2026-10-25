@@ -2,6 +2,7 @@
 import { mediaAvailable } from "../../lib/media";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
+import { createHash } from "node:crypto";
 
 const file = "/media/demo-call.json";
 const audioSrc = "/media/demo-call.mp3";
@@ -11,6 +12,7 @@ type Utterance = { id: number; speaker: "ai" | "caller"; text: string; start: nu
 type Field = { id: string; label: string; value: string; t: number };
 type Transcript = {
   version: number; audio: string; duration: number; label: string; edits: string;
+  audioSha256: string; audioRedactionReviewed: boolean;
   utterances: Utterance[];
   leadCard: {title: string; fields: Field[]; status: {label: string; t: number}};
 };
@@ -18,7 +20,9 @@ let transcript: Transcript | null = null;
 if (available) {
   try {
     const raw = JSON.parse(readFileSync(join(process.cwd(), "public", "media", "demo-call.json"),"utf8")) as Transcript;
+    const digest = createHash("sha256").update(readFileSync(join(process.cwd(), "public", "media", "demo-call.mp3"))).digest("hex");
     const valid = raw.version === 1 && raw.audio === audioSrc
+      && raw.audioSha256 === digest && raw.audioRedactionReviewed === true
       && Number.isFinite(raw.duration) && raw.duration > 20
       && Array.isArray(raw.utterances) && raw.utterances.length > 0
       && raw.utterances.every(turn => ["ai","caller"].includes(turn.speaker)
@@ -29,7 +33,7 @@ if (available) {
     if (!valid) throw new Error("Invalid demo JSON");
     // Block accidental publication of address / phone identifiers in timing metadata.
     const rawWords = JSON.stringify(raw).toLowerCase();
-    if (rawWords.includes("4210 lakeview") || /\b(?:\d[ -]?){10}\b/.test(rawWords)) throw new Error("Unsanitized demo metadata");
+    if (/\b4210\b|\blakeview\b/.test(rawWords) || /\b(?:\d[ -]?){10}\b/.test(rawWords)) throw new Error("Unsanitized demo metadata");
     transcript = raw;
   } catch (err) {
     console.warn("Real demo hidden until sanitized audio and complete metadata match.", err);
@@ -43,7 +47,7 @@ const approvedDemo = transcript !== null;
       <div>
         <p class="text-xs font-bold uppercase tracking-widest text-gold">Authentic demo call · Edited for length</p>
         <h2 id="recorded-title" class="display-2 mt-4">Hear the AI handle a real demo call.</h2>
-        <p class="text-soft mt-5">This recording is from the OJ Exterior Care demonstration line. Pauses were shortened and caller details redacted. The date discussed was from the time of recording, not today's availability.</p>
+        <p class="text-soft mt-5">This is an edited example conversation with the OJ Exterior Care AI assistant, not a call from an OJ Solutions customer. Pauses were shortened and identifying contact details redacted. The spoken date is historical, not current availability.</p>
         <audio controls preload="metadata" class="mt-7 w-full" data-real-demo-audio>
           <source src={audioSrc} type="audio/mpeg"/>
           Your browser cannot play this recording.
