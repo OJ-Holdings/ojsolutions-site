@@ -35,19 +35,19 @@ const steps = [
     body: "Someone calls your business. Day, night, weekend, or while you're on a job.",
   },
   {
-    title: "It answers, quotes, and books",
-    body: "The AI picks up, answers their questions, quotes from your prices, and books the appointment.",
+    title: "It answers, captures, and books",
+    body: "The AI picks up, identifies itself, captures the caller's details, and books an available on-site estimate.",
   },
   {
     title: "It lands where you work",
-    body: "The appointment shows up on your calendar and the contact in your CRM. Anything it can't handle rings your phone.",
+    body: "The estimate appears on your calendar and the contact in your CRM. Human callbacks can be flagged as urgent.",
   },
 ];
 
 const included = [
   {
     title: "AI receptionist",
-    body: "Answers your calls 24/7, answers common questions, and quotes from your pricing.",
+    body: "Answers calls around the clock, identifies itself as AI, and handles common questions about your services.",
   },
   {
     title: "Booking to your calendar",
@@ -67,7 +67,7 @@ const included = [
   },
 ];
 
-const costAnswer = `${formatPrice(SETUP_PRICE)} to set up and ${formatPrice(MONTHLY_PRICE)} a month for maintenance.`;
+const costAnswer = `${formatPrice(SETUP_PRICE)} one-time setup, then ${formatPrice(MONTHLY_PRICE)} per month for AI Receptionist Pro.`;
 
 const faq = [
   {
@@ -76,23 +76,17 @@ const faq = [
   },
   {
     q: "What happens with calls it can't handle?",
-    a: "It transfers them to your phone or to your staff.",
+    a: "It captures their details and flags the request for a prompt callback.",
   },
   { q: "What does it cost?", a: costAnswer },
-  {
-    q: "Is there a guarantee?",
-    a: "We record and analyze the data from every call the receptionist handles, so we can see exactly what it books for you. We'll set up a check-up call to go through the numbers, and if we both agree it isn't making you money, we end the monthly service. The one-time setup fee isn't refunded.",
-  },
+
   {
     q: "How long does setup take?",
     // TODO(Jacob): answer in FAQ_ANSWERS.receptionistSetupTime (src/config.ts).
     // Until then this is a PLACEHOLDER on preview builds and hidden on production.
     a: filled(FAQ_ANSWERS.receptionistSetupTime) ? FAQ_ANSWERS.receptionistSetupTime : placeholder("how long setup takes"),
   },
-  {
-    q: "What if I don't like the result?",
-    a: "We'll set up a check-up call to go through the numbers. If we both agree it isn't helping your business, we end the monthly service and stop billing you. The one-time setup fee isn't refunded.",
-  },
+
   // TODO(Jacob): answer these two in src/config.ts (FAQ_ANSWERS). Hidden until then.
   { q: "Do I need a new phone number?", a: FAQ_ANSWERS.receptionistNewNumber },
   { q: "Is there a long contract?", a: FAQ_ANSWERS.receptionistContract },
@@ -102,35 +96,23 @@ const faq = [
 <ServiceLayout
   service="receptionist"
   title="AI Receptionist That Answers Your Calls | OJ Solutions"
-  description="An AI receptionist that answers your calls 24/7, quotes from your prices, books jobs on your calendar, and texts back missed calls. We set it up and run it."
+  description="An AI receptionist that answers your calls, captures leads, and books available on-site estimates. Hear the live demo."
   eyebrow="AI Receptionist"
   heading="Your marketing isn't broken. Your phone is."
   highlight="Your phone is."
-  subhead="We set up an AI receptionist that answers your calls 24/7, quotes from your prices, and books the job on your calendar while you're busy doing the work."
+  subhead="An AI receptionist that answers calls around the clock, captures customer details, and books on-site estimates while you are busy doing the work."
   problemHeading="Every missed call is a lead you already paid for."
   faq={faq}
   ctaHeading="See it answer a call"
-  ctaLine="Book a short call and we'll show you how it would work for your business."
+  ctaLine="Hear our AI live at (262) 401-0826, then talk about setting it up for your business."
 >
   <Fragment slot="hero-secondary">
-    {
-      filled(GUARANTEE_TEXT) ? (
-        <p class="max-w-sm text-base">{GUARANTEE_TEXT.trim()}</p>
-      ) : (
-        SHOW_PLACEHOLDERS && (
-          <p class="max-w-sm text-base">
-            <span class="placeholder">PLACEHOLDER: guarantee line</span>
-          </p>
-        )
-      )
-    }
-    {
-      hasAudio && (
-        <a href="#hear-it" class="link inline-flex min-h-11 items-center text-lg">
-          Hear a real call
-        </a>
-      )
-    }
+    <a href="tel:+12624010826" class="link inline-flex min-h-11 items-center text-lg font-bold">
+      Call our AI: (262) 401-0826
+    </a>
+    {hasAudio && (
+      <a href="#hear-it" class="link inline-flex min-h-11 items-center text-lg">Hear the recorded demo</a>
+    )}
   </Fragment>
 
   {
