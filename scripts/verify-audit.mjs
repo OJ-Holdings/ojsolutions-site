@@ -35,7 +35,7 @@ for (const path of pages) {
   if (!/<link\s+rel=["']canonical["']/i.test(text)) failures.push(where+": canonical missing");
   if (!/<main\s+id=["']main["']/i.test(text)) failures.push(where+": main landmark missing");
   for(const img of text.match(/<img\b[^>]*>/gi)||[]) {
-    if(tagAttr(img,"alt")===null) failures.push(where+": <img> lacks explicit alt attribute");
+    if(tagAttr(img,"alt")===null) failures.push(where+": <img> lacks explicit alt attribute: "+img.slice(0,220));
   }
   for (const tag of text.match(/<video\b[^>]*>/gi)||[]) {
     if(/\sautoplay(?:[\s=>]|$)/i.test(tag) && !/\smuted(?:[\s=>]|$)/i.test(tag))
@@ -48,13 +48,14 @@ for (const path of pages) {
   for (const anchor of text.match(/<a\b[^>]*>/gi)||[]) {
     const href=tagAttr(anchor,"href");
     if(href && href.startsWith("tel:")) {
-      if(href!=="tel:+12624010826") failures.push(where+": unapproved tel: link");
+      if (!["2624010826","12624010826"].includes(href.slice(4).replace(/\D/g,"")))
+        failures.push(where+": unapproved tel: link ("+href+")");
       navTargets.add(where);
     }
   }
   const phoneMatches=text.match(/(?:\(?\d{3}\)?[\s.-]?)\d{3}[\s.-]?\d{4}/g)||[];
   for(const value of phoneMatches) {
-    if(value.replace(/\D/g,"")!=="2624010826" && !/^\d{10}$/.test(value))
+    if(value.replace(/\D/g,"")!=="2624010826")
       failures.push(where+": possible unapproved visible phone number");
   }
 }
