@@ -7,9 +7,9 @@
  */
 import { mediaAvailable } from "../../lib/media";
 import BookButton from "../BookButton.astro";
-const modernVideo = mediaAvailable("/media/commercial-hero.mp4")
+const modernVideo = mediaAvailable("/media/OJ_Solutions_Commercial_v2_hero30.mp4")
   && mediaAvailable("/media/commercial-hero-poster.webp");
-const video = modernVideo ? "/media/commercial-hero.mp4" : "/media/commercial-30.mp4";
+const video = modernVideo ? "/media/OJ_Solutions_Commercial_v2_hero30.mp4" : "/media/commercial-30.mp4";
 const poster = modernVideo ? "/media/commercial-hero-poster.webp" : "/media/commercial-30-poster.webp";
 const caption = mediaAvailable("/media/commercial-hero.vtt")
   ? "/media/commercial-hero.vtt"
