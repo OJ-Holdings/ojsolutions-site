@@ -27,3 +27,5 @@ jobs:
         run: node scripts/verify-media-integrity.mjs
       - name: Verify routes, disclosure and booking contract
         run: node scripts/verify-site.mjs
+      - name: Verify final audit guardrails and homepage initial load budget
+        run: node scripts/verify-audit.mjs
