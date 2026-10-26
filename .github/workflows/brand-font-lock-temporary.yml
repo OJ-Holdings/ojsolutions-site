@@ -1,0 +1,34 @@
+# Temporary one-shot lockfile materialization for the brand font migration.
+# It runs only when package.json changes on the named feature branch.
+name: Materialize brand font lock
+on:
+  push:
+    branches:
+      - feat/brand-fonts-self-hosted-round2
+    paths:
+      - package.json
+permissions:
+  contents: write
+jobs:
+  resolve-lockfile:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22.22.0"
+      - name: Regenerate consistent npm lockfile
+        run: |
+          npm install --package-lock-only --ignore-scripts
+          npm ci
+      - name: Commit lockfile to the feature branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package-lock.json
+          if ! git diff --cached --quiet; then
+            git commit -m "build: lock self-hosted brand font packages"
+            git push origin HEAD:feat/brand-fonts-self-hosted-round2
+          fi
