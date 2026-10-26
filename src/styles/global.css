@@ -20,7 +20,9 @@
 
   --font-*: initial;
   --font-sans: "Inter", "Inter Fallback", ui-sans-serif, system-ui, sans-serif;
-  --font-heading: "Montserrat", "Montserrat Fallback", ui-sans-serif, system-ui, sans-serif;
+  --font-heading: "Inter Tight", "Inter Tight Fallback", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Instrument Serif", Georgia, serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
 
   --radius-*: initial;
   --radius-sm: 4px;
@@ -35,7 +37,7 @@
 }
 
 /*
-  Fallback fonts sized to match Inter and Montserrat, so the page doesn't
+  Fallback fonts sized to match Inter and Inter Tight, so the page doesn't
   jump when the real fonts finish loading.
 */
 @font-face {
@@ -57,7 +59,7 @@
   line-gap-override: 0%;
 }
 @font-face {
-  font-family: "Montserrat Fallback";
+  font-family: "Inter Tight Fallback";
   src: local("Arial"), local("ArialMT");
   font-weight: 100 600;
   size-adjust: 112.8%;
@@ -66,7 +68,7 @@
   line-gap-override: 0%;
 }
 @font-face {
-  font-family: "Montserrat Fallback";
+  font-family: "Inter Tight Fallback";
   src: local("Arial Bold"), local("Arial-BoldMT");
   font-weight: 700 900;
   size-adjust: 108.99%;
@@ -165,6 +167,22 @@
     font-size: clamp(1.875rem, 1.35rem + 2.4vw, 3.25rem);
     line-height: 1.08;
     letter-spacing: -0.025em;
+  }
+
+  /* Commercial-matched serif highlight; decorative only, never a body font. */
+  .accent-serif {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: -0.025em;
+  }
+  /* Small numbered editorial labels match the brand's mono captions. */
+  .label-mono {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.075em;
+    line-height: 1.6;
   }
 
   /* Gold underline used to mark the key words in a headline. */

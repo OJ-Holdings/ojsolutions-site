@@ -1,13 +1,14 @@
 ---
 // Every page uses this: <head> tags for SEO and sharing, the header,
 // the footer, and the GHL chat widget (when set in src/config.ts).
-import "@fontsource/montserrat/latin-500.css";
-import "@fontsource/montserrat/latin-700.css";
+import "@fontsource/inter-tight/latin-500.css";
+import "@fontsource/inter-tight/latin-700.css";
+import "@fontsource/instrument-serif/latin-400-italic.css";
+import "@fontsource/jetbrains-mono/latin-500.css";
 import "@fontsource/inter/latin-400.css";
 import "@fontsource/inter/latin-600.css";
 import "../styles/global.css";
-import montserrat700 from "@fontsource/montserrat/files/montserrat-latin-700-normal.woff2?url";
-import inter400 from "@fontsource/inter/files/inter-latin-400-normal.woff2?url";
+import interTight700 from "@fontsource/inter-tight/files/inter-tight-latin-700-normal.woff2?url";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import { BUSINESS_NAME, GHL_CHAT_WIDGET } from "../config";
@@ -45,8 +46,7 @@ const ogImage = new URL("/og-image.png", site).href;
     <meta name="description" content={description} />
     {noindex ? <meta name="robots" content="noindex" /> : <link rel="canonical" href={canonical} />}
 
-    <link rel="preload" href={montserrat700} as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href={inter400} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={interTight700} as="font" type="font/woff2" crossorigin />
 
     <link rel="icon" href="/favicon.ico" sizes="48x48" />
     <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32" />
