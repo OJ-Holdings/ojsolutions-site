@@ -55,12 +55,12 @@ for (const path of pages) {
   }
   // Scan human-visible text only. A digit run in a script, URL or a unique
   // build hash is NOT a visible telephone number.
-  const visible = text.replace(/<script\\b[^>]*>[\\s\\S]*?<\\/script>/gi," ")
-    .replace(/<style\\b[^>]*>[\\s\\S]*?<\\/style>/gi," ")
+  const visible = text.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi," ")
+    .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi," ")
     .replace(/<[^>]+>/g," ");
-  const phoneMatches = visible.match(/(?:\\(\\d{3}\\)|\\d{3})[\\s.-]+\\d{3}[\\s.-]+\\d{4}/g)||[];
+  const phoneMatches = visible.match(/(?:\(\d{3}\)|\d{3})[\s.-]+\d{3}[\s.-]+\d{4}/g)||[];
   for(const value of phoneMatches) {
-    if(value.replace(/\\D/g,"")!=="2624010826")
+    if(value.replace(/\D/g,"")!=="2624010826")
       failures.push(where+": possible unapproved visible phone number "+value);
   }
 }
