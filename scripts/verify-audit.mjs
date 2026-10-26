@@ -35,7 +35,7 @@ for (const path of pages) {
   if (!/<link\s+rel=["']canonical["']/i.test(text)) failures.push(where+": canonical missing");
   if (!/<main\s+id=["']main["']/i.test(text)) failures.push(where+": main landmark missing");
   for(const img of text.match(/<img\b[^>]*>/gi)||[]) {
-    if(tagAttr(img,"alt")===null) failures.push(where+": <img> lacks explicit alt attribute: "+img.slice(0,220));
+    if(!/\salt(?:\s|=|>)/i.test(img)) failures.push(where+": <img> lacks explicit alt attribute: "+img.slice(0,220));
   }
   for (const tag of text.match(/<video\b[^>]*>/gi)||[]) {
     if(/\sautoplay(?:[\s=>]|$)/i.test(tag) && !/\smuted(?:[\s=>]|$)/i.test(tag))
@@ -53,10 +53,15 @@ for (const path of pages) {
       navTargets.add(where);
     }
   }
-  const phoneMatches=text.match(/(?:\(?\d{3}\)?[\s.-]?)\d{3}[\s.-]?\d{4}/g)||[];
+  // Scan human-visible text only. A digit run in a script, URL or a unique
+  // build hash is NOT a visible telephone number.
+  const visible = text.replace(/<script\\b[^>]*>[\\s\\S]*?<\\/script>/gi," ")
+    .replace(/<style\\b[^>]*>[\\s\\S]*?<\\/style>/gi," ")
+    .replace(/<[^>]+>/g," ");
+  const phoneMatches = visible.match(/(?:\\(\\d{3}\\)|\\d{3})[\\s.-]+\\d{3}[\\s.-]+\\d{4}/g)||[];
   for(const value of phoneMatches) {
-    if(value.replace(/\D/g,"")!=="2624010826")
-      failures.push(where+": possible unapproved visible phone number");
+    if(value.replace(/\\D/g,"")!=="2624010826")
+      failures.push(where+": possible unapproved visible phone number "+value);
   }
 }
 for(const expected of ["index.html","book.html","demo.html","about.html","services.html","ai-receptionist.html","commercials.html"]) {
