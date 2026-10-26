@@ -3,6 +3,7 @@ import Logo from "./Logo.astro";
 import Icon from "./Icon.astro";
 import { BUSINESS_NAME, EMAIL, PHONE, SOCIAL_LINKS } from "../config";
 import { SERVICES, filled } from "../lib/site";
+import { trades } from "../data/industries";
 
 const socials = [
   { name: "YouTube", icon: "youtube", href: SOCIAL_LINKS.youtube },
@@ -16,7 +17,7 @@ const linkClass =
 ---
 
 <footer class="on-navy rule-soft border-t">
-  <div class="container-page grid gap-10 py-12 md:grid-cols-[1.4fr_1fr_1fr] md:py-16">
+  <div class:list={["container-page grid gap-10 py-12 md:py-16",socials.length ? "md:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1fr_1fr]" : "md:grid-cols-[1.3fr_1fr_1fr]"]}>
     <div>
       <Logo tone="navy" />
       <p class="text-soft mt-4 max-w-xs">A front desk that works while you do.</p>
@@ -63,6 +64,15 @@ const linkClass =
         <li><a href="/services" class:list={["inline-flex min-h-11 items-center", linkClass]}>All services</a></li>
         <li><a href="/demo" class:list={["inline-flex min-h-11 items-center", linkClass]}>Try the AI demo</a></li>
         <li><a href="/about" class:list={["inline-flex min-h-11 items-center", linkClass]}>About our operators</a></li>
+      </ul>
+    </nav>
+
+    <nav aria-labelledby="footer-trades">
+      <h2 id="footer-trades" class="font-heading text-sm font-bold tracking-wide text-white uppercase">AI for trades</h2>
+      <ul class="mt-3">
+        {trades.map(trade => (
+          <li><a href={`/${trade.slug}`} class:list={["inline-flex min-h-11 items-center", linkClass]}>{trade.name}</a></li>
+        ))}
       </ul>
     </nav>
 
