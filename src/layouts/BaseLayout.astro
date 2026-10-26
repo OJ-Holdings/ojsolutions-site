@@ -85,8 +85,8 @@ const ogImage = new URL("/og-image.png", site).href;
     <Footer />
     <script is:inline>
       // Outreach links carry tags like ?src=ig&rep=jacob&utm_source=facebook.
-      // Remember them for this visit and add them to every Book a call link,
-      // so they reach the GHL calendar even after the visitor clicks around.
+      // Remember them for this visit and add them to consultation-request
+      // links without exposing contact details in analytics.
       (() => {
         const KEY = "oj-tracking";
         const keep = (k) => k === "src" || k === "rep" || k.startsWith("utm_");
@@ -109,39 +109,78 @@ const ogImage = new URL("/og-image.png", site).href;
       })();
     </script>
     <script is:inline>
-      // First-party measurement hooks only. No GA4/Meta IDs are configured here.
-      // Never send names, phone numbers, email addresses, form notes, or dates.
+      // Privacy-first event hooks. No tracking vendor is loaded until configured.
+      // Only static event types and page/section labels are sent. Never emit
+      // names, contact details, selected slots, transcript text, or query values.
       (() => {
-        const emit = (event) => {
-          window.dataLayer = window.dataLayer || [];
-          window.dataLayer.push({event});
-          if (typeof window.gtag === "function") window.gtag("event", event);
+        const allowedEvents = new Set([
+          "demo_call_tap", "book_request_submit", "demo_audio_play",
+          "demo_audio_complete", "commercial_play", "pricing_view",
+          "faq_open", "trade_page_view", "consultation_booking_click"
+        ]);
+        const safeLabel = value => {
+          const label = String(value || "other").toLowerCase().replace(/[^a-z0-9_-]/g, "").slice(0, 40);
+          return label || "other";
         };
-        document.addEventListener("click", (e) => {
+        const emit = (event, properties = {}) => {
+          if (!allowedEvents.has(event)) return;
+          const payload = {};
+          for (const key of ["location", "trade", "service"]) {
+            if (Object.prototype.hasOwnProperty.call(properties, key)) payload[key] = safeLabel(properties[key]);
+          }
+          window.dataLayer = window.dataLayer || [];
+          window.dataLayer.push({ event, ...payload });
+          if (typeof window.gtag === "function") window.gtag("event", event, payload);
+        };
+        window.ojTrack = emit;
+        const locationFor = element => {
+          const explicit = element.closest("[data-track-location]")?.getAttribute("data-track-location");
+          if (explicit) return safeLabel(explicit);
+          if (element.closest("header")) return "header";
+          if (element.closest("footer")) return "footer";
+          if (element.closest("#commercial-showcase")) return "commercial_showcase";
+          if (element.closest("#pricing")) return "pricing";
+          if (element.closest("#recorded-call")) return "recorded_demo";
+          if (element.closest("#demo")) return "hero_demo";
+          if (element.closest("main > section:first-child")) return "hero";
+          return "page";
+        };
+        document.addEventListener("click", e => {
           const target = e.target;
           if (!(target instanceof Element)) return;
-          const a = target.closest("a");
-          if (!a) return;
-          if (a.hasAttribute("data-demo-call") || a.href.startsWith("tel:+12624010826"))
-            emit("demo_call_tap");
-          if (a.hasAttribute("data-book")) emit("consultation_booking_click");
+          const anchor = target.closest("a");
+          if (anchor && anchor.getAttribute("href")?.startsWith("tel:"))
+            emit("demo_call_tap", { location: locationFor(anchor) });
+          if (anchor && anchor.hasAttribute("data-book"))
+            emit("consultation_booking_click", { location: locationFor(anchor) });
+          const summary = target.closest("#faq details > summary");
+          if (summary && !summary.parentElement.open)
+            emit("faq_open", { location: "faq" });
         });
-        document.addEventListener("play", (e) => {
+        document.addEventListener("play", e => {
           const media = e.target;
           if (!(media instanceof HTMLMediaElement)) return;
-          if (media.tagName === "AUDIO") emit("demo_audio_play");
-          if (media.tagName === "VIDEO") emit("commercial_video_play");
+          if (media.matches("audio[data-real-demo-audio]")) emit("demo_audio_play", { location: "recorded_demo" });
+          // Exclude muted automatic viewport previews from commercial engagement.
+          if (media.tagName === "VIDEO" && !media.muted) emit("commercial_play", { location: locationFor(media) });
+        }, true);
+        document.addEventListener("ended", e => {
+          const media = e.target;
+          if (media instanceof HTMLAudioElement && media.matches("audio[data-real-demo-audio]"))
+            emit("demo_audio_complete", { location: "recorded_demo" });
         }, true);
         const pricing = document.querySelector("#pricing");
         if (pricing && "IntersectionObserver" in window) {
           const observer = new IntersectionObserver(entries => {
             if (entries.some(entry => entry.isIntersecting)) {
-              emit("pricing_section_view");
+              emit("pricing_view", { location: "pricing" });
               observer.disconnect();
             }
-          }, {threshold: .35});
+          }, { threshold: .35 });
           observer.observe(pricing);
         }
+        const industry = document.querySelector("[data-trade-page]");
+        if (industry) emit("trade_page_view", { trade: industry.getAttribute("data-trade-page") });
       })();
     </script>
     {filled(GHL_CHAT_WIDGET) && <Fragment set:html={GHL_CHAT_WIDGET} />}
