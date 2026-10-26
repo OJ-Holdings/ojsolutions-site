@@ -8,6 +8,8 @@ import BookButton from "../components/BookButton.astro";
 import Icon from "../components/Icon.astro";
 import CallDemo from "../components/home/CallDemo.astro";
 import DemoCallout from "../components/home/DemoCallout.astro";
+import RecordedCall from "../components/demo/RecordedCall.astro";
+import CommercialSpotlight from "../components/home/CommercialSpotlight.astro";
 import MissedCallProblem from "../components/home/MissedCallProblem.astro";
 import FrontDeskFeatures from "../components/home/FrontDeskFeatures.astro";
 import FrontDeskPricing from "../components/home/FrontDeskPricing.astro";
@@ -36,13 +38,13 @@ const jsonLd = {
       ...(filled(EMAIL) && { email: EMAIL }),
       ...(filled(PHONE) && { telephone: PHONE }),
       areaServed: ["Kenosha", "Racine", "Pleasant Prairie", "Southeast Wisconsin"].map(name => ({ "@type": "Place", name })),
-      founder: [{ "@type": "Person", name: "Jacob" }, { "@type": "Person", name: "Oscar" }],
+      founder: [{ "@type": "Person", name: "Jacob Prahl" }, { "@type": "Person", name: "Oscar Johnston" }],
       ...(Object.values(SOCIAL_LINKS).some(filled) && { sameAs: Object.values(SOCIAL_LINKS).filter(filled) }),
     },
     {
       "@type": "Service",
       "@id": new URL("/ai-receptionist#service", site).href,
-      name: "AI Receptionist Pro",
+      name: "AI Receptionist Starter and Pro",
       serviceType: "AI receptionist and call handling for home-service businesses",
       provider: { "@id": new URL("/#organization", site).href },
       areaServed: ["Kenosha", "Racine", "Pleasant Prairie", "Southeast Wisconsin"].map(name => ({ "@type": "Place", name })),
@@ -101,7 +103,11 @@ const steps = [
 
   <DemoCallout />
 
+  <RecordedCall />
+
   <MissedCallProblem />
+
+  <CommercialSpotlight />
 
   <OwnWork />
 
