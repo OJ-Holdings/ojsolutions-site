@@ -28,6 +28,13 @@ assert.match(home, /tel:\+12624010826/, "Missing live demo call link");
 assert.match(home, /Operator Advantage|We don't just build for businesses/i, "Missing original operator proof");
 assert.match(home, /href=["']\/services["']/, "Full services link missing");
 assert.match(home, /data-call-demo/, "Animated phone demo was removed");
+assert.match(home, /id=["']commercial-showcase["']/, "Operator commercial spotlight missing");
+assert.match(home, /data-featured-video/, "Commercial preview video missing");
+assert.match(home, /data-play-sound/, "User-initiated audio control missing");
+assert.match(home, /OJ Exterior Care/, "Operator proof attribution missing");
+assert.match(home, /"Jacob Prahl"/, "Verified founder name missing from structured data");
+assert.match(home, /"Oscar Johnston"/, "Verified founder name missing from structured data");
+
 
 // One published price source: never quietly revert to the old $797/$2,000 offer.
 const aiLanding = html("ai-receptionist");
@@ -59,6 +66,7 @@ assert.match(services, /Commercials/);
 
 const demo = html("demo");
 assert.match(demo, /fictional/i);
+assert.match(demo, /separate fictional illustration/i);
 assert.match(demo, /tel:\+12624010826/);
 
 for (const path of routes.filter((p) => p.startsWith("ai-receptionist-for-"))) {
