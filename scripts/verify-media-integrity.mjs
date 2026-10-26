@@ -24,6 +24,9 @@ const hash = createHash("sha256").update(readFileSync(recordingPath)).digest("he
 assert.equal(t.audio, "/media/demo-call.mp3", "Incorrect recorded-demo audio filename.");
 assert.match(t.audioSha256 || "", /^[0-9a-f]{64}$/, "Transcript must pin the exact approved MP3 SHA-256.");
 assert.equal(t.audioSha256, hash, "Recorded MP3 does not match the transcript-approved SHA-256.");
+// Founder approved this specific redacted MP3 on 2026-10-26. Reject earlier raw uploads.
+assert.equal(hash, "ea7b22f5c3b0b22e90520ba641a8236be36b9caadb55981544ec3c7eb02ae196",
+  "The file is not the exact founder-approved redacted demo MP3.");
 assert.equal(t.audioRedactionReviewed, true, "An authorized human must review audio redaction before release.");
 assert.equal(t.version, 1);
 assert.ok(t.duration > 20 && t.duration < 360, "Invalid demo duration.");

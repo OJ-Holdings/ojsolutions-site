@@ -7,9 +7,9 @@
  */
 import { mediaAvailable } from "../../lib/media";
 import BookButton from "../BookButton.astro";
-const modernVideo = mediaAvailable("/media/commercial-hero.mp4")
+const modernVideo = mediaAvailable("/media/OJ_Solutions_Commercial_v2_hero30.mp4")
   && mediaAvailable("/media/commercial-hero-poster.webp");
-const video = modernVideo ? "/media/commercial-hero.mp4" : "/media/commercial-30.mp4";
+const video = modernVideo ? "/media/OJ_Solutions_Commercial_v2_hero30.mp4" : "/media/commercial-30.mp4";
 const poster = modernVideo ? "/media/commercial-hero-poster.webp" : "/media/commercial-30-poster.webp";
 const caption = mediaAvailable("/media/commercial-hero.vtt")
   ? "/media/commercial-hero.vtt"
@@ -42,7 +42,7 @@ const caption = mediaAvailable("/media/commercial-hero.vtt")
           preload="none"
           aria-label="OJ Exterior Care commercial: real exterior cleaning work"
         >
-          <source src={video} type="video/mp4" />
+          <source data-video-src={video} type="video/mp4" />
           {caption && <track kind="captions" src={caption} srclang="en" label="English captions" />}
           Your browser does not support embedded video.
         </video>
@@ -68,7 +68,17 @@ const caption = mediaAvailable("/media/commercial-hero.vtt")
   const soundButton = wrapper?.querySelector<HTMLButtonElement>("[data-play-sound]");
   if (video && soundButton && wrapper) {
     let userStarted = false;
+    // Do not give the browser an MP4 URL until it is actually needed.
+    const loadOnDemand = () => {
+      const source = video.querySelector<HTMLSourceElement>("source[data-video-src]");
+      if (source?.dataset.videoSrc) {
+        source.src = source.dataset.videoSrc;
+        delete source.dataset.videoSrc;
+        video.load();
+      }
+    };
     const manual = () => {
+      loadOnDemand();
       userStarted = true;
       video.muted = false;
       video.loop = false;
@@ -90,6 +100,7 @@ const caption = mediaAvailable("/media/commercial-hero.vtt")
       const observer = new IntersectionObserver((entries) => {
         if (userStarted) return;
         if (entries.some(entry => entry.isIntersecting)) {
+          loadOnDemand();
           video.play().catch(() => {});
         } else {
           video.pause();

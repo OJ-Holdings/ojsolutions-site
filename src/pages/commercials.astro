@@ -11,10 +11,10 @@ import { filled } from "../lib/site";
 import Icon from "../components/Icon.astro";
 import { mediaAvailable } from "../lib/media";
 
-const longCut = mediaAvailable("/media/commercial-hero.mp4") ? "/media/commercial-hero.mp4" : "/media/commercial-30.mp4";
-const shortCut = mediaAvailable("/media/commercial-v2-cut15.mp4") ? "/media/commercial-v2-cut15.mp4" : "/media/commercial-15.mp4";
-const longPoster = mediaAvailable("/media/commercial-hero-poster.webp") && mediaAvailable("/media/commercial-hero.mp4") ? "/media/commercial-hero-poster.webp" : "/media/commercial-30-poster.webp";
-const shortPoster = mediaAvailable("/media/commercial-v2-cut15-poster.webp") && mediaAvailable("/media/commercial-v2-cut15.mp4") ? "/media/commercial-v2-cut15-poster.webp" : "/media/commercial-15-poster.webp";
+const longCut = mediaAvailable("/media/OJ_Solutions_Commercial_v2_hero30.mp4") ? "/media/OJ_Solutions_Commercial_v2_hero30.mp4" : "/media/commercial-30.mp4";
+const shortCut = mediaAvailable("/media/OJ_Solutions_Commercial_v2_cut15.mp4") ? "/media/OJ_Solutions_Commercial_v2_cut15.mp4" : "/media/commercial-15.mp4";
+const longPoster = mediaAvailable("/media/commercial-hero-poster.webp") && mediaAvailable("/media/OJ_Solutions_Commercial_v2_hero30.mp4") ? "/media/commercial-hero-poster.webp" : "/media/commercial-30-poster.webp";
+const shortPoster = mediaAvailable("/media/commercial-v2-cut15-poster.webp") && mediaAvailable("/media/OJ_Solutions_Commercial_v2_cut15.mp4") ? "/media/commercial-v2-cut15-poster.webp" : "/media/commercial-15-poster.webp";
 
 // Only promise to come on site when SHOOT_AREA is set in src/config.ts.
 // TODO(Jacob): decide how out-of-area clients work (they send footage?
