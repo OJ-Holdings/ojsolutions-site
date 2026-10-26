@@ -64,6 +64,16 @@ assert.match(services, /AI Receptionist/);
 assert.match(services, /Websites/);
 assert.match(services, /Commercials/);
 
+// First-party measurement hooks have a stable privacy-safe event contract.
+for (const event of ["demo_call_tap","book_request_submit","demo_audio_play","demo_audio_complete","commercial_play","pricing_view","faq_open","trade_page_view"]) {
+  // Page-inline hooks compile with the shared layout, while booked submissions
+  // compile into a script asset and are validated separately in source below.
+  if (event !== "book_request_submit") assert.ok(home.includes('"' + event + '"'),
+    "Missing conversion event hook: " + event);
+}
+const baseSource = readFileSync(new URL("../src/pages/book.astro", import.meta.url), "utf8");
+assert.match(baseSource, /ojTrack\?\.\("book_request_submit"/, "Successful form submissions must emit book_request_submit.");
+
 const demo = html("demo");
 assert.match(demo, /fictional/i);
 assert.match(demo, /separate fictional illustration/i);
@@ -71,6 +81,7 @@ assert.match(demo, /tel:\+12624010826/);
 
 for (const path of routes.filter((p) => p.startsWith("ai-receptionist-for-"))) {
   assert.match(html(path), /Fictional example only/i, path + " lacks fictional-proof disclaimer");
+  assert.match(html(path), /"@type":"Service"/, path + " is missing Service schema");
 }
 const output = routes.map(p => html(p)).join("\n");
 assert.doesNotMatch(output, /SUPABASE_SERVICE_ROLE_KEY/, "Possible secret name accidentally exposed");

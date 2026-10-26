@@ -242,10 +242,9 @@ const submitUrl = "https://vgckpcktsfuithqggknd.supabase.co/functions/v1/oj-solu
         } finally { window.clearTimeout(timeout); }
         const result = await response.json().catch(() => ({})) as { message?: string; error?: string; ok?: boolean };
         if (!response.ok || !result.ok) throw new Error(result.error || "We couldn't save your request.");
-        const w = window as typeof window & { dataLayer?: Array<Record<string, unknown>>; gtag?: (...args: unknown[]) => void };
-        w.dataLayer = w.dataLayer || [];
-        w.dataLayer.push({ event: "consultation_request_submitted" });
-        w.gtag?.("event", "consultation_request_submitted");
+        const w = window as typeof window & { ojTrack?: (event: string, details?: Record<string, string>) => void };
+        const selectedService = payload.service === "AI receptionist" ? "receptionist" : payload.service === "Websites" ? "website" : payload.service === "Commercials" ? "commercial" : "other";
+        w.ojTrack?.("book_request_submit", { service: selectedService });
         setFeedback("Request received for " + dateInput.value + " at " + shortTime(time) + " Central. This is not yet confirmed; OJ Solutions will contact you.", false);
         form.reset();
         dateInput.value = "";

@@ -10,12 +10,24 @@ export function getStaticPaths() {
 }
 
 const { trade } = Astro.props;
+const site = Astro.site ?? new URL("https://ojsolutions.org");
+const tradeJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Service",
+  name: "AI Receptionist for " + trade.name,
+  serviceType: "AI call answering and lead capture for " + trade.name.toLowerCase() + " businesses",
+  provider: { "@id": new URL("/#organization", site).href },
+  url: new URL("/" + trade.slug, site).href,
+  areaServed: ["Kenosha", "Racine", "Pleasant Prairie", "Southeast Wisconsin"].map(name => ({ "@type": "Place", name })),
+  description: trade.situation,
+};
 ---
 <BaseLayout
+  jsonLd={tradeJsonLd}
   title={`AI Receptionist for ${trade.name} | OJ Solutions`}
   description={`An AI front desk for ${trade.name.toLowerCase()} business owners in southeast Wisconsin. Capture callers, gather details, and schedule estimates with an operator-focused setup.`}
 >
-  <section class="on-navy">
+  <section class="on-navy" data-trade-page={trade.slug}>
     <div class="container-page grid gap-12 py-16 lg:grid-cols-[1.1fr_.9fr] lg:items-center lg:py-24">
       <div>
         <p class="text-sm font-bold uppercase tracking-widest text-gold">AI receptionist / {trade.name}</p>
