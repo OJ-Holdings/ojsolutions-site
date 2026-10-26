@@ -29,3 +29,45 @@ jobs:
         run: node scripts/verify-site.mjs
       - name: Verify final audit guardrails and homepage initial load budget
         run: node scripts/verify-audit.mjs
+
+  lighthouse:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22.22.0"
+          cache: npm
+      - name: Install and build
+        env:
+          VERCEL_ENV: production
+        run: |
+          npm ci
+          npm run build
+      - name: Launch local production preview and run mobile Lighthouse
+        run: |
+          npm run preview -- --host 127.0.0.1 --port 4321 > /tmp/oj-preview.log 2>&1 &
+          for attempt in $(seq 1 40); do
+            if curl -fsS http://127.0.0.1:4321/ >/dev/null; then break; fi
+            sleep 1
+          done
+          mkdir -p test-results
+          CHROME_PATH="$(command -v google-chrome || command -v chromium || command -v chromium-browser)"
+          if [ -z "$CHROME_PATH" ]; then
+            echo "Chrome is unavailable on this runner" >&2
+            exit 1
+          fi
+          npx --yes lighthouse@12.8.2 http://127.0.0.1:4321/ \
+            --only-categories=performance,accessibility,seo \
+            --chrome-flags="--headless --no-sandbox --disable-dev-shm-usage" \
+            --form-factor=mobile \
+            --output=json --output-path=test-results/lighthouse-mobile.json --quiet
+          node scripts/report-lighthouse.mjs test-results/lighthouse-mobile.json
+      - name: Upload mobile Lighthouse report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: oj-solutions-mobile-lighthouse
+          path: test-results/lighthouse-mobile.json
+          if-no-files-found: ignore
