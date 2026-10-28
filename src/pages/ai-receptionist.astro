@@ -2,47 +2,16 @@
 import ServiceLayout from "../layouts/ServiceLayout.astro";
 import Section from "../components/Section.astro";
 import SectionHeading from "../components/SectionHeading.astro";
-import Steps from "../components/Steps.astro";
-import FeatureGrid from "../components/FeatureGrid.astro";
-import BookButton from "../components/BookButton.astro";
-import PlaceholderBox from "../components/PlaceholderBox.astro";
-import {
-  DEMO_AUDIO_SRC,
-  DEMO_AUDIO_TRANSCRIPT,
-  DEMO_VIDEO_SRC,
-  STATS_SOURCE_URL,
-} from "../config";
-import { SHOW_PLACEHOLDERS, filled } from "../lib/site";
-import { mediaAvailable } from "../lib/media";
+import IconGrid from "../components/IconGrid.astro";
+import CallDemo from "../components/home/CallDemo.astro";
+import MissedCallStack from "../components/receptionist/MissedCallStack.astro";
+import CallFlow from "../components/receptionist/CallFlow.astro";
+import ReceptionistPricing from "../components/receptionist/ReceptionistPricing.astro";
+import BuiltFor from "../components/receptionist/BuiltFor.astro";
+import { STATS_SOURCE_URL } from "../config";
 import { RECEPTIONIST_CORE, RECEPTIONIST_FAQ } from "../lib/receptionist-offer";
-import FrontDeskPricing from "../components/home/FrontDeskPricing.astro";
 
-const hasAudio = mediaAvailable(DEMO_AUDIO_SRC);
-const hasVideo = mediaAvailable(DEMO_VIDEO_SRC);
 const hasStats = /^https?:\/\//i.test(STATS_SOURCE_URL.trim());
-// iOS Safari shows a blank box for local videos unless a start time is set.
-const videoSrc = hasVideo && DEMO_VIDEO_SRC.trim().startsWith("/") && !DEMO_VIDEO_SRC.includes("#")
-  ? `${DEMO_VIDEO_SRC.trim()}#t=0.1`
-  : DEMO_VIDEO_SRC.trim();
-
-const steps = [
-  {
-    title: "A call comes in",
-    body: "Someone calls your business. Day, night, weekend, or while you're on a job.",
-  },
-  {
-    title: "It answers, captures, and books",
-    body: "The AI picks up, identifies itself, captures the caller's details, and books an available time on your calendar.",
-  },
-  {
-    title: "It lands where you work",
-    body: "The appointment appears on your calendar and the contact in your CRM. Calls it can't handle are flagged for you or your staff.",
-  },
-];
-
-
-
-
 ---
 
 <ServiceLayout
@@ -56,64 +25,14 @@ const steps = [
   problemHeading="Every missed call is a lead you already paid for."
   faq={RECEPTIONIST_FAQ}
   ctaHeading="See it answer a call"
-  ctaLine="Hear our AI live at (262) 401-0826, then talk about setting it up for your business."
+  ctaLine="Hear our AI live, then talk about setting it up for your business."
+  callFirst
 >
-  <Fragment slot="hero-secondary">
-    <div>
-      <a href="tel:+12624010826" class="link inline-flex min-h-11 items-center text-lg font-bold">
-        Call our AI: (262) 401-0826
-      </a>
-      <p class="text-soft mt-2 max-w-sm text-sm">It plays a customer booking a service. Use fake details. Calls may be recorded.</p>
-    </div>
-    {hasAudio && (
-      <a href="#hear-it" class="link inline-flex min-h-11 items-center text-lg">Hear the recorded demo</a>
-    )}
-  </Fragment>
+  <p slot="hero-note" class="text-soft mt-4 max-w-lg text-sm">
+    It identifies itself as AI and walks through a pretend estimate request. Use a fake name and address. Calls may be recorded.
+  </p>
 
-  {
-    (hasAudio || hasVideo || SHOW_PLACEHOLDERS) && (
-      <div slot="hero-aside" id="hear-it" class="rule-soft scroll-mt-24 rounded-lg border p-5 sm:p-7">
-        <h2 class="font-heading text-xl font-bold sm:text-2xl">Hear a real call</h2>
-        {hasAudio && <p class="text-soft mt-1">A real call to our AI receptionist, recorded on our own system.</p>}
-        {
-          hasAudio ? (
-            <div class="mt-5">
-              <audio controls preload="metadata" src={DEMO_AUDIO_SRC.trim()} class="w-full">
-                <a href={DEMO_AUDIO_SRC.trim()} class="link">
-                  Download the call recording
-                </a>
-              </audio>
-              {filled(DEMO_AUDIO_TRANSCRIPT) && (
-                <details class="group mt-3">
-                  <summary class="link inline-flex min-h-11 items-center">Read the transcript</summary>
-                  <p class="text-soft mt-3 whitespace-pre-line">{DEMO_AUDIO_TRANSCRIPT.trim()}</p>
-                </details>
-              )}
-            </div>
-          ) : (
-            <PlaceholderBox class="mt-5" label="demo call recording (audio player)" icon="volume" />
-          )
-        }
-        {
-          hasVideo ? (
-            <figure class="mt-5">
-              <video controls muted playsinline preload="metadata" src={videoSrc} class="w-full rounded-md" />
-              <figcaption class="text-soft mt-3">
-                Screen recording: the calendar event and the contact card the call created.
-              </figcaption>
-            </figure>
-          ) : (
-            <PlaceholderBox
-              class="mt-5"
-              label="20 to 30 second screen recording of the booking the call created"
-              icon="play"
-              aspect="16 / 9"
-            />
-          )
-        }
-      </div>
-    )
-  }
+  <div slot="hero-aside"><CallDemo /></div>
 
   <Fragment slot="problem">
     <p class="mt-6 max-w-2xl text-lg text-muted">
@@ -122,19 +41,19 @@ const steps = [
     </p>
     {
       hasStats && (
-        <figure class="mt-12 max-w-4xl">
+        <figure class="mt-10">
           <p class="font-semibold">In a 2025 CallRail survey of 1,000 consumers:</p>
-          <div class="mt-6 grid gap-8 border-y border-line py-8 sm:grid-cols-2 sm:gap-0 sm:divide-x sm:divide-line">
-            <div class="sm:pr-10">
-              <p class="font-heading text-6xl font-bold tracking-tight sm:text-7xl">78%</p>
-              <p class="mt-3 text-lg text-muted">said they've abandoned a business after an unanswered call.</p>
+          <div class="mt-5 grid gap-6 border-y border-line py-7 sm:grid-cols-2 sm:gap-0 sm:divide-x sm:divide-line">
+            <div class="sm:pr-8">
+              <p class="font-heading text-6xl font-bold tracking-tight">78%</p>
+              <p class="mt-2 text-lg text-muted">said they've abandoned a business after an unanswered call.</p>
             </div>
-            <div class="sm:pl-10">
-              <p class="font-heading text-6xl font-bold tracking-tight sm:text-7xl">82%</p>
-              <p class="mt-3 text-lg text-muted">said they'd call a competitor instead.</p>
+            <div class="sm:pl-8">
+              <p class="font-heading text-6xl font-bold tracking-tight">82%</p>
+              <p class="mt-2 text-lg text-muted">said they'd call a competitor instead.</p>
             </div>
           </div>
-          <figcaption class="mt-4 text-[0.9375rem] text-muted">
+          <figcaption class="mt-3 text-[0.9375rem] text-muted">
             Source:{" "}
             <a href={STATS_SOURCE_URL.trim()} target="_blank" rel="noopener" class="link font-normal">
               CallRail, 2025 consumer survey<span class="sr-only"> (opens in a new tab)</span>
@@ -145,16 +64,19 @@ const steps = [
     }
   </Fragment>
 
+  <div slot="problem-aside"><MissedCallStack /></div>
+
   <Section id="how-it-works" labelledby="how-title" tone="navy">
     <SectionHeading id="how-title" title="How it works" tone="navy" />
-    <Steps steps={steps} tone="navy" />
+    <CallFlow />
   </Section>
 
   <Section id="included" labelledby="included-title" border={false}>
     <SectionHeading id="included-title" title="What's included" />
-    <FeatureGrid items={RECEPTIONIST_CORE.map(({ title, description }) => ({ title, body: description }))} />
+    <IconGrid items={RECEPTIONIST_CORE} />
   </Section>
 
-  <FrontDeskPricing />
+  <ReceptionistPricing />
 
+  <BuiltFor />
 </ServiceLayout>

@@ -4,6 +4,7 @@
 // (a player, a video, a screenshot) beside the copy on wide screens and
 // right under the button on phones.
 import BookButton from "./BookButton.astro";
+import CallButton from "./CallButton.astro";
 import Icon from "./Icon.astro";
 import type { ServiceKey } from "../lib/site";
 
@@ -15,9 +16,11 @@ interface Props {
   /** The service name, shown with its icon above the headline. */
   eyebrow?: string;
   service?: ServiceKey;
+  /** Lead with the live AI demo line; Book a call becomes the outlined secondary. */
+  callFirst?: boolean;
 }
 
-const { title, highlight, subhead, eyebrow, service } = Astro.props;
+const { title, highlight, subhead, eyebrow, service, callFirst = false } = Astro.props;
 const at = highlight ? title.lastIndexOf(highlight) : -1;
 const before = at >= 0 ? title.slice(0, at) : title;
 const marked = at >= 0 ? highlight : "";
@@ -49,9 +52,11 @@ const hasAside = Astro.slots.has("aside");
       </h1>
       <p class="text-soft mt-5 max-w-2xl text-lg sm:mt-7 sm:text-xl">{subhead}</p>
       <div class="mt-7 flex flex-wrap items-center gap-x-6 gap-y-3 sm:mt-9">
-        <BookButton service={service} variant="gold" size="lg" />
+        {callFirst && <CallButton />}
+        <BookButton service={service} variant={callFirst ? "outline" : "gold"} size="lg" />
         <slot name="secondary" />
       </div>
+      <slot name="note" />
     </div>
     {hasAside && <div><slot name="aside" /></div>}
   </div>

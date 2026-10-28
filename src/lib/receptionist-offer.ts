@@ -1,16 +1,23 @@
 import { COST_ANSWER_ALL, PRICE_LINES, PRICING } from "../data/pricing";
+import { PHONE } from "../config";
+import type { IconName } from "../components/Icon.astro";
 
-/** What the one AI Receptionist plan includes, shown on the receptionist page. */
-export const RECEPTIONIST_CORE = [
-  { title: "24/7 AI call answering", description: "Answers every call it can, day or night, and identifies itself as AI." },
-  { title: "Lead capture", description: "Captures the caller's name, service, address and preferred timeframe." },
-  { title: "Estimate booking", description: "Books on-site estimates on your calendar." },
-  { title: "Instant owner alerts", description: "You get the lead the moment the call ends, with the recording and transcript." },
-  { title: "Missed-call text-back", description: "Sends a text to any caller who doesn't get through." },
-  { title: "Reviews and follow-up", description: "Sends review requests and follow-ups so leads don't go cold." },
-  { title: "Call and lead reporting", description: "See who called, what they needed and what got booked." },
-  { title: "Keep your number", description: "Works with your existing business number. No new number to hand out." },
-] as const;
+/** "What's included" on the receptionist page: eight items, 2 by 4. */
+export const RECEPTIONIST_CORE: { icon: IconName; title: string; body: string }[] = [
+  { icon: "clock", title: "24/7 answering", body: "Picks up day or night and identifies itself as AI." },
+  { icon: "user", title: "Lead capture", body: "Gets the caller's name, service, address and timeframe." },
+  { icon: "calendar", title: "Estimate booking", body: "Books estimates straight onto your calendar." },
+  { icon: "bell", title: "Instant owner alerts", body: "You hear about every new lead the moment the call ends." },
+  { icon: "mic", title: "Recordings and transcripts", body: "Listen back or skim the transcript of any call." },
+  { icon: "message", title: "Missed-call text-back", body: "Texts back any caller who doesn't get through." },
+  { icon: "star", title: "Review requests and follow-ups", body: "Asks happy customers for reviews and follows up on open estimates." },
+  { icon: "chart", title: "Call and lead reporting", body: "See who called, what they needed and what got booked." },
+];
+
+const otherIndustries = {
+  q: "Do you only work with home-service businesses?",
+  a: "No. The AI receptionist fits any business that books by phone, and our websites and video ads work for any business.",
+};
 
 const setupAnswer = "We set your go-live date together on the onboarding call.";
 const contractAnswer = "Contract length is set during onboarding based on what your business needs.";
@@ -36,6 +43,9 @@ export const RECEPTIONIST_FAQ = [
   shared.setup,
   shared.contract,
   shared.data,
+  otherIndustries,
+  { q: "Does it work with my calendar?", a: "Yes. We connect it to your Google or Outlook calendar during setup." },
+  { q: "Can I hear it before I pay?", a: `Yes. Call ${PHONE} anytime.` },
 ];
 
 /** FAQ for the home page, which covers all three services. */
@@ -48,8 +58,5 @@ export const HOME_FAQ = [
   shared.setup,
   shared.contract,
   shared.data,
-  {
-    q: "Do you only work with home-service businesses?",
-    a: "No. The AI receptionist fits any business that books by phone, and our websites and video ads work for any business.",
-  },
+  otherIndustries,
 ];

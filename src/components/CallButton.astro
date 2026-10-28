@@ -1,0 +1,25 @@
+---
+// The live AI demo line as a solid gold button: "Call our AI: (262) 401-0826".
+// Use it on navy sections, where gold buttons belong.
+import { PHONE } from "../config";
+
+interface Props {
+  size?: "md" | "lg";
+  class?: string;
+}
+
+const { size = "lg", class: className = "" } = Astro.props;
+const tel = "tel:+1" + PHONE.replace(/\D/g, "").slice(-10);
+---
+
+<a
+  href={tel}
+  data-demo-call
+  class:list={[
+    "inline-flex items-center justify-center rounded-lg bg-gold font-bold whitespace-nowrap text-navy underline decoration-transparent decoration-2 underline-offset-4 transition-colors hover:decoration-navy",
+    size === "lg" ? "min-h-14 px-7 text-lg" : "min-h-12 px-6 text-base",
+    className,
+  ]}
+>
+  Call our AI: {PHONE}
+</a>

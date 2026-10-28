@@ -1,0 +1,106 @@
+---
+// The one AI Receptionist plan, centered, with a small "Hear it first" panel
+// beside it. Every number and the included list come from src/data/pricing.ts.
+// When the recorded demo call or its screen recording exist, they play in the
+// panel; until then preview builds show a PLACEHOLDER line (see PLACEHOLDERS.md).
+import BookButton from "../BookButton.astro";
+import CallButton from "../CallButton.astro";
+import Icon from "../Icon.astro";
+import { PRICING, money } from "../../data/pricing";
+import { DEMO_AUDIO_SRC, DEMO_AUDIO_TRANSCRIPT, DEMO_VIDEO_SRC, PHONE } from "../../config";
+import { SHOW_PLACEHOLDERS, filled } from "../../lib/site";
+import { mediaAvailable } from "../../lib/media";
+
+const { name, monthly, setup, includes } = PRICING.receptionist;
+const hasAudio = mediaAvailable(DEMO_AUDIO_SRC);
+const hasVideo = mediaAvailable(DEMO_VIDEO_SRC);
+// iOS Safari shows a blank box for local videos unless a start time is set.
+const videoSrc =
+  hasVideo && DEMO_VIDEO_SRC.trim().startsWith("/") && !DEMO_VIDEO_SRC.includes("#")
+    ? `${DEMO_VIDEO_SRC.trim()}#t=0.1`
+    : DEMO_VIDEO_SRC.trim();
+---
+
+<section id="pricing" class="on-navy py-16 sm:py-24" aria-labelledby="pricing-title">
+  <div class="container-page">
+    <h2 id="pricing-title" class="display-2 text-center">One plan. Everything included.</h2>
+
+    <div class="mx-auto mt-10 grid max-w-5xl gap-6 sm:mt-14 lg:grid-cols-[minmax(0,1fr)_19rem] lg:items-start">
+      <article class="rule-soft rounded-lg border p-6 sm:p-9">
+        <div class="flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
+          <div>
+            <h3 class="font-heading text-xl font-bold">{name}</h3>
+            <p class="mt-3 font-heading text-6xl font-bold tracking-tight">
+              {money(monthly)}<span class="text-soft ml-2 font-sans text-lg font-normal tracking-normal">/month</span>
+            </p>
+          </div>
+          <p class="text-lg font-semibold text-gold">+ {money(setup)} one-time setup</p>
+        </div>
+        <ul role="list" class="rule-soft mt-8 grid gap-x-8 gap-y-3 border-t pt-7 sm:grid-cols-2">
+          {
+            includes.map((item) => (
+              <li class="flex gap-3">
+                <span class="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-md bg-gold text-navy" aria-hidden="true">
+                  <Icon name="check" class="size-4" />
+                </span>
+                <span>{item}</span>
+              </li>
+            ))
+          }
+        </ul>
+        <div class="mt-9">
+          <BookButton service="receptionist" variant="gold" size="lg" label="Request a call" class="w-full sm:w-auto" />
+        </div>
+      </article>
+
+      <aside class="rounded-lg bg-white p-6 text-navy sm:p-7" aria-labelledby="hear-first-title">
+        <span class="flex size-10 items-center justify-center rounded-md bg-navy text-gold" aria-hidden="true">
+          <Icon name="volume" class="size-5" />
+        </span>
+        <h3 id="hear-first-title" class="mt-5 font-heading text-xl font-bold">Hear it first.</h3>
+        <p class="mt-2 text-muted">Call {PHONE} and give it a pretend estimate request.</p>
+        <a
+          href={"tel:+1" + PHONE.replace(/\D/g, "").slice(-10)}
+          data-demo-call
+          class="mt-5 inline-flex min-h-12 w-full items-center justify-center rounded-lg bg-navy px-5 font-bold text-white underline decoration-transparent decoration-2 underline-offset-4 hover:decoration-gold"
+        >
+          Call {PHONE}
+        </a>
+        <p class="mt-3 text-sm text-muted">Use a fake name and address. Calls may be recorded.</p>
+
+        {
+          hasAudio && (
+            <div class="mt-6 border-t border-line pt-5">
+              <p class="font-bold">Or hear a recorded call</p>
+              <audio controls preload="metadata" src={DEMO_AUDIO_SRC.trim()} class="mt-3 w-full">
+                <a href={DEMO_AUDIO_SRC.trim()} class="link">Download the call recording</a>
+              </audio>
+              {filled(DEMO_AUDIO_TRANSCRIPT) && (
+                <details class="mt-2">
+                  <summary class="link inline-flex min-h-11 cursor-pointer items-center">Read the transcript</summary>
+                  <p class="mt-2 text-sm whitespace-pre-line text-muted">{DEMO_AUDIO_TRANSCRIPT.trim()}</p>
+                </details>
+              )}
+            </div>
+          )
+        }
+        {
+          hasVideo && (
+            <figure class="mt-5">
+              <video controls muted playsinline preload="metadata" src={videoSrc} class="w-full rounded-md" />
+              <figcaption class="mt-2 text-sm text-muted">The calendar event and contact card the call created.</figcaption>
+            </figure>
+          )
+        }
+        {
+          SHOW_PLACEHOLDERS && (!hasAudio || !hasVideo) && (
+            <div class="mt-6 grid gap-2 border-t border-line pt-5 text-sm">
+              {!hasAudio && <p class="placeholder">PLACEHOLDER: demo call recording (audio player)</p>}
+              {!hasVideo && <p class="placeholder">PLACEHOLDER: 20 to 30 second screen recording of the booking the call created</p>}
+            </div>
+          )
+        }
+      </aside>
+    </div>
+  </div>
+</section>

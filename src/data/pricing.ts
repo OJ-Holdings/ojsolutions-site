@@ -31,6 +31,15 @@ export const PRICING = {
     build: {
       price: 1497,
       pages: 5,
+      features: [
+        "Up to 5 pages",
+        "Custom design",
+        "Built for phones first",
+        "Click-to-call and booking",
+        "Basic Google setup",
+        "Launch handled",
+        "You own it from day one",
+      ],
     },
     care: {
       monthly: 49,
@@ -42,16 +51,33 @@ export const PRICING = {
       minimumMonths: 12,
       includes: "Hosting, security and edits included",
       ownership: "The site is yours after 12 months.",
+      features: [
+        "Everything in the build",
+        "Hosting, security and monthly edits",
+        "12-month minimum, then month to month",
+        "The site is yours after 12 months",
+      ],
     },
     from: "$1,497 or $197/mo",
   },
   video: {
     name: "Video Ads",
     single: 297,
+    singleFeatures: [
+      "One finished ad in every format",
+      "Captions and music",
+      "Two revision rounds",
+    ],
     contentPlan: {
       monthly: 497,
       videos: 8,
       term: "Month to month",
+      features: [
+        "8 edited short videos a month",
+        "Two a week",
+        "Captions and music on every one",
+        "Month to month",
+      ],
     },
     from: "From $297 per ad",
   },
