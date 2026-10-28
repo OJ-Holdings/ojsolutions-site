@@ -1,0 +1,152 @@
+---
+// Beside "If you're not on video, you're easy to miss.": the same ad in the
+// three shapes we deliver, each labeled with where it runs. A phone for 9:16,
+// a feed post for 1:1, a wide player for 16:9.
+//
+// With motion allowed, each frame wipes up into view once as the group
+// scrolls in. Without JavaScript, or with reduced motion, they are simply there.
+import { Image } from "astro:assets";
+import Icon from "../Icon.astro";
+import vertical from "../../assets/commercials/frame-1.jpg";
+import square from "../../assets/commercials/frame-4.jpg";
+import wide from "../../assets/commercials/frame-5.jpg";
+---
+
+<figure class="formats" data-formats>
+  <div class="grid grid-cols-[minmax(0,0.82fr)_minmax(0,1fr)] items-end gap-4 sm:gap-6">
+    <div data-format>
+      <div class="fmt-phone">
+        <span class="fmt-speaker" aria-hidden="true"></span>
+        <Image
+          src={vertical}
+          alt="Vertical cut of our ad with the opening line, This call is a $400 job."
+          widths={[270, 540]}
+          sizes="(min-width: 1024px) 13rem, 40vw"
+          class="aspect-[9/16] w-full rounded-sm object-cover"
+        />
+      </div>
+      <p class="fmt-label"><span class="font-mono text-xs font-medium tracking-wider">9:16</span>Reels, TikTok and Shorts</p>
+    </div>
+
+    <div class="grid gap-5 sm:gap-7">
+      <div data-format style="--d: 0.12s">
+        <div class="fmt-post">
+          <p class="flex items-center gap-2 px-3 py-2.5 text-sm">
+            <span class="size-6 shrink-0 rounded-full bg-navy" aria-hidden="true"></span>
+            <span class="font-semibold">OJ Exterior Care</span>
+            <span class="text-muted">Sponsored</span>
+          </p>
+          <Image
+            src={square}
+            alt="Square cut of our ad: They just call the next guy."
+            widths={[320, 540]}
+            sizes="(min-width: 1024px) 15rem, 50vw"
+            class="aspect-square w-full object-cover object-[50%_75%]"
+          />
+        </div>
+        <p class="fmt-label"><span class="font-mono text-xs font-medium tracking-wider">1:1</span>Facebook and Instagram feeds</p>
+      </div>
+
+      <div data-format style="--d: 0.24s">
+        <div class="fmt-wide">
+          <Image
+            src={wide}
+            alt="Wide cut of our ad: Same call."
+            widths={[320, 540]}
+            sizes="(min-width: 1024px) 15rem, 50vw"
+            class="aspect-video w-full object-cover"
+          />
+          <span class="fmt-play" aria-hidden="true"><Icon name="play" class="size-4" /></span>
+        </div>
+        <p class="fmt-label"><span class="font-mono text-xs font-medium tracking-wider">16:9</span>Your website and YouTube</p>
+      </div>
+    </div>
+  </div>
+</figure>
+
+<style>
+  .fmt-phone {
+    position: relative;
+    padding: 1.25rem 0.375rem 0.375rem;
+    border-radius: 8px;
+    background: var(--color-navy);
+  }
+  .fmt-speaker {
+    position: absolute;
+    top: 0.5rem;
+    left: 50%;
+    width: 2rem;
+    height: 0.25rem;
+    border-radius: 2px;
+    background: color-mix(in srgb, var(--color-white) 28%, var(--color-navy));
+    transform: translateX(-50%);
+  }
+  .fmt-post {
+    overflow: hidden;
+    border: 1px solid var(--color-line);
+    border-radius: 8px;
+    background: var(--color-white);
+  }
+  .fmt-wide {
+    position: relative;
+    overflow: hidden;
+    border: 6px solid var(--color-navy);
+    border-radius: 8px;
+    background: var(--color-navy);
+  }
+  .fmt-play {
+    position: absolute;
+    bottom: 0.5rem;
+    left: 0.5rem;
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 6px;
+    background: var(--color-gold);
+    color: var(--color-navy);
+  }
+  .fmt-label {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.25rem 0.625rem;
+    margin-top: 0.75rem;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+  .fmt-label span {
+    color: var(--color-muted);
+  }
+  /* Armed by the script below only when motion is allowed. */
+  .formats[data-armed] [data-format] {
+    clip-path: inset(100% 0 0 0);
+    transition: clip-path 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .formats[data-armed] [data-format] {
+    transition-delay: var(--d, 0s);
+  }
+  .formats[data-armed][data-in] [data-format] {
+    clip-path: inset(0 0 0 0);
+  }
+</style>
+
+<script>
+  const formats = document.querySelector<HTMLElement>("[data-formats]");
+  if (formats && "IntersectionObserver" in window && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    const rect = formats.getBoundingClientRect();
+    // Already on screen at load: leave it alone rather than hide and replay it.
+    if (rect.top > window.innerHeight) {
+      formats.setAttribute("data-armed", "");
+      const io = new IntersectionObserver(
+        (entries) => {
+          if (!entries.some((e) => e.isIntersecting)) return;
+          io.disconnect();
+          formats.setAttribute("data-in", "");
+        },
+        { threshold: 0.25 },
+      );
+      io.observe(formats);
+    }
+  }
+</script>

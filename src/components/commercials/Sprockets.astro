@@ -1,0 +1,28 @@
+---
+// A row of film sprocket holes, drawn as an SVG pattern so it stays flat and
+// sharp at any width. Used as the top and bottom edge of film-strip bands.
+// Decorative only.
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+const id = `sprocket-${Math.random().toString(36).slice(2, 8)}`;
+---
+
+<svg class:list={["sprockets", className]} aria-hidden="true" focusable="false" width="100%" height="16">
+  <defs>
+    <pattern id={id} width="24" height="16" patternUnits="userSpaceOnUse">
+      <rect x="6" y="4" width="12" height="8" rx="2" fill="currentColor"></rect>
+    </pattern>
+  </defs>
+  <rect width="100%" height="16" fill={`url(#${id})`}></rect>
+</svg>
+
+<style>
+  .sprockets {
+    display: block;
+    flex-shrink: 0;
+    color: color-mix(in srgb, var(--color-white) 22%, var(--color-navy));
+  }
+</style>

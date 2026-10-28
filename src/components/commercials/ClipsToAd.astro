@@ -1,0 +1,629 @@
+---
+// "Watch your clips become an ad": the page's one big moment.
+//
+// The markup is a plain four-step sequence (clips, cut, captions and music,
+// finished ad), and that is what phones, reduced motion and no-JavaScript
+// visitors see. On wide screens with motion allowed, the script swaps it for
+// an editing suite that pins while you scroll: the raw clips drop from the
+// bin into the video track, caption chips pop onto the caption track, the
+// waveform draws on the music track, the playhead sweeps with a running
+// timecode, and it resolves on the finished 9:16 ad. The static list stays
+// in the page for screen readers; the suite is decorative.
+import { Image } from "astro:assets";
+import Sprockets from "./Sprockets.astro";
+import clip1 from "../../assets/commercials/clip-1.jpg";
+import clip2 from "../../assets/commercials/clip-2.jpg";
+import clip3 from "../../assets/commercials/clip-3.jpg";
+import clip4 from "../../assets/commercials/clip-4.jpg";
+import frame1 from "../../assets/commercials/frame-1.jpg";
+import frame2 from "../../assets/commercials/frame-2.jpg";
+import frame4 from "../../assets/commercials/frame-4.jpg";
+import frame6 from "../../assets/commercials/frame-6.jpg";
+
+const beats = [
+  { title: "Your clips come in.", body: "Phone footage of your jobs, your team and your results. Rough is fine." },
+  { title: "We cut them around a hook.", body: "The best seconds of each clip, in an order that stops the scroll." },
+  { title: "Captions and music go on.", body: "Every line on screen, with music and sound timed to the cuts." },
+  { title: "Out comes a finished ad.", body: "Sized for Reels, TikTok, Shorts, your feed and your website." },
+];
+
+// The four clips as they land on the video track: raw footage, the share of
+// the 30-second timeline each one takes, its caption, and where it sits
+// scattered in the bin before it drops.
+const clips = [
+  { src: clip1, width: 24, caption: "$400 job", bin: { left: 3, top: 0.25, r: -7 } },
+  { src: clip2, width: 28, caption: "Can't hear it", bin: { left: 27, top: 0.75, r: 4 } },
+  { src: clip3, width: 22, caption: "Next guy", bin: { left: 51, top: 0, r: -3 } },
+  { src: clip4, width: 26, caption: "AI answers", bin: { left: 75, top: 0.5, r: 6 } },
+];
+const starts = clips.map((_, i) => clips.slice(0, i).reduce((sum, c) => sum + c.width, 0));
+const program = [frame1, frame2, frame4, frame6];
+
+// Ruler: a tick every second, a label every five.
+const seconds = Array.from({ length: 31 }, (_, s) => s);
+
+// A fixed, made-up waveform so every build draws the same line.
+let seed = 11;
+const rand = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+const wave = ["M0 20"];
+for (let i = 1; i <= 150; i++) {
+  const swell = 0.35 + 0.65 * Math.abs(Math.sin(i / 11));
+  const amp = (3 + rand() * 14) * swell;
+  wave.push(`L${i * 4} ${(20 + (i % 2 ? -amp : amp)).toFixed(1)}`);
+}
+const wavePath = wave.join(" ");
+const formats = ["9:16", "1:1", "16:9"];
+---
+
+<section id="clips-to-ad" class="suite on-navy" aria-labelledby="suite-title" data-suite>
+  <Sprockets />
+  <div class="suite-body container-page">
+    <div class="suite-head">
+      <h2 id="suite-title" class="display-2">Watch your clips become an ad</h2>
+      <p class="text-soft mt-4 max-w-xl text-lg">Here's what happens to the footage you send us.</p>
+    </div>
+
+    <ol role="list" class="suite-list" data-suite-list>
+      {
+        beats.map((beat, i) => (
+          <li>
+            <div class="mini" aria-hidden="true">
+              {i === 0 && (
+                <div class="mini-bin">
+                  {clips.map((clip) => (
+                    <Image src={clip.src} alt="" widths={[160]} sizes="5rem" class="mini-clip" style={`--r: ${clip.bin.r}deg`} />
+                  ))}
+                </div>
+              )}
+              {i === 1 && (
+                <div class="mini-stack">
+                  <span class="lane-name">V1</span>
+                  <div class="mini-track">
+                    {clips.map((clip) => (
+                      <span class="seg" style={`width: ${clip.width}%`}>
+                        <Image src={clip.src} alt="" widths={[160]} sizes="4rem" class="seg-img" />
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {i === 2 && (
+                <div class="mini-stack gap-y-3">
+                  <span class="lane-name">T1</span>
+                  <div class="mini-chips">
+                    {clips.slice(0, 3).map((clip) => (
+                      <span class="chip">{clip.caption}</span>
+                    ))}
+                  </div>
+                  <span class="lane-name">A1</span>
+                  <svg class="wave" viewBox="0 0 600 40" preserveAspectRatio="none">
+                    <path d={wavePath} />
+                  </svg>
+                </div>
+              )}
+              {i === 3 && (
+                <div class="flex items-end gap-4">
+                  <Image src={frame1} alt="" widths={[200]} sizes="4.5rem" class="mini-frame" />
+                  <span class="flex flex-col gap-1.5">
+                    {formats.map((f) => (
+                      <span class="export">{f}</span>
+                    ))}
+                  </span>
+                </div>
+              )}
+            </div>
+            <h3 class="mt-5 font-heading text-xl font-bold">
+              <span class="sr-only">Step {i + 1}: </span>
+              {beat.title}
+            </h3>
+            <p class="text-soft mt-2 text-lg">{beat.body}</p>
+          </li>
+        ))
+      }
+    </ol>
+
+    <div class="stage-copy" data-suite-copy hidden aria-hidden="true">
+      {
+        beats.map((beat) => (
+          <div class="beat" data-beat>
+            <p class="font-heading text-2xl font-bold xl:text-3xl">{beat.title}</p>
+            <p class="text-soft mt-3 text-lg">{beat.body}</p>
+          </div>
+        ))
+      }
+    </div>
+
+    <div class="panel" data-suite-panel hidden aria-hidden="true">
+      <div class="panel-bar">
+        <span class="panel-rec"><span class="panel-dot"></span>REC</span>
+        <span>OJ_AD_EDIT</span>
+        <span class="panel-tc" data-suite-tc>00:00:00:00</span>
+      </div>
+      <div class="panel-main">
+        <div class="min-w-0">
+          <div class="bin">
+            <span class="panel-label">Your clips</span>
+            {
+              clips.map((clip) => (
+                <div class="bin-clip" style={`left: ${clip.bin.left}%; top: ${clip.bin.top + 1.875}rem`} data-r={clip.bin.r} data-bin-clip>
+                  <Image src={clip.src} alt="" widths={[180]} sizes="5.5rem" class="size-full object-cover" />
+                </div>
+              ))
+            }
+          </div>
+
+          <div class="tl">
+            <span></span>
+            <div class="ruler">
+              {
+                seconds.map((s) => (
+                  <span class:list={["tick", s % 5 === 0 && "major"]} style={`left: ${(s / 30) * 100}%`}>
+                    {s % 5 === 0 && s < 30 && <span class="tick-label">00:{String(s).padStart(2, "0")}</span>}
+                  </span>
+                ))
+              }
+            </div>
+
+            <span class="lane-name">V1</span>
+            <div class="track track-v">
+              {
+                clips.map((clip, i) => (
+                  <span class="slot" style={`left: ${starts[i]}%; width: ${clip.width}%`}>
+                    <span class="seg" data-seg>
+                      <Image src={clip.src} alt="" widths={[240]} sizes="8rem" class="seg-img" />
+                    </span>
+                  </span>
+                ))
+              }
+            </div>
+
+            <span class="lane-name">T1</span>
+            <div class="track track-t">
+              {
+                clips.map((clip, i) => (
+                  <span class="chip" style={`left: calc(${starts[i]}% + 0.375rem)`} data-chip>
+                    {clip.caption}
+                  </span>
+                ))
+              }
+            </div>
+
+            <span class="lane-name">A1</span>
+            <div class="track track-a">
+              <svg class="wave" viewBox="0 0 600 40" preserveAspectRatio="none">
+                <path d={wavePath} data-wave />
+              </svg>
+            </div>
+
+            <div class="rail" data-rail>
+              <span class="playhead" data-playhead></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="viewer">
+          <span class="panel-label">
+            <span data-label-program>Program</span>
+            <span class="viewer-done" data-label-done>Finished ad</span>
+          </span>
+          <div class="viewer-screen" data-viewer>
+            <span class="viewer-idle" data-idle>Empty sequence</span>
+            {
+              program.map((frame) => (
+                <Image src={frame} alt="" widths={[400]} sizes="12rem" class="viewer-frame" data-frame />
+              ))
+            }
+            <Image src={frame1} alt="" widths={[400]} sizes="12rem" class="viewer-frame" data-final />
+          </div>
+          <span class="viewer-exports">
+            {
+              formats.map((f) => (
+                <span class="export" data-export>
+                  {f}
+                </span>
+              ))
+            }
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <Sprockets />
+</section>
+
+<style>
+  .suite {
+    --rec: #e5484d;
+    --surface: color-mix(in srgb, var(--color-white) 6%, var(--color-navy));
+    --edge: color-mix(in srgb, var(--color-white) 18%, var(--color-navy));
+    --soft: color-mix(in srgb, var(--color-white) 72%, var(--color-navy));
+    display: flex;
+    flex-direction: column;
+    gap: 4rem;
+    padding: 0.75rem 0;
+    overflow: hidden;
+  }
+  @media (min-width: 640px) {
+    .suite {
+      gap: 6rem;
+    }
+  }
+
+  /* The static sequence. */
+  .suite-list {
+    display: grid;
+    gap: 2.75rem 2rem;
+    margin-top: 3rem;
+  }
+  @media (min-width: 640px) {
+    .suite-list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 1024px) {
+    .suite-list {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+  .mini {
+    display: flex;
+    align-items: center;
+    height: 9.5rem;
+    padding: 1rem;
+    border: 1px solid var(--edge);
+    border-radius: 8px;
+    background: var(--surface);
+  }
+  .mini-bin {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+  }
+  .mini-clip {
+    width: 22%;
+    aspect-ratio: 3 / 4;
+    border-radius: 4px;
+    object-fit: cover;
+    transform: rotate(var(--r));
+  }
+  .mini-stack {
+    display: grid;
+    grid-template-columns: 1.75rem minmax(0, 1fr);
+    align-items: center;
+    width: 100%;
+  }
+  .mini-track {
+    display: flex;
+    gap: 2px;
+    height: 3.5rem;
+  }
+  .mini-track .seg {
+    position: relative;
+  }
+  .mini-chips {
+    display: flex;
+    gap: 0.25rem;
+    min-width: 0;
+    overflow: hidden;
+  }
+  .mini-chips .chip {
+    position: static;
+  }
+  .mini-frame {
+    width: 4.5rem;
+    aspect-ratio: 9 / 16;
+    border: 1px solid var(--color-gold);
+    border-radius: 4px;
+    object-fit: cover;
+  }
+
+  /* Pieces shared by the static sequence and the suite. */
+  .lane-name,
+  .panel-label,
+  .panel-bar,
+  .tick-label,
+  .export {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    font-variant-numeric: tabular-nums;
+  }
+  .lane-name {
+    color: var(--soft);
+  }
+  .seg {
+    display: block;
+    height: 100%;
+    overflow: hidden;
+    border-radius: 3px;
+    background: var(--color-navy);
+  }
+  .seg-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .chip {
+    position: absolute;
+    top: 50%;
+    padding: 0.125rem 0.4375rem;
+    border-radius: 4px;
+    background: var(--color-white);
+    color: var(--color-navy);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    line-height: 1.5;
+    white-space: nowrap;
+    translate: 0 -50%;
+  }
+  .mini .chip {
+    translate: none;
+  }
+  .wave {
+    width: 100%;
+    height: 2.25rem;
+    overflow: visible;
+  }
+  .wave path {
+    fill: none;
+    stroke: var(--color-gold);
+    stroke-width: 1.5;
+    stroke-linejoin: round;
+  }
+  .export {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 3rem;
+    padding: 0.1875rem 0.5rem;
+    border: 1px solid var(--color-gold);
+    border-radius: 4px;
+    color: var(--color-white);
+  }
+
+  /* The pinned editing suite, wide screens with motion only. */
+  .suite.is-armed {
+    height: 100vh;
+    height: 100svh;
+    gap: 0;
+    padding: 0;
+  }
+  .suite.is-armed .suite-body {
+    display: grid;
+    flex: 1;
+    grid-template-columns: minmax(0, 21rem) minmax(0, 1fr);
+    grid-template-rows: auto auto;
+    align-content: center;
+    gap: 2.5rem 3.5rem;
+  }
+  .suite.is-armed .suite-head {
+    align-self: end;
+  }
+  .suite.is-armed .suite-head .display-2 {
+    font-size: clamp(2rem, 1rem + 1.9vw, 2.875rem);
+  }
+  .stage-copy {
+    display: grid;
+    align-self: start;
+    grid-column: 1;
+    grid-row: 2;
+  }
+  .beat {
+    grid-area: 1 / 1;
+  }
+  .panel {
+    position: relative;
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    align-self: center;
+    border: 1px solid var(--edge);
+    border-radius: 8px;
+    background: var(--surface);
+  }
+  .panel[hidden],
+  .stage-copy[hidden] {
+    display: none;
+  }
+  .panel-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    padding: 0.625rem 1rem;
+    border-bottom: 1px solid var(--edge);
+    color: var(--soft);
+  }
+  .panel-rec {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    color: var(--color-white);
+  }
+  .panel-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: var(--rec);
+  }
+  .panel-tc {
+    margin-left: auto;
+    color: var(--color-white);
+    font-size: 0.875rem;
+  }
+  .panel-main {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) clamp(10rem, 3rem + 10vw, 14rem);
+    gap: 1.25rem;
+    padding: 1rem;
+  }
+  .panel-label {
+    display: block;
+    color: var(--soft);
+  }
+  .bin {
+    position: relative;
+    height: 11rem;
+    padding: 0.625rem 0.75rem;
+    border: 1px dashed var(--edge);
+    border-radius: 6px;
+  }
+  .bin-clip {
+    position: absolute;
+    width: 21%;
+    max-width: 6rem;
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+    border: 1px solid var(--edge);
+    border-radius: 4px;
+    background: var(--color-navy);
+  }
+  .tl {
+    position: relative;
+    display: grid;
+    grid-template-columns: 2rem minmax(0, 1fr);
+    align-items: center;
+    row-gap: 0.375rem;
+    margin-top: 1rem;
+  }
+  .ruler {
+    position: relative;
+    height: 1.375rem;
+    border-bottom: 1px solid var(--edge);
+  }
+  .tick {
+    position: absolute;
+    bottom: 0;
+    width: 1px;
+    height: 0.25rem;
+    background: var(--edge);
+  }
+  .tick.major {
+    height: 0.5rem;
+    background: var(--soft);
+  }
+  .tick-label {
+    position: absolute;
+    bottom: 0.625rem;
+    left: 0.5rem;
+    color: var(--soft);
+    font-size: 0.625rem;
+  }
+  .track {
+    position: relative;
+    border-radius: 4px;
+    background: color-mix(in srgb, var(--color-white) 3%, var(--color-navy));
+  }
+  .track-v {
+    height: clamp(3.25rem, 1rem + 5vh, 4.5rem);
+  }
+  .track-t {
+    height: 2.25rem;
+  }
+  .track-a {
+    display: flex;
+    align-items: center;
+    height: 3rem;
+    padding: 0 0.25rem;
+  }
+  .slot {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    padding: 0 1px;
+    border: 1px dashed var(--edge);
+    border-radius: 4px;
+  }
+  .rail {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 2rem;
+    pointer-events: none;
+  }
+  .playhead {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -1px;
+    width: 2px;
+    background: var(--color-gold);
+  }
+  .playhead::before {
+    position: absolute;
+    top: 0;
+    left: -5px;
+    width: 12px;
+    height: 10px;
+    border-radius: 2px 2px 6px 6px;
+    background: var(--color-gold);
+    content: "";
+  }
+  .viewer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .viewer .panel-label {
+    position: relative;
+  }
+  .viewer-done {
+    position: absolute;
+    inset: 0;
+    color: var(--color-gold);
+  }
+  .viewer-screen {
+    position: relative;
+    display: grid;
+    place-items: center;
+    aspect-ratio: 9 / 16;
+    overflow: hidden;
+    border: 1px solid var(--edge);
+    border-radius: 6px;
+    background: var(--color-navy);
+  }
+  .viewer-screen[data-done] {
+    border-color: var(--color-gold);
+  }
+  .viewer-idle {
+    color: var(--soft);
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+  }
+  .viewer-frame {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .viewer-exports {
+    display: flex;
+    gap: 0.375rem;
+  }
+  .viewer-exports .export {
+    flex: 1;
+    min-width: 0;
+  }
+</style>
+
+<script>
+  // Builds the pinned suite on wide screens with motion allowed. GSAP and
+  // ScrollTrigger load only then, so phones never download them for this.
+  const suite = document.querySelector<HTMLElement>("[data-suite]");
+  const WIDE = "(min-width: 1024px) and (min-height: 640px)";
+  const MOTION = "(prefers-reduced-motion: no-preference)";
+
+  if (suite) {
+    const wide = window.matchMedia(WIDE);
+    let started = false;
+    const start = () => {
+      if (started || !wide.matches || !window.matchMedia(MOTION).matches) return;
+      started = true;
+      import("./clips-to-ad").then((m) => m.mountSuite(suite, `${WIDE} and ${MOTION}`));
+    };
+    start();
+    wide.addEventListener("change", start);
+  }
+</script>

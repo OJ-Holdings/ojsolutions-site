@@ -1,5 +1,5 @@
 ---
-// "Our work" for commercials, on a navy band. Anything passed in the slot
+// "Our work" for commercials, on a navy band by default. Anything passed in the slot
 // (our own self-hosted cuts) comes first. YouTube examples show a thumbnail
 // and only load YouTube when someone taps play, so the page stays fast.
 // Hidden when there's no slot content and COMMERCIAL_EXAMPLES is empty.
@@ -9,6 +9,11 @@ import Icon from "./Icon.astro";
 import { COMMERCIAL_EXAMPLES } from "../config";
 import { youtubeId } from "../lib/site";
 
+interface Props {
+  tone?: "white" | "navy";
+}
+
+const { tone = "navy" } = Astro.props;
 const ids = COMMERCIAL_EXAMPLES.map(youtubeId).filter((id): id is string => Boolean(id));
 const hasSlot = Astro.slots.has("default");
 ---
@@ -16,8 +21,8 @@ const hasSlot = Astro.slots.has("default");
 {
   (ids.length > 0 || hasSlot) && (
     <>
-      <Section id="our-work" labelledby="our-work-title" tone="navy">
-        <SectionHeading id="our-work-title" title="Our work" tone="navy" />
+      <Section id="our-work" labelledby="our-work-title" tone={tone}>
+        <SectionHeading id="our-work-title" title="Our work" tone={tone} />
         {hasSlot && <div class="mt-10"><slot /></div>}
         {ids.length > 0 && <ul role="list" class="mt-10 grid gap-6 sm:grid-cols-2">
           {ids.map((id, i) => (
