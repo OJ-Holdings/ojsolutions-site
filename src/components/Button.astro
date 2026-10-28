@@ -2,9 +2,11 @@
 // Brand button.
 // variant "navy": navy with white text, for white sections.
 // variant "gold": gold with navy text, for navy sections.
+// variant "outline": gold outline with white text, a secondary button on navy.
+// variant "outline-navy": navy outline with navy text, a secondary button on white.
 interface Props {
   href: string;
-  variant?: "navy" | "gold";
+  variant?: "navy" | "gold" | "outline" | "outline-navy";
   size?: "header" | "sm" | "md" | "lg";
   class?: string;
   [key: string]: unknown;
@@ -15,6 +17,8 @@ const { href, variant = "navy", size = "md", class: className = "", ...rest } = 
 const variants = {
   navy: "bg-navy text-white hover:decoration-gold",
   gold: "bg-gold text-navy hover:decoration-navy",
+  outline: "border border-gold text-white hover:decoration-gold",
+  "outline-navy": "border border-navy text-navy hover:decoration-gold",
 };
 const sizes = {
   // Header button: tighter on narrow phones so the header fits at 320px.

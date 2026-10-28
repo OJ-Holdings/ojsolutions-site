@@ -1,66 +1,53 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import Section from "../components/Section.astro";
-import SectionHeading from "../components/SectionHeading.astro";
 import FaqSection from "../components/FaqSection.astro";
 import FinalCta from "../components/FinalCta.astro";
-import BookButton from "../components/BookButton.astro";
-import Icon from "../components/Icon.astro";
 import CallDemo from "../components/home/CallDemo.astro";
-import DemoCallout from "../components/home/DemoCallout.astro";
 import RecordedCall from "../components/demo/RecordedCall.astro";
-import CommercialSpotlight from "../components/home/CommercialSpotlight.astro";
 import MissedCallProblem from "../components/home/MissedCallProblem.astro";
-import FrontDeskFeatures from "../components/home/FrontDeskFeatures.astro";
-import FrontDeskPricing from "../components/home/FrontDeskPricing.astro";
-import OwnWork from "../components/home/OwnWork.astro";
-import OperatorReviews from "../components/home/OperatorReviews.astro";
+import ServiceTrio from "../components/home/ServiceTrio.astro";
+import ProofSection from "../components/home/ProofSection.astro";
+import SimplePricing from "../components/home/SimplePricing.astro";
 import { BUSINESS_NAME, EMAIL, PHONE, SOCIAL_LINKS } from "../config";
-import { SERVICES, filled, type ServiceKey } from "../lib/site";
-import { RECEPTIONIST_FAQ } from "../lib/receptionist-offer";
-
-const serviceIcon: Record<ServiceKey, "phone" | "browser" | "camera"> = {
-  receptionist: "phone",
-  website: "browser",
-  commercial: "camera",
-};
+import { SERVICES, bookingHref, filled } from "../lib/site";
+import { HOME_FAQ } from "../lib/receptionist-offer";
 
 const site = Astro.site ?? new URL("http://localhost:4321");
+const organization = new URL("/#organization", site).href;
+const areaServed = { "@type": "Country", name: "United States" };
 const jsonLd = {
   "@context": "https://schema.org",
   "@graph": [
     {
       "@type": ["Organization", "ProfessionalService"],
-      "@id": new URL("/#organization", site).href,
+      "@id": organization,
       name: BUSINESS_NAME,
       url: new URL("/", site).href,
       logo: new URL("/icon-512.png", site).href,
       ...(filled(EMAIL) && { email: EMAIL }),
       ...(filled(PHONE) && { telephone: PHONE }),
-      areaServed: ["Kenosha", "Racine", "Pleasant Prairie", "Southeast Wisconsin"].map(name => ({ "@type": "Place", name })),
+      areaServed,
       founder: [{ "@type": "Person", name: "Jacob Prahl" }, { "@type": "Person", name: "Oscar Johnston" }],
       ...(Object.values(SOCIAL_LINKS).some(filled) && { sameAs: Object.values(SOCIAL_LINKS).filter(filled) }),
     },
-    {
+    ...SERVICES.map((s) => ({
       "@type": "Service",
-      "@id": new URL("/ai-receptionist#service", site).href,
-      name: "AI Receptionist Starter and Pro",
-      serviceType: "AI receptionist and call handling for home-service businesses",
-      provider: { "@id": new URL("/#organization", site).href },
-      areaServed: ["Kenosha", "Racine", "Pleasant Prairie", "Southeast Wisconsin"].map(name => ({ "@type": "Place", name })),
-      url: new URL("/ai-receptionist", site).href,
-      description: "AI assistant that identifies itself, captures inquiry details and supports on-site estimate scheduling.",
-    },
+      "@id": new URL(`${s.href}#service`, site).href,
+      name: s.name,
+      provider: { "@id": organization },
+      areaServed,
+      url: new URL(s.href, site).href,
+    })),
     {
       "@type": "FAQPage",
-      mainEntity: RECEPTIONIST_FAQ.map(({ q, a }) => ({
+      mainEntity: HOME_FAQ.map(({ q, a }) => ({
         "@type": "Question",
         name: q,
         acceptedAnswer: { "@type": "Answer", text: a },
       })),
     },
   ],
-}
+};
 
 const steps = [
   { title: "We set up your front desk", body: "We configure the AI for your existing number, services, hours, and calendar." },
@@ -72,8 +59,8 @@ const steps = [
 ---
 
 <BaseLayout
-  title="OJ Solutions | Your AI Front Desk for Home-Service Businesses"
-  description="An AI receptionist that answers calls, captures leads, and books estimates for home-service businesses in southeast Wisconsin. Hear our live demo."
+  title="OJ Solutions | AI Receptionists, Websites and Video Ads"
+  description="An AI receptionist that answers and books your calls, websites that turn visitors into customers, and video ads made from your own clips. Call our live AI demo."
   jsonLd={jsonLd}
 >
   <section class="on-navy overflow-hidden" aria-labelledby="hero-title">
@@ -81,71 +68,33 @@ const steps = [
       class="container-page grid gap-14 pt-12 pb-20 sm:pt-16 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:items-center lg:gap-10 lg:pt-20 lg:pb-28"
     >
       <div>
-        <p class="mb-5 text-sm font-bold tracking-widest text-gold uppercase">Your AI front desk · Kenosha, WI</p>
+        <p class="mb-5 text-sm font-bold tracking-widest text-gold uppercase">AI receptionists · Websites · Video ads</p>
         <h1 id="hero-title" class="display-1 max-w-[13ch] sm:max-w-none lg:max-w-[12ch]">
           You're on the job. <span class="mark-gold">Your phone still gets answered.</span>
         </h1>
         <p class="text-soft mt-6 max-w-xl text-lg sm:mt-8 sm:text-xl">
-          An AI receptionist for home-service businesses in southeast Wisconsin. It answers incoming calls,
-          captures leads and books available on-site estimates while you're doing the work.
+          An AI receptionist that answers your calls, captures the lead and books the estimate while you're doing the work.
         </p>
         <div class="mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
           <a href="tel:+12624010826" data-demo-call class="inline-flex min-h-14 items-center justify-center rounded-lg bg-gold px-6 text-base font-bold text-navy underline decoration-transparent decoration-2 underline-offset-4 hover:decoration-navy sm:text-lg">Call our AI: (262) 401-0826</a>
-          <BookButton variant="gold" size="lg" label="Request a 15-min call" />
+          <a href={bookingHref()} data-book class="inline-flex min-h-14 items-center justify-center rounded-lg border border-gold px-6 text-base font-semibold text-white underline decoration-transparent decoration-2 underline-offset-4 transition-colors hover:decoration-gold sm:text-lg">Request a 15-min call</a>
         </div>
-        <p class="text-soft mt-4 max-w-lg text-sm">Hear it yourself. No sales pitch. Just make the call.</p>
-        <p class="text-soft mt-2 max-w-lg text-sm">The AI identifies itself, asks about a pretend job, and walks through an estimate request. Use a fake name and address. Calls may be recorded. <a href="/demo" class="underline decoration-gold underline-offset-4 font-semibold">What happens on the demo call?</a></p>
-        <p class="mt-5 text-sm font-bold tracking-wide text-white">Built by business owners, for business owners.</p>
+        <p class="text-soft mt-4 max-w-lg text-sm">It identifies itself as AI and walks through a pretend estimate request. Use a fake name and address. Calls may be recorded. <a href="/demo" class="font-semibold text-white underline decoration-gold underline-offset-4">What happens on the demo call?</a></p>
       </div>
       <div id="demo" class="scroll-mt-24"><CallDemo /></div>
     </div>
   </section>
 
-  <DemoCallout />
-
   <RecordedCall />
 
   <MissedCallProblem />
 
-  <CommercialSpotlight />
+  <ServiceTrio />
 
-  <OwnWork />
+  <ProofSection />
 
-  <OperatorReviews />
-
-  <FrontDeskFeatures />
-
-  <Section id="services" labelledby="services-title" border={false}>
-    <SectionHeading
-      id="services-title"
-      title="More ways we help"
-      intro="The AI receptionist comes first. We also build websites and commercial content so customers can find you and get in touch."
-    />
-    <ul role="list" class="mt-12 border-b border-line sm:mt-16">
-      {
-        SERVICES.map((s) => (
-          <li class="group relative grid gap-5 border-t border-line py-8 sm:py-10 md:grid-cols-[auto_minmax(0,1fr)_14rem] md:items-center md:gap-10">
-            <span class="flex size-12 items-center justify-center rounded-lg bg-navy text-gold transition-colors group-hover:bg-gold group-hover:text-navy">
-              <Icon name={serviceIcon[s.key]} class="size-6" />
-            </span>
-            <p class="font-heading text-[1.5rem] leading-[1.2] font-medium tracking-tight text-balance sm:text-[2rem] lg:text-[2.25rem]">
-              {s.problem}
-            </p>
-            <a
-              href={s.href}
-              class="inline-flex min-h-11 items-center gap-2 font-heading text-lg font-bold decoration-gold decoration-2 underline-offset-4 group-hover:underline after:absolute after:inset-0 md:justify-self-end"
-            >
-              {s.name}
-              <Icon name="arrow-right" class="size-5 transition-transform group-hover:translate-x-1" />
-            </a>
-          </li>
-        ))
-      }
-    </ul>
-  </Section>
-
-  <Section id="how-we-work" labelledby="how-title" tone="navy">
-    <div class="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,2.4fr)] lg:gap-16">
+  <section id="how-we-work" class="py-16 sm:py-24" aria-labelledby="how-title">
+    <div class="container-page grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,2.4fr)] lg:gap-16">
       <h2 id="how-title" class="display-2">How the AI front desk works</h2>
       <div>
         <p class="how-statement font-heading text-[2.125rem] leading-[1.12] font-bold tracking-tight sm:text-5xl lg:text-[3.75rem]" aria-hidden="true" data-statement>
@@ -154,21 +103,21 @@ const steps = [
         <ol role="list" class="mt-12 grid gap-8 sm:grid-cols-3 sm:gap-8">
           {
             steps.map((step, i) => (
-              <li class="rule-soft border-t pt-5">
-                <span class="font-heading text-lg font-bold text-gold" aria-hidden="true">{i + 1}</span>
+              <li class="border-t-2 border-gold pt-5">
+                <span class="font-heading text-lg font-bold" aria-hidden="true">{i + 1}</span>
                 <h3 class="sr-only">Step {i + 1}: {step.title}</h3>
-                <p class="text-soft mt-2 text-lg">{step.body}</p>
+                <p class="mt-2 text-lg text-muted">{step.body}</p>
               </li>
             ))
           }
         </ol>
       </div>
     </div>
-  </Section>
+  </section>
 
-  <FrontDeskPricing />
+  <SimplePricing />
 
-  <FaqSection items={RECEPTIONIST_FAQ} title="Questions before you call" />
+  <FaqSection items={HOME_FAQ} title="Questions before you call" />
 
   <FinalCta
     heading="You do the work. We get the phone."

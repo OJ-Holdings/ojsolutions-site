@@ -5,8 +5,9 @@
 // service, e.g. /book?service=website.
 //
 // Slots: "hero-secondary" sits next to the hero's Book a call button,
-// "hero-aside" puts proof beside the hero copy, "problem" fills the problem
-// section, and the default slot holds the page's own sections.
+// "hero-note" sits under the hero buttons, "hero-aside" puts proof beside
+// the hero copy, "problem" fills the problem section, "problem-aside" puts a
+// visual beside it, and the default slot holds the page's own sections.
 //
 // To add a service: copy src/pages/websites.astro, change the words,
 // and add the service to SERVICES in src/lib/site.ts.
@@ -34,6 +35,8 @@ interface Props {
   faq: FaqItem[];
   ctaHeading: string;
   ctaLine?: string;
+  /** Lead the hero and final call to action with the live AI demo line. */
+  callFirst?: boolean;
 }
 
 const {
@@ -48,23 +51,31 @@ const {
   faq,
   ctaHeading,
   ctaLine,
+  callFirst = false,
 } = Astro.props;
+const hasProblemAside = Astro.slots.has("problem-aside");
 ---
 
 <BaseLayout title={title} description={description} service={service}>
-  <Hero title={heading} highlight={highlight} subhead={subhead} eyebrow={eyebrow} service={service}>
+  <Hero title={heading} highlight={highlight} subhead={subhead} eyebrow={eyebrow} service={service} callFirst={callFirst}>
     <slot name="hero-secondary" slot="secondary" />
+    <slot name="hero-note" slot="note" />
     {Astro.slots.has("hero-aside") && <Fragment slot="aside"><slot name="hero-aside" /></Fragment>}
   </Hero>
 
   <Section id="problem" labelledby="problem-title" border={false}>
-    <SectionHeading id="problem-title" title={problemHeading} />
-    <slot name="problem" />
+    <div class:list={[hasProblemAside && "grid gap-12 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:items-center lg:gap-16"]}>
+      <div>
+        <SectionHeading id="problem-title" title={problemHeading} />
+        <slot name="problem" />
+      </div>
+      {hasProblemAside && <div><slot name="problem-aside" /></div>}
+    </div>
   </Section>
 
   <slot />
 
   <FaqSection items={faq} />
 
-  <FinalCta heading={ctaHeading} line={ctaLine} service={service} />
+  <FinalCta heading={ctaHeading} line={ctaLine} service={service} callFirst={callFirst} />
 </BaseLayout>

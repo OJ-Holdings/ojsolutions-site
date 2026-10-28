@@ -1,0 +1,163 @@
+---
+// A flat phone lock screen where three missed calls stack up, each tagged
+// "Called a competitor". Sits beside the missed-call stats.
+//
+// Without JavaScript, or with reduced motion, all three are shown. Otherwise
+// they drop in one by one the first time the card scrolls into view.
+const missed = [
+  { time: "8:12 AM", from: "New customer" },
+  { time: "10:47 AM", from: "New customer" },
+  { time: "1:05 PM", from: "New customer" },
+];
+---
+
+<figure class="missed mx-auto w-full max-w-[22rem]" data-missed>
+  <figcaption class="sr-only">Example: three missed calls from new customers, and each one called a competitor instead.</figcaption>
+  <div class="missed-phone" aria-hidden="true">
+    <span class="missed-speaker"></span>
+    <p class="missed-time">1:06</p>
+    <p class="missed-date">Tuesday</p>
+    <ol class="missed-list">
+      {
+        missed.map((call) => (
+          <li class="missed-card" data-missed-card>
+            <span class="missed-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                ><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2" /><path d="M16 3l5 5M21 3l-5 5" /></svg
+              >
+            </span>
+            <span class="missed-body">
+              <span class="missed-row">
+                <strong>Missed call</strong>
+                <span class="missed-when">{call.time}</span>
+              </span>
+              <span class="missed-from">{call.from}</span>
+              <span class="missed-tag" data-missed-tag>Called a competitor</span>
+            </span>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</figure>
+
+<style>
+  .missed-phone {
+    position: relative;
+    padding: 2.5rem 1rem 1.5rem;
+    border: 1px solid var(--color-navy);
+    border-radius: 8px;
+    background: var(--color-navy);
+    color: var(--color-white);
+  }
+  .missed-speaker {
+    position: absolute;
+    top: 0.875rem;
+    left: 50%;
+    width: 3.5rem;
+    height: 0.3125rem;
+    border-radius: 3px;
+    background: color-mix(in srgb, var(--color-white) 22%, var(--color-navy));
+    transform: translateX(-50%);
+  }
+  .missed-time {
+    text-align: center;
+    font-family: var(--font-heading);
+    font-size: 3.25rem;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+  .missed-date {
+    margin-top: 0.375rem;
+    text-align: center;
+    font-size: 0.875rem;
+    color: color-mix(in srgb, var(--color-white) 72%, var(--color-navy));
+  }
+  .missed-list {
+    display: grid;
+    gap: 0.625rem;
+    margin-top: 1.75rem;
+  }
+  .missed-card {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    border-radius: 8px;
+    background: var(--color-white);
+    color: var(--color-navy);
+  }
+  .missed-icon {
+    display: grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 6px;
+    background: var(--color-navy);
+    color: var(--color-gold);
+  }
+  .missed-icon svg {
+    width: 1.125rem;
+  }
+  .missed-body {
+    display: grid;
+    flex: 1;
+    min-width: 0;
+  }
+  .missed-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+    font-size: 0.9375rem;
+  }
+  .missed-when,
+  .missed-from {
+    font-size: 0.8125rem;
+    color: var(--color-muted);
+  }
+  .missed-tag {
+    justify-self: start;
+    margin-top: 0.5rem;
+    padding: 0.125rem 0.5rem;
+    border: 1px solid var(--color-navy);
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+</style>
+
+<script>
+  // Drop the three missed calls in one at a time, once, when the phone is on screen.
+  const root = document.querySelector<HTMLElement>("[data-missed]");
+  if (root && !window.matchMedia("(prefers-reduced-motion: reduce)").matches && "IntersectionObserver" in window) {
+    const cards = root.querySelectorAll<HTMLElement>("[data-missed-card]");
+    const tags = root.querySelectorAll<HTMLElement>("[data-missed-tag]");
+    root.classList.add("is-armed");
+    const io = new IntersectionObserver(
+      async (entries) => {
+        if (!entries.some((e) => e.isIntersecting)) return;
+        io.disconnect();
+        try {
+          const { gsap } = await import("gsap");
+          const tl = gsap.timeline({ defaults: { ease: "expo.out" } });
+          cards.forEach((card, i) => {
+            tl.fromTo(card, { autoAlpha: 0, y: -16, scale: 0.97 }, { autoAlpha: 1, y: 0, scale: 1, duration: 0.6 }, i * 0.9)
+              .fromTo(tags[i], { autoAlpha: 0, x: -6 }, { autoAlpha: 1, x: 0, duration: 0.4 }, i * 0.9 + 0.45);
+          });
+        } catch {
+          root.classList.remove("is-armed");
+        }
+      },
+      { threshold: 0.45 },
+    );
+    io.observe(root);
+  }
+</script>
+
+<style>
+  /* Hide the cards only once the script is ready to bring them in. */
+  :global(.is-armed) [data-missed-card] {
+    visibility: hidden;
+  }
+</style>

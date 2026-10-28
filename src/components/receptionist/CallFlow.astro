@@ -1,0 +1,269 @@
+---
+// "How it works" as one connected flow: the incoming call, the transcript
+// with the details it captured, then the contact card and calendar event.
+// Example data only, no street address.
+//
+// Without JavaScript, or with reduced motion, everything is shown. Otherwise
+// the cards reveal in order on scroll and the line draws between them.
+const steps = [
+  { title: "A call comes in", body: "Day, night, weekend, or while you're on a job." },
+  { title: "It answers and captures the details", body: "The AI identifies itself and gets the name, service, address and timeframe." },
+  { title: "You get the contact and the booking", body: "The contact lands in your CRM and the estimate lands on your calendar." },
+];
+---
+
+<ol role="list" class="flow mt-12 grid gap-10 md:mt-16 md:grid-cols-3 md:gap-8" data-flow>
+  {
+    steps.map((step, i) => (
+      <li class="flow-step relative" data-flow-step>
+        {i < steps.length - 1 && <span class="flow-line" aria-hidden="true" data-flow-line />}
+        <span class="flow-num" aria-hidden="true">{i + 1}</span>
+        <h3 class="mt-5 font-heading text-xl font-bold sm:text-2xl">
+          <span class="sr-only">Step {i + 1}: </span>
+          {step.title}
+        </h3>
+        <p class="text-soft mt-2 text-lg">{step.body}</p>
+
+        <div class="flow-card mt-6" aria-hidden="true">
+          {i === 0 && (
+            <div class="flex items-center gap-4">
+              <span class="flow-ring">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                  ><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2" /></svg
+                >
+              </span>
+              <div>
+                <p class="font-bold">Incoming call</p>
+                <p class="flow-muted text-sm">New caller · 7:42 PM</p>
+              </div>
+            </div>
+            <p class="flow-pill mt-5">
+              <span class="flow-dot" />
+              AI receptionist answering
+            </p>
+          )}
+          {i === 1 && (
+            <div>
+              <p class="flow-bubble">Hi, I'm the AI receptionist for your business. How can I help?</p>
+              <p class="flow-bubble caller">I need my gutters cleaned this week.</p>
+              <dl class="flow-fields mt-4">
+                <div><dt>Name</dt><dd>Dana R.</dd></div>
+                <div><dt>Service</dt><dd>Gutter cleaning</dd></div>
+                <div><dt>Address</dt><dd>Saved</dd></div>
+                <div><dt>Timeframe</dt><dd>This week</dd></div>
+              </dl>
+            </div>
+          )}
+          {i === 2 && (
+            <div class="grid gap-3">
+              <div class="flow-contact">
+                <span class="flow-avatar">DR</span>
+                <div class="min-w-0">
+                  <p class="font-bold">Dana R.</p>
+                  <p class="flow-muted text-sm">Gutter cleaning · New lead</p>
+                </div>
+              </div>
+              <div class="flow-event">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                  ><rect x="3" y="5" width="18" height="16" rx="2" /><path d="M3 10h18M8 3v4M16 3v4" /></svg
+                >
+                <div>
+                  <p class="font-bold">Thu 10:00 AM</p>
+                  <p class="text-sm">On-site estimate</p>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </li>
+    ))
+  }
+</ol>
+
+<style>
+  .flow-num {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 6px;
+    background: var(--color-gold);
+    color: var(--color-navy);
+    font-family: var(--font-heading);
+    font-size: 1.125rem;
+    font-weight: 700;
+  }
+  /* The connector: down the left on phones, across the top on wide screens. */
+  .flow-line {
+    position: absolute;
+    top: 3.25rem;
+    bottom: -2rem;
+    left: 1.25rem;
+    width: 1px;
+    background: var(--color-gold);
+    transform-origin: top;
+  }
+  @media (min-width: 768px) {
+    .flow-line {
+      top: 1.25rem;
+      bottom: auto;
+      left: 3.5rem;
+      right: -1.5rem;
+      width: auto;
+      height: 1px;
+      transform-origin: left;
+    }
+  }
+  .flow-step {
+    padding-left: 0;
+  }
+  .flow-card {
+    position: relative;
+    padding: 1.25rem;
+    border: 1px solid color-mix(in srgb, var(--color-white) 22%, var(--color-navy));
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--color-white) 5%, var(--color-navy));
+  }
+  .flow-muted {
+    color: color-mix(in srgb, var(--color-white) 72%, var(--color-navy));
+  }
+  .flow-ring {
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    border: 1px solid var(--color-gold);
+    border-radius: 50%;
+    color: var(--color-gold);
+  }
+  .flow-ring svg {
+    width: 1.25rem;
+  }
+  .flow-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.375rem 0.75rem;
+    border-radius: 6px;
+    background: var(--color-gold);
+    color: var(--color-navy);
+    font-size: 0.875rem;
+    font-weight: 700;
+  }
+  .flow-dot {
+    width: 0.4375rem;
+    height: 0.4375rem;
+    border-radius: 50%;
+    background: var(--color-navy);
+  }
+  .flow-bubble {
+    max-width: 88%;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid color-mix(in srgb, var(--color-white) 22%, var(--color-navy));
+    border-radius: 6px;
+    font-size: 0.875rem;
+    line-height: 1.4;
+  }
+  .flow-bubble + .flow-bubble {
+    margin-top: 0.5rem;
+  }
+  .flow-bubble.caller {
+    margin-left: auto;
+    border-color: var(--color-white);
+    background: var(--color-white);
+    color: var(--color-navy);
+  }
+  .flow-fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+  }
+  .flow-fields div {
+    padding: 0.5rem 0.625rem;
+    border-radius: 6px;
+    background: var(--color-white);
+    color: var(--color-navy);
+  }
+  .flow-fields dt {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+  .flow-fields dd {
+    font-size: 0.875rem;
+    font-weight: 700;
+  }
+  .flow-contact {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    border-radius: 6px;
+    background: var(--color-white);
+    color: var(--color-navy);
+  }
+  .flow-contact .flow-muted {
+    color: var(--color-muted);
+  }
+  .flow-avatar {
+    display: grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    background: var(--color-navy);
+    color: var(--color-gold);
+    font-size: 0.875rem;
+    font-weight: 700;
+  }
+  .flow-event {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    border-radius: 6px;
+    background: var(--color-gold);
+    color: var(--color-navy);
+  }
+  .flow-event svg {
+    width: 1.375rem;
+    flex-shrink: 0;
+  }
+</style>
+
+<script>
+  // One authored moment: the cards reveal in order and the gold line draws
+  // to the next step. Plays once. Reduced motion keeps the finished state.
+  const flow = document.querySelector<HTMLElement>("[data-flow]");
+  if (flow && !window.matchMedia("(prefers-reduced-motion: reduce)").matches && "IntersectionObserver" in window) {
+    const steps = Array.from(flow.querySelectorAll<HTMLElement>("[data-flow-step]"));
+    const show = () => steps.forEach((s) => (s.style.visibility = ""));
+    steps.forEach((s) => (s.style.visibility = "hidden"));
+    const io = new IntersectionObserver(
+      async (entries) => {
+        if (!entries.some((e) => e.isIntersecting)) return;
+        io.disconnect();
+        try {
+          const { gsap } = await import("gsap");
+          const wide = window.matchMedia("(min-width: 768px)").matches;
+          const tl = gsap.timeline({ defaults: { ease: "expo.out" } });
+          steps.forEach((step, i) => {
+            const line = step.querySelector("[data-flow-line]");
+            tl.fromTo(step, { autoAlpha: 0, y: 24 }, { autoAlpha: 1, y: 0, duration: 0.8 }, i === 0 ? 0 : ">-0.1");
+            if (line) {
+              tl.fromTo(line, wide ? { scaleX: 0 } : { scaleY: 0 }, { scaleX: 1, scaleY: 1, duration: 0.7, ease: "power2.inOut" }, ">-0.35");
+            }
+          });
+        } catch {
+          show();
+        }
+      },
+      { threshold: 0.12 },
+    );
+    io.observe(flow);
+  }
+</script>

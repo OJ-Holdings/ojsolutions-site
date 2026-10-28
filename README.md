@@ -63,8 +63,7 @@ Common edits:
 - **Phone number:** `PHONE: string = "(555) 123-4567";` It appears in the footer and the privacy policy.
 - **Booking calendar:** in GoHighLevel, open the calendar, copy its embed code, and paste the link from inside `src="..."` into `GHL_CALENDAR_EMBED`. Every "Book a call" button then goes to /book.
 - **Chat widget:** paste the full `<script ...></script>` tag from GoHighLevel into `GHL_CHAT_WIDGET`. (Heads up: chat widgets load a lot of code and will lower the site's speed score a bit.)
-- **Show receptionist prices:** set `SHOW_PRICING` to `true`. The prices come from `SETUP_PRICE` and `MONTHLY_PRICE`.
-- **"Starting at" prices:** set `WEBSITE_PRICE_FROM` or `COMMERCIAL_PRICE_FROM` to a number, like `1500` (no dollar sign, no quotes).
+- **Prices:** every price on the site lives in `src/data/pricing.ts`. Change a number there and every page updates.
 - **Answer a hidden FAQ question:** fill in its answer under `FAQ_ANSWERS`. The question appears as soon as it has an answer.
 
 ### Adding the demo call and screen recording

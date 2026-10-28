@@ -1,0 +1,38 @@
+---
+// "What's included" as a tight ruled grid: a small icon, a short title and
+// one line each. Two columns from tablet up, so eight items sit as 2 by 4.
+import Icon, { type IconName } from "./Icon.astro";
+
+interface Props {
+  items: { icon: IconName; title: string; body: string }[];
+  tone?: "white" | "navy";
+}
+
+const { items, tone = "white" } = Astro.props;
+const navy = tone === "navy";
+---
+
+<ul
+  role="list"
+  class:list={["mt-10 grid border-b sm:grid-cols-2 sm:gap-x-10 lg:gap-x-14", navy ? "rule-soft" : "border-line"]}
+>
+  {
+    items.map((item) => (
+      <li class:list={["flex gap-4 border-t py-5 sm:py-6", navy ? "rule-soft" : "border-line"]}>
+        <span
+          class:list={[
+            "flex size-10 shrink-0 items-center justify-center rounded-md",
+            navy ? "bg-gold text-navy" : "bg-navy text-gold",
+          ]}
+          aria-hidden="true"
+        >
+          <Icon name={item.icon} class="size-5" />
+        </span>
+        <div>
+          <h3 class="font-heading text-lg font-bold">{item.title}</h3>
+          <p class:list={["mt-1", navy ? "text-soft" : "text-muted"]}>{item.body}</p>
+        </div>
+      </li>
+    ))
+  }
+</ul>

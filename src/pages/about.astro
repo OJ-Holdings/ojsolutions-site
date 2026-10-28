@@ -6,48 +6,46 @@ import { Image } from "astro:assets";
 import after from "../assets/photos/exterior-house-wash-after.jpg";
 import siding from "../assets/photos/exterior-siding-before-after.jpg";
 ---
-<BaseLayout title="About OJ Solutions | Built by Operators" description="Meet the operators behind OJ Solutions, founded from experience running OJ Exterior Care in southeast Wisconsin.">
+<BaseLayout title="About OJ Solutions | Built by Business Owners" description="Meet Jacob and Oscar, the founders of OJ Solutions. We run OJ Exterior Care, an exterior cleaning business, and built our tools on our own business first.">
   <section class="on-navy">
     <div class="container-page grid gap-12 py-16 lg:grid-cols-[1fr_1fr] lg:items-center lg:py-24">
       <div>
         <p class="label-mono uppercase text-gold">From the field / Our story</p>
         <h1 class="display-1 mt-5">We don't just build for businesses. <span class="accent-serif underline decoration-gold">We run one.</span></h1>
-        <p class="text-soft mt-6 text-lg">Jacob Prahl and Oscar Johnston operate OJ Exterior Care, a local exterior cleaning business serving the Kenosha and Racine area. They started developing practical business systems around the problems they face on jobs.</p>
-        <p class="text-soft mt-4 text-lg">That's the foundation of OJ Solutions: answer the call, keep the customer information organized, and help owner-operated businesses follow through.</p>
+        <p class="text-soft mt-6 text-lg">Jacob Prahl and Oscar Johnston run OJ Exterior Care, an exterior cleaning company. Everything OJ Solutions sells, we built for our own business first: an AI receptionist that answers and books calls, a website that brings in customers, and video ads made from real job footage.</p>
         <div class="mt-8"><BookButton variant="gold" size="lg" label="Request a 15-min conversation"/></div>
       </div>
       <figure>
         <Image src={after} alt="Home exterior after an OJ Exterior Care house wash" widths={[480,800,1200]} sizes="(min-width:1024px) 45vw, 100vw" class="h-auto w-full rounded-lg object-cover" />
-        <figcaption class="text-soft mt-3 text-sm">Real field work by OJ Exterior Care—not a stock photo.</figcaption>
+        <figcaption class="text-soft mt-3 text-sm">Real field work by OJ Exterior Care.</figcaption>
       </figure>
     </div>
   </section>
   <section class="container-page py-14 sm:py-20" aria-labelledby="founder-heading">
     <p class="text-sm font-bold uppercase tracking-widest text-muted">The founders</p>
-    <h2 id="founder-heading" class="display-2 mt-4">Meet the operators.</h2>
+    <h2 id="founder-heading" class="display-2 mt-4">Meet the founders.</h2>
     <div class="mt-9 grid gap-5 sm:grid-cols-2">
       <article class="rounded-lg border border-line p-7">
         <p class="text-sm font-bold uppercase tracking-widest text-muted">Co-founder</p>
         <h3 class="mt-3 font-heading text-2xl font-bold">Jacob Prahl</h3>
-        <p class="mt-3 text-muted">Co-founder of OJ Solutions and operator at OJ Exterior Care, where communication, scheduling and customer follow-through matter on every job.</p>
+        <p class="mt-3 text-muted">Co-founder of OJ Solutions. Runs OJ Exterior Care, where communication, scheduling and customer follow-through matter on every job.</p>
       </article>
       <article class="rounded-lg border border-line p-7">
         <p class="text-sm font-bold uppercase tracking-widest text-muted">Co-founder</p>
         <h3 class="mt-3 font-heading text-2xl font-bold">Oscar Johnston</h3>
-        <p class="mt-3 text-muted">Co-founder of OJ Solutions and operator at OJ Exterior Care, bringing experience from real exterior cleaning projects to the systems the agency builds.</p>
+        <p class="mt-3 text-muted">Co-founder of OJ Solutions. Runs OJ Exterior Care and brings experience from real exterior cleaning jobs to the systems we build.</p>
       </article>
     </div>
-    <p class="mt-6 text-sm text-muted">The work photos on this page show actual OJ Exterior Care projects completed by our team.</p>
   </section>
   <section class="container-page grid gap-10 py-16 md:grid-cols-[1fr_1fr] md:items-center">
     <figure>
       <Image src={siding} alt="Before and after of cleaned vinyl siding by OJ Exterior Care" widths={[480,760,1100]} sizes="(min-width:768px) 48vw, 100vw" class="w-full rounded-lg" loading="lazy"/>
-      <figcaption class="mt-2 text-sm text-muted">Authentic work from the team's own exterior-care operations.</figcaption>
+      <figcaption class="mt-2 text-sm text-muted">Before and after: vinyl siding cleaned by OJ Exterior Care.</figcaption>
     </figure>
     <div>
       <p class="text-sm font-bold tracking-widest uppercase text-muted">What we understand</p>
       <h2 class="display-2 mt-3">A call missed on the job is a problem we've faced.</h2>
-      <p class="mt-5 text-lg text-muted">We started with our own business rather than a generic sales script. Our flagship AI receptionist focuses on answering inquiries and capturing enough detail to move toward an estimate.</p>
+      <p class="mt-5 text-lg text-muted">We built and tested all of this on our own business first: an AI receptionist that answers and books calls, websites that bring in customers, and video ads.</p>
       <p class="mt-6"><a href="/demo" class="link">Hear the AI demonstration</a></p>
     </div>
   </section>

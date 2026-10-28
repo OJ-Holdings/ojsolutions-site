@@ -2,41 +2,75 @@
 import ServiceLayout from "../layouts/ServiceLayout.astro";
 import Section from "../components/Section.astro";
 import SectionHeading from "../components/SectionHeading.astro";
-import Steps from "../components/Steps.astro";
-import FeatureGrid from "../components/FeatureGrid.astro";
-import WebsiteExamples from "../components/WebsiteExamples.astro";
-import PriceFrom from "../components/PriceFrom.astro";
-import Icon from "../components/Icon.astro";
-import { Image } from "astro:assets";
-import ourSite from "../assets/work/ojexteriorcare-phone.jpg";
-import { FAQ_ANSWERS, WEBSITE_PRICE_FROM } from "../config";
+import IconGrid from "../components/IconGrid.astro";
+import PricingOptions from "../components/PricingOptions.astro";
+import HeroDevices from "../components/websites/HeroDevices.astro";
+import PhoneCompare from "../components/websites/PhoneCompare.astro";
+import BuildCards from "../components/websites/BuildCards.astro";
+import ProcessSteps from "../components/websites/ProcessSteps.astro";
+import { PRICING, money } from "../data/pricing";
+
+const web = PRICING.website;
+const plan = web.monthlyPlan;
+
+const pricingOptions = [
+  {
+    name: "One-time build",
+    price: money(web.build.price),
+    unit: "one time",
+    points: [...web.build.features],
+    note: `Care plan ${money(web.care.monthly)}/month for hosting, security and small edits.`,
+  },
+  {
+    name: "Monthly",
+    price: money(plan.monthly),
+    unit: "/month",
+    points: [`${money(plan.down)} down`, ...plan.features],
+  },
+];
 
 const included = [
   {
+    icon: "palette",
     title: "Custom design",
     body: "Designed around your business and what you want visitors to do: call you or book.",
   },
   {
+    icon: "smartphone",
     title: "Built for phones first",
     body: "Designed for the small screen first, then scaled up for desktop.",
   },
   {
+    icon: "phone",
     title: "Click-to-call and booking",
     body: "Your number is one tap away, and customers can book without picking up the phone.",
   },
   {
+    icon: "zap",
     title: "Fast load times",
     body: "Built lean, so pages load quickly on a phone.",
   },
   {
+    icon: "search",
     title: "Basic Google setup",
     body: "Page titles, descriptions, and a sitemap, so Google can read your site.",
   },
   {
-    title: "Hosting and launch handled",
-    body: "We put it live and handle the hosting. Nothing for you to set up.",
+    icon: "rocket",
+    title: "Launch handled",
+    body: "We put it live for you. Hosting comes with the Care plan or the monthly plan.",
   },
-];
+  {
+    icon: "pen",
+    title: "Copy written for you",
+    body: "We draft every page from a short questionnaire, and you approve it before launch.",
+  },
+  {
+    icon: "link",
+    title: "Works with your AI receptionist",
+    body: "Your site and your phone line feed the same lead list.",
+  },
+] as const;
 
 const steps = [
   {
@@ -49,18 +83,51 @@ const steps = [
   },
   {
     title: "We launch it",
-    body: "We put it live and take care of the hosting.",
+    body: "We put it live. Hosting is covered by the Care plan or the monthly plan.",
   },
 ];
 
 const faq = [
   {
     q: "Can you redo my current site?",
-    a: "Yes. We can rebuild the site you have or start from scratch.",
+    a: "Yes. We can rebuild what you have or start fresh.",
   },
-  // TODO(Jacob): answer these two in src/config.ts (FAQ_ANSWERS). Hidden until then.
-  { q: "Do I own the site?", a: FAQ_ANSWERS.websitesOwnership },
-  { q: "How long does it take?", a: FAQ_ANSWERS.websitesTimeline },
+  {
+    q: "Do I own my website?",
+    a: `With the one-time build, yes, from day one. On the monthly plan, it's yours after the ${plan.minimumMonths}-month minimum.`,
+  },
+  {
+    q: "How long does a build take?",
+    a: "Most sites launch within 2 weeks of getting your content.",
+  },
+  {
+    q: "What do I need to give you?",
+    a: "Your logo, photos of your work, your services, and any sites you like. We handle the rest.",
+  },
+  {
+    q: "Do you write the words?",
+    a: "Yes. We draft every page and you approve it before launch.",
+  },
+  {
+    q: "Can I make changes later?",
+    a: "Yes. Small edits are included on the Care plan and the monthly plan. Just text or email us.",
+  },
+  {
+    q: "Will it show up on Google?",
+    a: "Every site launches with page titles, descriptions and a sitemap so Google can read it. Rankings take time, and we don't promise a position.",
+  },
+  {
+    q: "Do you handle my domain?",
+    a: "We connect the domain you have. If you don't have one, we'll help you buy it in your name.",
+  },
+  {
+    q: "What if I cancel the monthly plan?",
+    a: `After the ${plan.minimumMonths}-month minimum you can cancel anytime and keep your site.`,
+  },
+  {
+    q: "Can you add the AI receptionist?",
+    a: "Yes. Your site and phone line can feed the same lead list.",
+  },
 ];
 ---
 
@@ -77,40 +144,13 @@ const faq = [
   ctaHeading="Let's look at your site"
   ctaLine="Book a short call. We'll go over what you have and what we'd change."
 >
-  <figure slot="hero-aside" class="mx-auto w-full max-w-[19rem] lg:mr-0">
-    <a
-      href="https://www.ojexteriorcare.com"
-      target="_blank"
-      rel="noopener"
-      class="group rule-soft relative block rounded-lg border bg-navy px-2.5 pt-6 pb-3 hover:border-gold"
-    >
-      <span class="absolute top-2.5 left-1/2 h-1.5 w-11 -translate-x-1/2 rounded-full bg-white/30" aria-hidden="true"
-      ></span>
-      <Image
-        src={ourSite}
-        alt="The services section of ojexteriorcare.com on a phone"
-        widths={[300, 560, 780]}
-        sizes="(min-width: 1024px) 18rem, 80vw"
-        loading="eager"
-        class="block h-auto w-full rounded-sm"
-      />
-      <span class="sr-only">Visit ojexteriorcare.com (opens in a new tab)</span>
-    </a>
-    <figcaption class="mt-4">
-      <span class="block font-heading text-lg font-bold">ojexteriorcare.com</span>
-      <span class="text-soft mt-1 block">The site for OJ Exterior Care, our own pressure washing and window cleaning company.</span>
-      <a
-        href="https://www.ojexteriorcare.com"
-        target="_blank"
-        rel="noopener"
-        class="link mt-2 inline-flex min-h-11 items-center gap-1.5"
-      >
-        Visit the live site
-        <Icon name="arrow-right" class="size-4" />
-        <span class="sr-only">(opens in a new tab)</span>
-      </a>
-    </figcaption>
-  </figure>
+  <HeroDevices slot="hero-aside" />
+
+  <p slot="hero-note" class="text-soft mt-6 max-w-xl">
+    See our work:{" "}
+    <a href="https://ojexteriorcare.com" target="_blank" rel="noopener" class="link py-3">ojexteriorcare.com<span class="sr-only"> (opens in a new tab)</span></a>{" "}
+    and the site you're on now.
+  </p>
 
   <Fragment slot="problem">
     <div class="mt-6 max-w-2xl space-y-4 text-lg text-muted">
@@ -122,7 +162,19 @@ const faq = [
     </div>
   </Fragment>
 
-  <WebsiteExamples />
+  <Fragment slot="problem-aside">
+    <PhoneCompare />
+  </Fragment>
+
+  <Section id="our-builds" labelledby="our-builds-title" tone="navy">
+    <SectionHeading
+      id="our-builds-title"
+      title="Our builds"
+      intro="Two sites we built for our own businesses. Open them on your phone."
+      tone="navy"
+    />
+    <BuildCards />
+  </Section>
 
   <Section id="included" labelledby="included-title" border={false}>
     <SectionHeading
@@ -130,13 +182,18 @@ const faq = [
       title="What's included"
       intro="New sites or rebuilds. The site you're on right now is built the same way."
     />
-    <FeatureGrid items={included} />
+    <IconGrid items={[...included]} />
   </Section>
 
   <Section id="how-it-works" labelledby="how-title" tone="navy">
     <SectionHeading id="how-title" title="How it works" tone="navy" />
-    <Steps steps={steps} tone="navy" />
+    <ProcessSteps steps={steps} tone="navy" />
   </Section>
 
-  <PriceFrom price={WEBSITE_PRICE_FROM} noun="site" />
+  <PricingOptions
+    service="website"
+    title="Pricing"
+    intro="Pay once, or spread it out. Pick what fits your business."
+    options={pricingOptions}
+  />
 </ServiceLayout>

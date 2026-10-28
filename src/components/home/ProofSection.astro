@@ -1,0 +1,288 @@
+---
+// One proof section: our own service business. The commercial we made for
+// OJ Exterior Care, a before/after of our own work, and Google reviews of
+// OJ Exterior Care. Never present any of it as OJ Solutions client results.
+import { Image } from "astro:assets";
+import { mediaAvailable } from "../../lib/media";
+import { EXTERIOR_CARE_REVIEWS as reviews } from "../../data/reviews";
+import stepsBefore from "../../assets/photos/exterior-steps-before.jpg";
+import stepsAfter from "../../assets/photos/exterior-steps-after.jpg";
+
+const modernVideo = mediaAvailable("/media/OJ_Solutions_Commercial_v2_hero30.mp4")
+  && mediaAvailable("/media/commercial-hero-poster.webp");
+const video = modernVideo ? "/media/OJ_Solutions_Commercial_v2_hero30.mp4" : "/media/commercial-30.mp4";
+const poster = modernVideo ? "/media/commercial-hero-poster.webp" : "/media/commercial-30-poster.webp";
+const caption = mediaAvailable("/media/commercial-hero.vtt")
+  ? "/media/commercial-hero.vtt"
+  : mediaAvailable("/media/commercial-30.vtt") && !modernVideo ? "/media/commercial-30.vtt" : "";
+---
+
+<section id="proof" class="on-navy py-16 sm:py-24" aria-labelledby="proof-title">
+  <div class="container-page">
+    <div class="max-w-3xl">
+      <p class="text-sm font-bold tracking-widest text-gold uppercase">OJ Exterior Care</p>
+      <h2 id="proof-title" class="display-2 mt-4">We run a service business too.</h2>
+      <p class="text-soft mt-5 max-w-2xl text-lg sm:text-xl">
+        Before OJ Solutions there was OJ Exterior Care, our exterior cleaning company. Everything we sell, we built for
+        our own business first: the AI receptionist, the website and the commercial.
+      </p>
+    </div>
+
+    <div class="mt-10 grid gap-8 sm:mt-14 lg:grid-cols-[20rem_minmax(0,1fr)] lg:gap-10">
+      <figure class="mx-auto w-full max-w-[20rem]">
+        <div class="relative aspect-[9/16] overflow-hidden rounded-lg border border-white/25 bg-navy" data-featured-commercial>
+          <video
+            data-featured-video
+            class="absolute inset-0 size-full object-cover"
+            width="720"
+            height="1280"
+            poster={poster}
+            muted
+            loop
+            playsinline
+            preload="none"
+            aria-label="Our own commercial, shot on real OJ Exterior Care jobs"
+            aria-describedby="commercial-description"
+          >
+            <source data-video-src={video} type="video/mp4" />
+            {caption && <track kind="captions" src={caption} srclang="en" label="English captions" />}
+            Your browser does not support embedded video.
+          </video>
+          <button
+            type="button"
+            data-play-sound
+            class="absolute bottom-4 left-1/2 inline-flex min-h-12 -translate-x-1/2 items-center justify-center rounded-lg bg-gold px-4 text-sm font-bold whitespace-nowrap text-navy focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-white"
+          >
+            <span aria-hidden="true" class="mr-2">▶</span>Play with sound
+          </button>
+        </div>
+        <figcaption class="text-soft mt-4 text-sm">Our own commercial, shot on real OJ Exterior Care jobs.</figcaption>
+        <p id="commercial-description" class="sr-only">
+          The commercial shows the founders' own exterior cleaning business, OJ Exterior Care, at work, and our AI
+          receptionist answering a call for it.
+        </p>
+      </figure>
+
+      <figure class="flex min-w-0 flex-col">
+        <div class="photo-compare relative h-[22rem] overflow-hidden rounded-lg border border-white/25 sm:h-[28rem] lg:h-auto lg:flex-1" data-compare style="--split: 50%">
+          <Image
+            src={stepsAfter}
+            alt="Concrete front steps with white railings after cleaning"
+            widths={[640, 960, 1280]}
+            sizes="(min-width: 1024px) 760px, 100vw"
+            class="compare-photo"
+            loading="lazy"
+            decoding="async"
+          />
+          <div class="compare-before" aria-hidden="true">
+            <Image
+              src={stepsBefore}
+              alt=""
+              widths={[640, 960, 1280]}
+              sizes="(min-width: 1024px) 760px, 100vw"
+              class="compare-photo"
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+          <span class="compare-tag left-3" aria-hidden="true">Before</span>
+          <span class="compare-tag right-3" aria-hidden="true">After</span>
+          <input
+            class="compare-input"
+            data-compare-input
+            type="range"
+            min="0"
+            max="100"
+            step="1"
+            value="50"
+            aria-label="Compare the before and after photos of the same cleaned concrete steps"
+            aria-valuetext="Half before and half after"
+          />
+          <span class="compare-divider" aria-hidden="true">
+            <span class="compare-handle">
+              <svg viewBox="0 0 40 24" fill="none" aria-hidden="true">
+                <path d="M12 6 6 12l6 6M28 6l6 6-6 6M6 12h28" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg>
+            </span>
+          </span>
+        </div>
+        <figcaption class="text-soft mt-4 text-sm">Front steps cleaned by OJ Exterior Care. Drag the handle to compare.</figcaption>
+      </figure>
+    </div>
+
+    <div class="rule-soft mt-14 flex flex-col gap-5 border-t pt-10 sm:flex-row sm:items-end sm:justify-between">
+      <div>
+        <p class="font-heading text-4xl font-bold">
+          {reviews.rating} <span class="text-gold" aria-label="five out of five stars">★★★★★</span>
+        </p>
+        <a href={reviews.url} target="_blank" rel="noopener noreferrer" class="link mt-2 inline-flex min-h-11 items-center">
+          {reviews.count} Google reviews of OJ Exterior Care<span class="sr-only"> (opens in a new tab)</span>
+        </a>
+      </div>
+      <a href="/about" class="inline-flex min-h-12 items-center justify-center self-start rounded-lg border border-gold px-5 font-bold text-white hover:bg-gold hover:text-navy sm:self-auto">
+        Meet the founders
+      </a>
+    </div>
+
+    <ul role="list" class="mt-8 grid gap-4 md:grid-cols-3">
+      {
+        reviews.quotes.map((review) => (
+          <li>
+            <figure class="rule-soft flex h-full flex-col rounded-lg border p-6">
+              <p class="text-gold" aria-label="Five stars">★★★★★</p>
+              <blockquote class="mt-3 flex-1 text-lg leading-relaxed">“{review.quote}”</blockquote>
+              <figcaption class="text-soft mt-5 text-sm">{review.author} · Google review of OJ Exterior Care</figcaption>
+            </figure>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .compare-photo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 56%;
+    pointer-events: none;
+  }
+  .photo-compare {
+    isolation: isolate;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: pan-y;
+  }
+  .compare-before {
+    position: absolute;
+    inset: 0;
+    clip-path: inset(0 calc(100% - var(--split)) 0 0);
+    pointer-events: none;
+  }
+  .compare-tag {
+    position: absolute;
+    top: 0.75rem;
+    z-index: 2;
+    padding: 0.375rem 0.625rem;
+    border-radius: 4px;
+    background: var(--color-navy);
+    color: var(--color-white);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .compare-divider {
+    position: absolute;
+    inset-block: 0;
+    left: var(--split);
+    z-index: 3;
+    width: 2px;
+    background: var(--color-white);
+    transform: translateX(-50%);
+    pointer-events: none;
+  }
+  .compare-handle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    display: grid;
+    place-items: center;
+    width: 3.25rem;
+    height: 3.25rem;
+    border: 2px solid var(--color-gold);
+    border-radius: 50%;
+    background: var(--color-white);
+    color: var(--color-navy);
+    transform: translate(-50%, -50%);
+  }
+  .compare-handle svg {
+    width: 1.75rem;
+  }
+  .compare-input {
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: ew-resize;
+    touch-action: pan-y;
+  }
+  .photo-compare:has(.compare-input:focus-visible) .compare-handle {
+    outline: 3px solid var(--color-gold);
+    outline-offset: 4px;
+  }
+  [data-play-sound][hidden] {
+    display: none;
+  }
+</style>
+
+<script>
+  // Keyboard and touch accessible before/after slider. No library.
+  const comparison = document.querySelector<HTMLElement>("[data-compare]");
+  const range = comparison?.querySelector<HTMLInputElement>("[data-compare-input]");
+  if (comparison && range) {
+    const update = () => {
+      comparison.style.setProperty("--split", range.value + "%");
+      range.setAttribute(
+        "aria-valuetext",
+        Number(range.value) === 50 ? "Half before and half after" : range.value + " percent of the before photo shown",
+      );
+    };
+    range.addEventListener("input", update);
+    update();
+  }
+
+  // Commercial: no MP4 download until needed. Muted preview only on desktop
+  // with motion allowed; sound only when the visitor presses play.
+  const wrapper = document.querySelector<HTMLElement>("[data-featured-commercial]");
+  const video = wrapper?.querySelector<HTMLVideoElement>("[data-featured-video]");
+  const soundButton = wrapper?.querySelector<HTMLButtonElement>("[data-play-sound]");
+  if (video && soundButton && wrapper) {
+    let userStarted = false;
+    const loadOnDemand = () => {
+      const source = video.querySelector<HTMLSourceElement>("source[data-video-src]");
+      if (source?.dataset.videoSrc) {
+        source.src = source.dataset.videoSrc;
+        delete source.dataset.videoSrc;
+        video.load();
+      }
+    };
+    soundButton.addEventListener("click", () => {
+      loadOnDemand();
+      userStarted = true;
+      video.muted = false;
+      video.loop = false;
+      video.controls = true;
+      video.currentTime = 0;
+      soundButton.hidden = true;
+      video.play().catch(() => {
+        soundButton.hidden = false;
+      });
+    });
+    const canPreview =
+      window.matchMedia("(min-width: 768px)").matches &&
+      !window.matchMedia("(prefers-reduced-motion: reduce)").matches &&
+      !(navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData &&
+      "IntersectionObserver" in window;
+    if (canPreview) {
+      new IntersectionObserver(
+        (entries) => {
+          if (userStarted) return;
+          if (entries.some((entry) => entry.isIntersecting)) {
+            loadOnDemand();
+            video.play().catch(() => {});
+          } else {
+            video.pause();
+          }
+        },
+        { threshold: 0.25 },
+      ).observe(wrapper);
+    }
+  }
+</script>

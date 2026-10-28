@@ -1,0 +1,170 @@
+---
+// One of our commercial cuts framed like an editing monitor: a top bar with
+// the REC dot, the clip name and a timecode readout, the 9:16 player, and a
+// thin gold progress rule with the cut's length. The timecode runs with the
+// video while it plays and holds when it pauses, so nothing moves until the
+// visitor presses play. Red is used for the REC dot and nothing else.
+interface Props {
+  src: string;
+  poster: string;
+  /** Clip name in the monitor bar, e.g. "OJ_AD_FULL" */
+  name: string;
+  /** Accessible name for the video */
+  label: string;
+  /** Length of the cut in seconds, shown under the player */
+  duration: number;
+  class?: string;
+}
+
+const { src, poster, name, label, duration, class: className } = Astro.props;
+
+const FPS = 30;
+const pad = (n: number) => String(n).padStart(2, "0");
+const frames = Math.round(duration * FPS);
+const length = `${pad(Math.floor(frames / FPS / 60))}:${pad(Math.floor(frames / FPS) % 60)}:${pad(frames % FPS)}`;
+---
+
+<div class:list={["monitor", className]} data-monitor>
+  <div class="monitor-bar">
+    <span class="monitor-rec" aria-hidden="true"><span class="monitor-dot"></span>REC</span>
+    <span class="monitor-name">{name}</span>
+    <span class="monitor-tc" data-monitor-tc aria-hidden="true">00:00:00:00</span>
+  </div>
+  <div class="monitor-screen">
+    <video
+      controls
+      preload="none"
+      playsinline
+      width="1080"
+      height="1920"
+      poster={poster}
+      aria-label={label}
+      class="block size-full object-cover"
+      data-monitor-video
+    >
+      <source src={src} type="video/mp4" />
+      <a href={src} class="link">{label}</a>
+    </video>
+  </div>
+  <div class="monitor-foot" aria-hidden="true">
+    <span class="monitor-progress"><span data-monitor-progress></span></span>
+    <span>{length}</span>
+  </div>
+</div>
+
+<style>
+  .monitor {
+    --rec: #e5484d;
+    border: 1px solid color-mix(in srgb, var(--color-white) 18%, var(--color-navy));
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--color-white) 6%, var(--color-navy));
+    color: var(--color-white);
+    overflow: hidden;
+  }
+  .monitor-bar,
+  .monitor-foot {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    font-variant-numeric: tabular-nums;
+    color: color-mix(in srgb, var(--color-white) 78%, var(--color-navy));
+  }
+  .monitor-rec {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    color: var(--color-white);
+  }
+  .monitor-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: var(--rec);
+  }
+  .monitor-name {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .monitor-tc {
+    margin-left: auto;
+    color: var(--color-white);
+  }
+  .monitor-screen {
+    aspect-ratio: 9 / 16;
+    background: var(--color-navy);
+  }
+  .monitor-progress {
+    position: relative;
+    flex: 1;
+    height: 2px;
+    background: color-mix(in srgb, var(--color-white) 16%, var(--color-navy));
+  }
+  .monitor-progress span {
+    position: absolute;
+    inset: 0;
+    background: var(--color-gold);
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .monitor[data-playing] .monitor-dot {
+      animation: monitor-blink 1.2s steps(2, jump-none) infinite;
+    }
+  }
+  @keyframes monitor-blink {
+    to {
+      opacity: 0.25;
+    }
+  }
+</style>
+
+<script>
+  // Timecode and progress follow the video while it plays. Starting one cut
+  // pauses any other cut on the page.
+  const FPS = 30;
+  const pad = (n: number) => String(n).padStart(2, "0");
+  const timecode = (t: number) => {
+    const f = Math.floor(t * FPS);
+    const s = Math.floor(f / FPS);
+    return `${pad(Math.floor(s / 3600))}:${pad(Math.floor(s / 60) % 60)}:${pad(s % 60)}:${pad(f % FPS)}`;
+  };
+  const monitors = Array.from(document.querySelectorAll<HTMLElement>("[data-monitor]"));
+  const videos = monitors.map((m) => m.querySelector<HTMLVideoElement>("[data-monitor-video]"));
+
+  monitors.forEach((monitor, i) => {
+    const video = videos[i];
+    const readout = monitor.querySelector<HTMLElement>("[data-monitor-tc]");
+    const bar = monitor.querySelector<HTMLElement>("[data-monitor-progress]");
+    if (!video || !readout || !bar) return;
+    let frame = 0;
+    const draw = () => {
+      readout.textContent = timecode(video.currentTime);
+      if (video.duration) bar.style.transform = `scaleX(${video.currentTime / video.duration})`;
+    };
+    const tick = () => {
+      draw();
+      frame = requestAnimationFrame(tick);
+    };
+    const stop = () => {
+      monitor.removeAttribute("data-playing");
+      cancelAnimationFrame(frame);
+      draw();
+    };
+    video.addEventListener("play", () => {
+      videos.forEach((other) => other && other !== video && other.pause());
+      monitor.setAttribute("data-playing", "");
+      cancelAnimationFrame(frame);
+      tick();
+    });
+    video.addEventListener("pause", stop);
+    video.addEventListener("ended", stop);
+    video.addEventListener("seeked", draw);
+  });
+</script>

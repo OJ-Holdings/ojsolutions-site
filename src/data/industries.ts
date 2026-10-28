@@ -30,7 +30,7 @@ export const trades: Trade[] = [
     title: "Under a sink? Don't make every caller leave a voicemail.",
     situation: "Leak calls can sound urgent, while routine fixture jobs can be planned. The AI captures the issue and flags urgency for the plumbing team's callback.",
     example: "Water is leaking below our kitchen sink. Can someone call me about an appointment?",
-    details: ["Leak, clog, fixture replacement or other service requested", "Active water flow, potential damage and urgency flag for staff—without attempting repair instructions", "Location, reachable callback number and preferred visit or callback window"],
+    details: ["Leak, clog, fixture replacement or other service requested", "Active water flow, potential damage and urgency flag for staff, without attempting repair instructions", "Location, reachable callback number and preferred visit or callback window"],
   },
   {
     slug: "ai-receptionist-for-landscaping",

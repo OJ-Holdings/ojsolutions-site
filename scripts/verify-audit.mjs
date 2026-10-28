@@ -3,8 +3,9 @@
 import assert from "node:assert/strict";
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { join, extname } from "node:path";
+import { fileURLToPath } from "node:url";
 
-const dist = new URL("../dist/", import.meta.url).pathname;
+const dist = fileURLToPath(new URL("../dist/", import.meta.url));
 const pages = [];
 const excluded = new Set(["404.html"]);
 function visit(dir) {
@@ -59,8 +60,10 @@ for (const path of pages) {
     .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi," ")
     .replace(/<[^>]+>/g," ");
   const phoneMatches = visible.match(/(?:\(\d{3}\)|\d{3})[\s.-]+\d{3}[\s.-]+\d{4}/g)||[];
+  // Jacob approved (262) 515-3083 for the phone mockup on /websites only.
+  const approvedHere = where.replace(/\\/g,"/")==="/websites.html" ? ["2625153083"] : [];
   for(const value of phoneMatches) {
-    if(value.replace(/\D/g,"")!=="2624010826")
+    if(value.replace(/\D/g,"")!=="2624010826" && !approvedHere.includes(value.replace(/\D/g,"")))
       failures.push(where+": possible unapproved visible phone number "+value);
   }
 }

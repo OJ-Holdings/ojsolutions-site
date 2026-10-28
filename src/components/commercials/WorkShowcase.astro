@@ -1,0 +1,171 @@
+---
+// "Our work" on the video ads page: our full cut and short cut side by side
+// as editing monitors, and a film strip of frames from the ad underneath.
+// On wide screens with motion allowed, the strip pans sideways as it scrolls
+// past, like scrubbing through the reel. Otherwise it sits still and fits.
+import { Image } from "astro:assets";
+import EditMonitor from "./EditMonitor.astro";
+import Sprockets from "./Sprockets.astro";
+import frame1 from "../../assets/commercials/frame-1.jpg";
+import frame2 from "../../assets/commercials/frame-2.jpg";
+import frame3 from "../../assets/commercials/frame-3.jpg";
+import frame4 from "../../assets/commercials/frame-4.jpg";
+import frame5 from "../../assets/commercials/frame-5.jpg";
+import frame6 from "../../assets/commercials/frame-6.jpg";
+import frame7 from "../../assets/commercials/frame-7.jpg";
+import frame8 from "../../assets/commercials/frame-8.jpg";
+
+interface Props {
+  fullCut: { src: string; poster: string; duration: number };
+  shortCut: { src: string; poster: string; duration: number };
+}
+
+const { fullCut, shortCut } = Astro.props;
+const clock = (seconds: number) => `${Math.floor(seconds / 60)}:${String(Math.round(seconds) % 60).padStart(2, "0")}`;
+
+const strip = [
+  { src: frame1, alt: "This call is a $400 job." },
+  { src: frame2, alt: "He can't hear it." },
+  { src: frame3, alt: "Nobody leaves a voicemail anymore." },
+  { src: frame4, alt: "They just call the next guy." },
+  { src: frame5, alt: "Same call." },
+  { src: frame6, alt: "Our AI receptionist, answering our own line." },
+  { src: frame7, alt: "The lead card fills in while the AI asks the caller's name." },
+  { src: frame8, alt: "End card: Your AI front desk. Built by operators." },
+];
+---
+
+<div class="grid gap-10 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:gap-16">
+  <div class="max-w-md">
+    <p class="text-lg text-muted">
+      We made this ad for our own exterior cleaning company, OJ Exterior Care, from footage of real jobs. It's the same editing we'll do on your clips.
+    </p>
+    <dl class="inspector mt-8">
+      <div><dt>Client</dt><dd>OJ Exterior Care, our own company</dd></div>
+      <div><dt>Footage</dt><dd>Real jobs</dd></div>
+      <div><dt>Cuts</dt><dd>Full {clock(fullCut.duration)}, short {clock(shortCut.duration)}</dd></div>
+      <div><dt>Shape</dt><dd>9:16 vertical</dd></div>
+    </dl>
+  </div>
+
+  <div class="grid grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] items-end gap-4 sm:gap-6 lg:w-[34rem]">
+    <figure>
+      <EditMonitor
+        src={fullCut.src}
+        poster={fullCut.poster}
+        name="OJ_AD_30"
+        label="Watch our full commercial"
+        duration={fullCut.duration}
+      />
+      <figcaption class="mt-3">
+        <span class="block font-heading text-lg font-bold">Full cut</span>
+        <span class="block text-muted">The whole commercial.</span>
+      </figcaption>
+    </figure>
+    <figure>
+      <EditMonitor
+        src={shortCut.src}
+        poster={shortCut.poster}
+        name="OJ_AD_15"
+        label="Watch the short version of our commercial"
+        duration={shortCut.duration}
+      />
+      <figcaption class="mt-3">
+        <span class="block font-heading text-lg font-bold">Short cut</span>
+        <span class="block text-muted">The same commercial, cut down.</span>
+      </figcaption>
+    </figure>
+  </div>
+</div>
+
+<div class="reel mt-12 sm:mt-16" data-reel>
+  <Sprockets />
+  <ul role="list" class="reel-track" aria-label="Frames from our commercial" data-reel-track>
+    {
+      strip.map((frame) => (
+        <li class="reel-frame">
+          <Image src={frame.src} alt={frame.alt} widths={[180, 360]} sizes="(min-width: 640px) 10rem, 25vw" class="size-full object-cover" />
+        </li>
+      ))
+    }
+  </ul>
+  <Sprockets />
+</div>
+
+<style>
+  .inspector > div {
+    display: grid;
+    grid-template-columns: 6rem minmax(0, 1fr);
+    gap: 1rem;
+    padding: 0.625rem 0;
+    border-top: 1px solid var(--color-line);
+  }
+  .inspector > div:last-child {
+    border-bottom: 1px solid var(--color-line);
+  }
+  .inspector dt {
+    padding-top: 0.2rem;
+    color: var(--color-muted);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .inspector dd {
+    font-weight: 600;
+  }
+  .reel {
+    overflow: hidden;
+    border-radius: 4px;
+    background: var(--color-navy);
+    padding: 0.25rem 0;
+  }
+  .reel-track {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.375rem;
+    padding: 0.375rem;
+  }
+  @media (min-width: 640px) {
+    .reel-track {
+      grid-template-columns: repeat(8, minmax(0, 1fr));
+    }
+  }
+  .reel-frame {
+    aspect-ratio: 9 / 16;
+    overflow: hidden;
+    border-radius: 2px;
+  }
+  /* Panning: the strip runs wider than the page and slides through it. */
+  .reel[data-armed] .reel-track {
+    grid-template-columns: repeat(8, 10.5rem);
+    width: max-content;
+  }
+</style>
+
+<script>
+  // Pans the strip with the scroll on wide screens with motion allowed.
+  const reel = document.querySelector<HTMLElement>("[data-reel]");
+  const track = reel?.querySelector<HTMLElement>("[data-reel-track]");
+  const QUERY = "(min-width: 1024px) and (prefers-reduced-motion: no-preference)";
+
+  if (reel && track && window.matchMedia(QUERY).matches) {
+    Promise.all([import("gsap"), import("gsap/ScrollTrigger")]).then(([{ gsap }, { ScrollTrigger }]) => {
+      gsap.registerPlugin(ScrollTrigger);
+      gsap.matchMedia().add(QUERY, () => {
+        reel.setAttribute("data-armed", "");
+        gsap.fromTo(
+          track,
+          { x: 0 },
+          {
+            x: () => Math.min(0, reel.clientWidth - track.scrollWidth),
+            ease: "none",
+            scrollTrigger: { trigger: reel, start: "top bottom", end: "bottom top", scrub: 0.4, invalidateOnRefresh: true },
+          },
+        );
+        return () => reel.removeAttribute("data-armed");
+      });
+    });
+  }
+</script>

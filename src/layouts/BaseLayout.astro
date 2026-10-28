@@ -16,9 +16,9 @@ import { filled, type ServiceKey } from "../lib/site";
 
 interface Props {
   /** Unique page title, shown in the browser tab and search results. */
-  title: string;
+  title?: string;
   /** Unique description for search results and link previews. */
-  description: string;
+  description?: string;
   /** Keep this page out of search results (404 page). */
   noindex?: boolean;
   /** Hide the header "Book a call" button. */
@@ -29,7 +29,18 @@ interface Props {
   service?: ServiceKey;
 }
 
-const { title, description, noindex = false, hideBookButton = false, jsonLd, service } = Astro.props;
+const DEFAULT_TITLE = "OJ Solutions | AI Receptionists, Websites and Video Ads";
+const DEFAULT_DESCRIPTION =
+  "An AI receptionist that answers and books your calls, websites that turn visitors into customers, and video ads made from your own clips. Call our live AI demo.";
+
+const {
+  title = DEFAULT_TITLE,
+  description = DEFAULT_DESCRIPTION,
+  noindex = false,
+  hideBookButton = false,
+  jsonLd,
+  service,
+} = Astro.props;
 
 const site = Astro.site ?? new URL("http://localhost:4321");
 const path = Astro.url.pathname.replace(/\.html$/, "").replace(/(.)\/$/, "$1").replace(/\/index$/, "/");
@@ -62,7 +73,7 @@ const ogImage = new URL("/og-image.png", site).href;
     <meta property="og:image" content={ogImage} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="OJ Solutions AI front desk for home-service businesses." />
+    <meta property="og:image:alt" content="OJ Solutions: AI receptionists, websites and video ads for small businesses." />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />

@@ -1,6 +1,8 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import BookButton from "../components/BookButton.astro";
+import FaqSection from "../components/FaqSection.astro";
+import { RECEPTIONIST_FAQ } from "../lib/receptionist-offer";
 
 import { trades, type Trade } from "../data/industries";
 interface Props { trade: Trade; }
@@ -10,22 +12,24 @@ export function getStaticPaths() {
 }
 
 const { trade } = Astro.props;
+// Keep acronyms like HVAC in capitals, lowercase the rest mid-sentence.
+const tradeLower = trade.name === trade.name.toUpperCase() ? trade.name : trade.name.toLowerCase();
 const site = Astro.site ?? new URL("https://ojsolutions.org");
 const tradeJsonLd = {
   "@context": "https://schema.org",
   "@type": "Service",
   name: "AI Receptionist for " + trade.name,
-  serviceType: "AI call answering and lead capture for " + trade.name.toLowerCase() + " businesses",
+  serviceType: "AI call answering and lead capture for " + tradeLower + " businesses",
   provider: { "@id": new URL("/#organization", site).href },
   url: new URL("/" + trade.slug, site).href,
-  areaServed: ["Kenosha", "Racine", "Pleasant Prairie", "Southeast Wisconsin"].map(name => ({ "@type": "Place", name })),
+  areaServed: { "@type": "Country", name: "United States" },
   description: trade.situation,
 };
 ---
 <BaseLayout
   jsonLd={tradeJsonLd}
   title={`AI Receptionist for ${trade.name} | OJ Solutions`}
-  description={`An AI front desk for ${trade.name.toLowerCase()} business owners in southeast Wisconsin. Capture callers, gather details, and schedule estimates with an operator-focused setup.`}
+  description={`An AI receptionist for ${tradeLower} businesses. It answers your calls, gathers the details, and books estimates while you are on the job.`}
 >
   <section class="on-navy" data-trade-page={trade.slug}>
     <div class="container-page grid gap-12 py-16 lg:grid-cols-[1.1fr_.9fr] lg:items-center lg:py-24">
@@ -61,12 +65,13 @@ const tradeJsonLd = {
           </li>
         ))}
       </ul>
-      <p class="mt-7 text-muted">Services, availability, integrations, and approvals are configured for each business. <a href="/ai-receptionist" class="link">Review current package inclusions and pricing</a>.</p>
+      <p class="mt-7 text-muted">Services, availability, integrations, and approvals are configured for each business. <a href="/ai-receptionist" class="link">See what's included and the price</a>.</p>
     </div>
   </section>
+  <FaqSection items={RECEPTIONIST_FAQ} />
   <section class="bg-navy text-white">
     <div class="container-page flex flex-wrap items-center justify-between gap-8 py-12">
-      <div><h2 class="display-2">You do the work. We get the phone.</h2><p class="text-soft mt-4">We focus on southeast Wisconsin service-business owners.</p></div>
+      <div><h2 class="display-2">You do the work. We get the phone.</h2><p class="text-soft mt-4">Hear it answer a call, then talk about setting it up for your business.</p></div>
       <BookButton variant="gold" size="lg" label="Request a 15-minute conversation" />
     </div>
   </section>

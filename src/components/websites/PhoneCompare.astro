@@ -1,0 +1,171 @@
+---
+// Two flat phones for the problem section. Left: a slow, dated site that
+// stalls partway through loading. Right: a new site that loads at once with
+// a big tap-to-call button. Built in HTML and CSS.
+//
+// The finished state is the default (no JS, or prefers-reduced-motion). A
+// tiny script arms the start state and plays the load once when the pair
+// scrolls into view.
+import Icon from "../Icon.astro";
+---
+
+<figure class="compare mx-auto w-full max-w-[26rem] lg:mr-0 lg:ml-auto" data-compare>
+  <p class="sr-only">
+    Two phones side by side. The old site stalls partway through loading. The new site loads right away and shows a
+    large tap-to-call button.
+  </p>
+  <div class="grid grid-cols-2 gap-4 sm:gap-8">
+    <div>
+      <div class="mx-auto w-full max-w-[12rem] rounded-lg bg-navy p-1.5" aria-hidden="true">
+        <div class="relative aspect-[9/17] overflow-hidden rounded-sm bg-white">
+          <div class="absolute inset-x-0 top-0 h-1 bg-line">
+            <div class="bar-old h-full origin-left bg-navy"></div>
+          </div>
+          <div class="flex h-full flex-col gap-2 px-2 pt-4 pb-2">
+            <div class="sk flex items-center justify-between" style="--d: 0.5s">
+              <span class="h-2 w-10 rounded-sm bg-line"></span>
+              <span class="h-1.5 w-6 rounded-sm bg-line"></span>
+            </div>
+            <div class="sk h-16 rounded-sm bg-line" style="--d: 1s"></div>
+            <div class="sk space-y-1.5" style="--d: 1.6s">
+              <span class="block h-1.5 w-full rounded-sm bg-line"></span>
+              <span class="block h-1.5 w-[92%] rounded-sm bg-line"></span>
+              <span class="block h-1.5 w-[70%] rounded-sm bg-line"></span>
+            </div>
+            <div class="sk grid grid-cols-3 gap-1.5" style="--d: 2.2s">
+              <span class="h-8 rounded-sm bg-line"></span>
+              <span class="h-8 rounded-sm bg-line"></span>
+              <span class="h-8 rounded-sm bg-line"></span>
+            </div>
+            <p class="sk mt-auto text-right text-[0.5rem] leading-none text-muted" style="--d: 2.6s">(262) 515-3083</p>
+          </div>
+        </div>
+      </div>
+      <p class="mt-4 flex items-center justify-center gap-2 text-center font-heading text-base font-bold sm:text-lg">
+        <span class="flex size-6 shrink-0 items-center justify-center rounded-md bg-navy text-gold" aria-hidden="true">
+          <Icon name="clock" class="size-4" />
+        </span>
+        Slow, dated site
+      </p>
+    </div>
+
+    <div>
+      <div class="mx-auto w-full max-w-[12rem] rounded-lg bg-navy p-1.5" aria-hidden="true">
+        <div class="relative aspect-[9/17] overflow-hidden rounded-sm bg-white">
+          <div class="absolute inset-x-0 top-0 z-10 h-1">
+            <div class="bar-new h-full origin-left bg-gold"></div>
+          </div>
+          <div class="flex h-full flex-col">
+            <div class="pop flex h-8 shrink-0 items-center gap-1.5 bg-navy px-2.5" style="--d: 0.4s">
+              <span class="size-3.5 rounded-sm bg-gold"></span>
+              <span class="h-1.5 w-12 rounded-sm bg-white/70"></span>
+            </div>
+            <div class="flex flex-1 flex-col gap-2 p-2.5">
+              <div class="pop space-y-1.5" style="--d: 0.46s">
+                <span class="block h-2.5 w-[88%] rounded-sm bg-navy"></span>
+                <span class="block h-2.5 w-[62%] rounded-sm bg-navy"></span>
+              </div>
+              <div class="pop space-y-1.5" style="--d: 0.52s">
+                <span class="block h-1.5 w-full rounded-sm bg-line"></span>
+                <span class="block h-1.5 w-4/5 rounded-sm bg-line"></span>
+              </div>
+              <div
+                class="pop mt-1 flex min-h-12 items-center justify-center gap-1.5 rounded-lg bg-navy text-[0.8125rem] font-bold text-white"
+                style="--d: 0.6s"
+              >
+                <Icon name="phone" class="size-4 text-gold" />
+                Tap to call
+              </div>
+              <div
+                class="pop flex min-h-8 items-center justify-center rounded-lg border border-navy text-[0.6875rem] font-semibold"
+                style="--d: 0.68s"
+              >
+                Book online
+              </div>
+              <div class="pop mt-auto h-12 rounded-sm bg-line" style="--d: 0.76s"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="mt-4 flex items-center justify-center gap-2 text-center font-heading text-base font-bold sm:text-lg">
+        <span class="flex size-6 shrink-0 items-center justify-center rounded-md bg-navy text-gold" aria-hidden="true">
+          <Icon name="check" class="size-4" />
+        </span>
+        Your new site
+      </p>
+    </div>
+  </div>
+</figure>
+
+<style>
+  /* Finished state: the old bar stalled at 35%, the new bar done and gone. */
+  .bar-old {
+    transform: scaleX(0.35);
+  }
+  .bar-new {
+    transform: scaleX(1);
+    opacity: 0;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    /* Start state, set by the script just before it plays. */
+    [data-state="ready"] .bar-old,
+    [data-state="ready"] .bar-new {
+      transform: scaleX(0);
+    }
+    [data-state="ready"] .bar-new {
+      opacity: 1;
+    }
+    [data-state="ready"] .sk,
+    [data-state="ready"] .pop {
+      opacity: 0;
+    }
+    [data-state="ready"] .pop {
+      transform: translateY(6px);
+    }
+
+    /* Play: the old bar creeps and stops, the new one fills at once. */
+    [data-state="play"] .bar-old {
+      transition: transform 3.2s cubic-bezier(0.12, 0.7, 0.3, 1);
+    }
+    [data-state="play"] .bar-new {
+      transition:
+        transform 0.35s ease-out,
+        opacity 0.2s linear 0.5s;
+    }
+    [data-state="play"] .sk {
+      transition: opacity 0.7s ease-out var(--d, 0s);
+    }
+    [data-state="play"] .pop {
+      transition:
+        opacity 0.3s ease-out var(--d, 0s),
+        transform 0.3s ease-out var(--d, 0s);
+    }
+  }
+</style>
+
+<script>
+  // Play the load once when the pair scrolls into view. Without JS or with
+  // reduced motion, nothing runs and the finished state stays.
+  const pairs = document.querySelectorAll<HTMLElement>("[data-compare]");
+  if (
+    pairs.length &&
+    "IntersectionObserver" in window &&
+    !window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  ) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          (entry.target as HTMLElement).dataset.state = "play";
+          observer.unobserve(entry.target);
+        }
+      },
+      { threshold: 0.4 },
+    );
+    pairs.forEach((pair) => {
+      pair.dataset.state = "ready";
+      observer.observe(pair);
+    });
+  }
+</script>

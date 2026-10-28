@@ -1,0 +1,146 @@
+---
+// "Three ways we get you more customers": one equal card per service, each
+// with a real visual, one benefit line, its starting price and a link.
+import { Image } from "astro:assets";
+import Icon from "../Icon.astro";
+import MiniCallLoop from "./MiniCallLoop.astro";
+import { SERVICES, type ServiceKey } from "../../lib/site";
+import { PRICING } from "../../data/pricing";
+import sitePhone from "../../assets/work/ojexteriorcare-phone.jpg";
+import frame1 from "../../assets/film/commercial-frame-1.jpg";
+import frame2 from "../../assets/film/commercial-frame-2.jpg";
+import frame3 from "../../assets/film/commercial-frame-3.jpg";
+import frame4 from "../../assets/film/commercial-frame-4.jpg";
+
+const frames = [frame1, frame2, frame3, frame4];
+
+const copy: Record<ServiceKey, { benefit: string; price: string }> = {
+  receptionist: {
+    benefit: "Answers your calls 24/7, captures the lead and books the estimate.",
+    price: PRICING.receptionist.from,
+  },
+  website: {
+    benefit: "A fast site built for phones that turns visitors into calls and bookings.",
+    price: PRICING.website.from,
+  },
+  commercial: {
+    benefit: "Short video ads cut from your own clips, ready for social and paid ads.",
+    price: PRICING.video.from,
+  },
+};
+---
+
+<section id="services" class="border-t border-line py-16 sm:py-24" aria-labelledby="services-title">
+  <div class="container-page">
+    <div class="max-w-3xl">
+      <h2 id="services-title" class="display-2">Three ways we get you more customers</h2>
+      <p class="mt-5 max-w-2xl text-lg text-muted sm:text-xl">Pick one or use all three. We set it up and run it for you.</p>
+    </div>
+
+    <ul role="list" class="mt-10 grid gap-5 sm:mt-14 md:grid-cols-3 md:gap-6">
+      {
+        SERVICES.map((s) => (
+          <li class="group relative flex flex-col overflow-hidden rounded-lg border border-line bg-white transition-colors hover:border-navy">
+            <div class="trio-visual on-navy relative h-72 overflow-hidden">
+              {s.key === "receptionist" && <MiniCallLoop />}
+              {s.key === "website" && (
+                <div class="flex h-full justify-center pt-6">
+                  <div class="trio-phone">
+                    <Image
+                      src={sitePhone}
+                      alt="The OJ Exterior Care website we built, shown on a phone"
+                      widths={[180, 360]}
+                      sizes="180px"
+                      class="block h-auto w-full"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </div>
+                </div>
+              )}
+              {s.key === "commercial" && (
+                <div class="flex h-full items-center justify-center">
+                  <figure class="film-strip w-[118%] shrink-0 -rotate-[4deg]">
+                    <span class="film-holes" aria-hidden="true" />
+                    <div class="grid grid-cols-4 gap-1.5">
+                      {frames.map((frame, i) => (
+                        <Image
+                          src={frame}
+                          alt={i === 0 ? "Frames from our own commercial, shot on real OJ Exterior Care jobs" : ""}
+                          widths={[110, 220]}
+                          sizes="110px"
+                          class="block aspect-[9/16] h-auto w-full object-cover"
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      ))}
+                    </div>
+                    <span class="film-holes" aria-hidden="true" />
+                  </figure>
+                </div>
+              )}
+            </div>
+
+            <div class="flex flex-1 flex-col p-6 sm:p-7">
+              <p class="flex items-center gap-2 text-sm font-bold tracking-widest text-muted uppercase">
+                <Icon name={s.key === "receptionist" ? "phone" : s.key === "website" ? "browser" : "camera"} class="size-4 text-navy" />
+                {s.name}
+              </p>
+              <p class="mt-3 font-heading text-xl leading-snug font-bold text-balance">{copy[s.key].benefit}</p>
+              <p class="mt-5 font-heading text-2xl font-bold tracking-tight">{copy[s.key].price}</p>
+              <a
+                href={s.href}
+                class="mt-auto inline-flex min-h-11 items-center gap-2 pt-5 font-bold decoration-gold decoration-2 underline-offset-4 group-hover:underline after:absolute after:inset-0"
+              >
+                See {s.name}
+                <Icon name="arrow-right" class="size-5 transition-transform group-hover:translate-x-1" />
+              </a>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  /* Phone frame around the real site screenshot, cut off at the card edge. */
+  .trio-phone {
+    width: 11.25rem;
+    padding: 0.5rem 0.5rem 0;
+    border: 1px solid color-mix(in srgb, var(--color-white) 34%, var(--color-navy));
+    border-bottom: 0;
+    border-radius: 8px 8px 0 0;
+    overflow: hidden;
+  }
+  .trio-phone :global(img) {
+    border-radius: 4px 4px 0 0;
+  }
+
+  /* Film strip: navy frame with sprocket holes top and bottom. */
+  .film-strip {
+    padding: 0.375rem;
+    border: 1px solid color-mix(in srgb, var(--color-white) 34%, var(--color-navy));
+    border-radius: 6px;
+  }
+  .film-holes {
+    display: block;
+    height: 0.5rem;
+    margin: 0.125rem 0 0.375rem;
+    background-image: repeating-linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--color-white) 70%, var(--color-navy)) 0 0.5rem,
+      transparent 0.5rem 1rem
+    );
+    border-radius: 2px;
+  }
+  .film-holes:last-child {
+    margin: 0.375rem 0 0.125rem;
+  }
+
+  /* Interactive card links sit above the MiniCallLoop pause button area,
+     so lift that button over the card-wide link. */
+  .trio-visual :global([data-mini-toggle]) {
+    z-index: 2;
+  }
+</style>

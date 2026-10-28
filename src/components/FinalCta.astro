@@ -1,15 +1,18 @@
 ---
 // Full-width navy close at the bottom of each main page.
 import BookButton from "./BookButton.astro";
+import CallButton from "./CallButton.astro";
 import type { ServiceKey } from "../lib/site";
 
 interface Props {
   heading: string;
   line?: string;
   service?: ServiceKey;
+  /** Lead with the live AI demo line; Book a call becomes the outlined secondary. */
+  callFirst?: boolean;
 }
 
-const { heading, line, service } = Astro.props;
+const { heading, line, service, callFirst = false } = Astro.props;
 ---
 
 {
@@ -21,8 +24,9 @@ const { heading, line, service } = Astro.props;
             <h2 id="final-cta" class="display-1">{heading}</h2>
             {line && <p class="text-soft mt-6 max-w-xl text-lg sm:text-xl">{line}</p>}
           </div>
-          <div>
-            <BookButton variant="gold" size="lg" service={service} />
+          <div class="flex flex-col gap-3 sm:flex-row lg:flex-col">
+            {callFirst && <CallButton />}
+            <BookButton variant={callFirst ? "outline" : "gold"} size="lg" service={service} />
           </div>
         </div>
       </div>
