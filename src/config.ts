@@ -56,7 +56,7 @@ export const GHL_CHAT_WIDGET: string = "";
 // A real recorded call from our own AI receptionist.
 // Put the file in public/media/ and set this to "/media/your-file.mp3".
 // The player stays hidden until the file exists.
-export const DEMO_AUDIO_SRC: string = "";
+export const DEMO_AUDIO_SRC: string = "/audio/demo-call.mp3";
 
 // Optional: the words spoken in the demo call, so people who can't play
 // audio can read it. Shown in a "Read the transcript" dropdown.

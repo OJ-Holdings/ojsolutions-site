@@ -2,13 +2,13 @@
 // The one AI Receptionist plan, centered, with a small "Hear it first" panel
 // beside it. Every number and the included list come from src/data/pricing.ts.
 // When the recorded demo call or its screen recording exist, they play in the
-// panel; until then preview builds show a PLACEHOLDER line (see PLACEHOLDERS.md).
+// panel.
 import BookButton from "../BookButton.astro";
 import CallButton from "../CallButton.astro";
 import Icon from "../Icon.astro";
 import { PRICING, money } from "../../data/pricing";
 import { DEMO_AUDIO_SRC, DEMO_AUDIO_TRANSCRIPT, DEMO_VIDEO_SRC, PHONE } from "../../config";
-import { SHOW_PLACEHOLDERS, filled } from "../../lib/site";
+import { filled } from "../../lib/site";
 import { mediaAvailable } from "../../lib/media";
 
 const { name, monthly, setup, includes } = PRICING.receptionist;
@@ -71,10 +71,11 @@ const videoSrc =
         {
           hasAudio && (
             <div class="mt-6 border-t border-line pt-5">
-              <p class="font-bold">Or hear a recorded call</p>
+              <p class="font-bold">Hear a real call to our AI.</p>
               <audio controls preload="metadata" src={DEMO_AUDIO_SRC.trim()} class="mt-3 w-full">
                 <a href={DEMO_AUDIO_SRC.trim()} class="link">Download the call recording</a>
               </audio>
+              <p class="mt-2 text-sm text-muted">Recorded on our demo line. The caller used made-up details.</p>
               {filled(DEMO_AUDIO_TRANSCRIPT) && (
                 <details class="mt-2">
                   <summary class="link inline-flex min-h-11 cursor-pointer items-center">Read the transcript</summary>
@@ -90,14 +91,6 @@ const videoSrc =
               <video controls muted playsinline preload="metadata" src={videoSrc} class="w-full rounded-md" />
               <figcaption class="mt-2 text-sm text-muted">The calendar event and contact card the call created.</figcaption>
             </figure>
-          )
-        }
-        {
-          SHOW_PLACEHOLDERS && (!hasAudio || !hasVideo) && (
-            <div class="mt-6 grid gap-2 border-t border-line pt-5 text-sm">
-              {!hasAudio && <p class="placeholder">PLACEHOLDER: demo call recording (audio player)</p>}
-              {!hasVideo && <p class="placeholder">PLACEHOLDER: 20 to 30 second screen recording of the booking the call created</p>}
-            </div>
           )
         }
       </aside>
