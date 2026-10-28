@@ -1,0 +1,218 @@
+---
+// A flat audio player: play/pause, a bar you can click, drag or arrow-key to
+// seek, and elapsed and total time. Navy and gold, no gradients or shadows.
+// Without JavaScript the browser's own player shows instead.
+interface Props {
+  src: string;
+  /** What the recording is, for screen readers, e.g. "the demo call" */
+  name: string;
+  class?: string;
+}
+
+const { src, name, class: className } = Astro.props;
+---
+
+<div class:list={["player", className]} data-player data-name={name}>
+  <audio controls preload="metadata" src={src} class="w-full" data-player-audio>
+    <a href={src} class="link">Download {name}</a>
+  </audio>
+  <div class="player-ui" hidden data-player-ui>
+    <button type="button" class="player-btn" aria-label={`Play ${name}`} data-player-toggle>
+      <svg class="player-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"></path></svg>
+      <svg class="player-pause" viewBox="0 0 24 24" aria-hidden="true"
+        ><rect x="6.5" y="5.5" width="4" height="13" rx="1" fill="currentColor"></rect><rect
+          x="13.5"
+          y="5.5"
+          width="4"
+          height="13"
+          rx="1"
+          fill="currentColor"></rect></svg
+      >
+    </button>
+    <div class="player-body">
+      <div
+        class="player-track"
+        role="slider"
+        tabindex="0"
+        aria-label={`Seek ${name}`}
+        aria-valuemin="0"
+        aria-valuemax="0"
+        aria-valuenow="0"
+        aria-valuetext="0:00"
+        data-player-seek
+      >
+        <span class="player-rail"><span class="player-fill" data-player-fill></span></span>
+        <span class="player-knob" data-player-knob></span>
+      </div>
+      <p class="player-time" aria-hidden="true">
+        <span data-player-elapsed>0:00</span>
+        <span data-player-total>--:--</span>
+      </p>
+    </div>
+  </div>
+</div>
+
+<style>
+  .player-ui {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+  }
+  .player-ui[hidden] {
+    display: none;
+  }
+  .player-btn {
+    display: grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 8px;
+    background: var(--color-navy);
+    color: var(--color-gold);
+    cursor: pointer;
+  }
+  .player-btn svg {
+    width: 1.375rem;
+    height: 1.375rem;
+  }
+  .player-pause,
+  .player[data-playing] .player-play {
+    display: none;
+  }
+  .player[data-playing] .player-pause {
+    display: block;
+  }
+  .player-body {
+    flex: 1;
+    min-width: 0;
+  }
+  /* A 44px-tall hit area around a thin visible bar. */
+  .player-track {
+    position: relative;
+    display: flex;
+    align-items: center;
+    height: 2.75rem;
+    margin: -0.75rem 0 -0.5rem;
+    cursor: pointer;
+    touch-action: none;
+  }
+  .player-rail {
+    position: relative;
+    width: 100%;
+    height: 0.25rem;
+    overflow: hidden;
+    border-radius: 2px;
+    background: var(--color-line);
+  }
+  .player-fill {
+    position: absolute;
+    inset: 0;
+    background: var(--color-navy);
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+  .player-knob {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 0.875rem;
+    height: 0.875rem;
+    border: 2px solid var(--color-gold);
+    border-radius: 50%;
+    background: var(--color-navy);
+    translate: -50% -50%;
+  }
+  .player-time {
+    display: flex;
+    justify-content: space-between;
+    color: var(--color-muted);
+    font-size: 0.8125rem;
+    font-variant-numeric: tabular-nums;
+  }
+</style>
+
+<script>
+  const time = (s: number) => {
+    if (!Number.isFinite(s)) return "--:--";
+    const t = Math.max(0, Math.floor(s));
+    return `${Math.floor(t / 60)}:${String(t % 60).padStart(2, "0")}`;
+  };
+
+  document.querySelectorAll<HTMLElement>("[data-player]").forEach((player) => {
+    const audio = player.querySelector<HTMLAudioElement>("[data-player-audio]");
+    const ui = player.querySelector<HTMLElement>("[data-player-ui]");
+    const toggle = player.querySelector<HTMLButtonElement>("[data-player-toggle]");
+    const seek = player.querySelector<HTMLElement>("[data-player-seek]");
+    const fill = player.querySelector<HTMLElement>("[data-player-fill]");
+    const knob = player.querySelector<HTMLElement>("[data-player-knob]");
+    const elapsed = player.querySelector<HTMLElement>("[data-player-elapsed]");
+    const total = player.querySelector<HTMLElement>("[data-player-total]");
+    if (!audio || !ui || !toggle || !seek || !fill || !knob || !elapsed || !total) return;
+    const name = player.dataset.name ?? "the recording";
+
+    // Swap the browser's player for ours.
+    audio.controls = false;
+    audio.hidden = true;
+    ui.hidden = false;
+
+    const draw = () => {
+      const d = audio.duration;
+      const t = audio.currentTime;
+      const share = Number.isFinite(d) && d > 0 ? Math.min(1, t / d) : 0;
+      fill.style.transform = `scaleX(${share})`;
+      knob.style.left = `${share * 100}%`;
+      elapsed.textContent = time(t);
+      seek.setAttribute("aria-valuenow", String(Math.floor(t)));
+      seek.setAttribute("aria-valuetext", `${time(t)} of ${time(d)}`);
+    };
+    const setTotal = () => {
+      total.textContent = time(audio.duration);
+      if (Number.isFinite(audio.duration)) seek.setAttribute("aria-valuemax", String(Math.floor(audio.duration)));
+      draw();
+    };
+    const jump = (t: number) => {
+      if (!Number.isFinite(audio.duration)) return;
+      audio.currentTime = Math.min(audio.duration, Math.max(0, t));
+      draw();
+    };
+
+    toggle.addEventListener("click", () => (audio.paused ? audio.play() : audio.pause()));
+    audio.addEventListener("play", () => {
+      player.setAttribute("data-playing", "");
+      toggle.setAttribute("aria-label", `Pause ${name}`);
+    });
+    audio.addEventListener("pause", () => {
+      player.removeAttribute("data-playing");
+      toggle.setAttribute("aria-label", `Play ${name}`);
+    });
+    audio.addEventListener("timeupdate", draw);
+    audio.addEventListener("loadedmetadata", setTotal);
+    audio.addEventListener("durationchange", setTotal);
+    if (audio.readyState >= 1) setTotal();
+
+    // Click or drag anywhere on the bar.
+    const fromPointer = (e: PointerEvent) => {
+      const rect = seek.getBoundingClientRect();
+      jump(((e.clientX - rect.left) / rect.width) * audio.duration);
+    };
+    seek.addEventListener("pointerdown", (e) => {
+      seek.setPointerCapture(e.pointerId);
+      fromPointer(e);
+    });
+    seek.addEventListener("pointermove", (e) => {
+      if (seek.hasPointerCapture(e.pointerId)) fromPointer(e);
+    });
+
+    // Arrow keys step 5 seconds, Page keys 30, Home and End jump to the ends.
+    seek.addEventListener("keydown", (e) => {
+      const steps: Record<string, number> = { ArrowRight: 5, ArrowUp: 5, ArrowLeft: -5, ArrowDown: -5, PageUp: 30, PageDown: -30 };
+      if (e.key in steps) jump(audio.currentTime + steps[e.key]);
+      else if (e.key === "Home") jump(0);
+      else if (e.key === "End") jump(audio.duration);
+      else if (e.key === " " || e.key === "Enter") audio.paused ? audio.play() : audio.pause();
+      else return;
+      e.preventDefault();
+    });
+  });
+</script>

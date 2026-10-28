@@ -1,28 +1,28 @@
 ---
-// "Built for" strip: links to the six AI-for-trades pages, then the line
-// that keeps it open to any business that books by phone.
-import Icon from "../Icon.astro";
+// "Built for" strip: a slim band with the label, links to the six
+// AI-for-trades pages, and a closing plain-text item that keeps it open to
+// any business that books by phone. One row that wraps on its own; on
+// phones the label sits above the chips.
 import { trades } from "../../data/industries";
 ---
 
-<section class="border-y border-line py-10 sm:py-12" aria-labelledby="built-for-title">
-  <div class="container-page flex flex-col gap-5 lg:flex-row lg:items-center lg:gap-10">
-    <h2 id="built-for-title" class="shrink-0 font-heading text-2xl font-bold">Built for</h2>
-    <ul role="list" class="flex flex-wrap items-center gap-2.5">
+<section class="border-y border-line py-5 sm:py-6" aria-labelledby="built-for-title">
+  <div class="container-page flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-6">
+    <h2 id="built-for-title" class="shrink-0 font-heading text-lg font-bold sm:text-xl">Built for</h2>
+    <ul role="list" class="flex flex-wrap items-center gap-2">
       {
         trades.map((trade) => (
           <li>
             <a
               href={`/${trade.slug}`}
-              class="group inline-flex min-h-11 items-center gap-1.5 rounded-lg border border-line px-4 font-semibold transition-colors hover:border-navy"
+              class="inline-flex min-h-11 items-center rounded-lg border border-line px-3 text-[0.875rem] font-semibold transition-colors hover:border-navy"
             >
               {trade.name}
-              <Icon name="arrow-right" class="size-4 transition-transform group-hover:translate-x-0.5" />
             </a>
           </li>
         ))
       }
-      <li class="px-1 text-lg text-muted">and any business that books by phone.</li>
+      <li class="inline-flex min-h-11 items-center px-1 text-[0.875rem] font-semibold text-muted">+ any business that books by phone</li>
     </ul>
   </div>
 </section>
