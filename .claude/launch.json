@@ -4,8 +4,37 @@
     {
       "name": "dev",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
+      "runtimeArgs": [
+        "run",
+        "dev"
+      ],
       "port": 4321
+    },
+    {
+      "name": "dev-3002",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev",
+        "--",
+        "--port",
+        "3002",
+        "--host"
+      ],
+      "port": 3002
+    },
+    {
+      "name": "prod-preview-3003",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "preview",
+        "--",
+        "--port",
+        "3003",
+        "--host"
+      ],
+      "port": 3003
     }
   ]
 }
