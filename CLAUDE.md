@@ -1,12 +1,19 @@
-# Approved update: AI front desk focus (2026-10-25)
+# Approved update: three equal services (2026-10-28)
 
-The founder-supplied website master brief is the current source of truth for offer positioning and public claims. **Keep the existing redesign branch's navy-and-gold visual language, GSAP animated phone dialogue, booking calendar, and the real OJ Exterior Care imagery.** Extend the site rather than rebuilding this demo.
+Pricing is settled with Oscar. This block matches the live site and overrides anything below that disagrees with it. **Keep the navy-and-gold visual language, the GSAP call demo, the booking calendar, and the real OJ Exterior Care imagery.** Extend the site rather than rebuilding it.
 
-- Flagship is the AI receptionist for local home-service businesses in Kenosha, Racine and Pleasant Prairie, WI. Secondary offerings (websites, commercials) can remain, but should not eclipse the receptionist.
-- Main CTA: tel:+12624010826, displayed (262) 401-0826. Secondary CTA: booking request. Demo animation is fictional sample data, not an actual recording.
+- Three equal services: AI receptionist, websites and video ads. None eclipses the others, and the home page covers all three.
+- No location focus anywhere on the site: no city or region names and no street addresses. Structured data uses areaServed United States.
+- `src/data/pricing.ts` is the source of truth for every price, and every page reads from it. Current prices:
+  - AI receptionist: $497/month plus a one-time $497 setup.
+  - Websites: $1,497 one-time (optional $49/month Care plan), or $197/month with $0 down and a 12-month minimum.
+  - Video ads: $297 per ad, or $497/month for 8 videos.
+- No guarantee, discount or cancellation promise is approved.
+- Every page's main conversion is Request a call (/book). The live AI line, tel:+12624010826 shown as (262) 401-0826, sits in the header and leads the AI receptionist pages. The demo animation is fictional sample data, not an actual recording.
 - The AI must introduce itself as AI in example dialogue. Lead details: name, address, service, timeframe. Schedule on-site estimates instead of quoting unverified prices.
-- Approved starting price: $797/month + $2,000 setup. Never reintroduce the previous $497 or $1,000 prices. No guarantee, discount or cancellation promise is currently approved.
-- Do not invent customer proof, guarantees, contract duration, setup timelines, achievements or client results. Keep any existing true photos and mark examples as our own business.
+- Video ads: we don't film. The client sends the idea and their own clips, and we edit them into finished ads in every format.
+- GSAP is allowed on the service pages as well as the homepage. Every animation respects prefers-reduced-motion.
+- Do not invent customer proof, guarantees, achievements or client results. Contract terms and timelines appear only as stated in `pricing.ts` and approved page copy. Keep any existing true photos and mark examples as our own business.
 - Existing canonical domain and contact email remain configured, but the founders must confirm they are ready to publish. GHL calendar, real approved recording, transcripts and legal terms remain launch blockers.
 - Preserve Astro + Tailwind, existing reusable components, and accessible reduced-motion behavior. Changes go through a PR; do not push to the production branch without review.
 
