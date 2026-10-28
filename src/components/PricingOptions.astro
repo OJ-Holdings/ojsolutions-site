@@ -1,7 +1,7 @@
 ---
-// Pricing block for the websites and video ads pages: a heading, two or more
-// options side by side, and one Book a call button. Every number comes from
-// src/data/pricing.ts, passed in by the page.
+// Pricing block for the websites and video ads pages: a heading and two or
+// more options side by side, each with its own Book a call button. Every
+// number comes from src/data/pricing.ts, passed in by the page.
 import Section from "./Section.astro";
 import SectionHeading from "./SectionHeading.astro";
 import BookButton from "./BookButton.astro";
@@ -17,6 +17,8 @@ export type PricingOption = {
   unit: string;
   /** What you get, one short line each. */
   points: string[];
+  /** Optional small line under the list, e.g. an add-on. */
+  note?: string;
 };
 
 interface Props {
@@ -40,7 +42,7 @@ const { service, title = "Pricing", intro, options } = Astro.props;
             {option.price}
             <span class="ml-2 font-sans text-base font-normal tracking-normal text-muted">{option.unit}</span>
           </p>
-          <ul role="list" class="mt-6 flex-1 space-y-3 border-t border-line pt-6">
+          <ul role="list" class="mt-6 space-y-3 border-t border-line pt-6">
             {option.points.map((point) => (
               <li class="flex gap-3">
                 <span class="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-md bg-navy text-gold" aria-hidden="true">
@@ -50,11 +52,12 @@ const { service, title = "Pricing", intro, options } = Astro.props;
               </li>
             ))}
           </ul>
+          {option.note && <p class="mt-5 text-sm text-muted">{option.note}</p>}
+          <div class="mt-auto pt-8">
+            <BookButton service={service} size="lg" label="Request a call" class="w-full" />
+          </div>
         </article>
       ))
     }
-  </div>
-  <div class="mt-8">
-    <BookButton service={service} size="lg" />
   </div>
 </Section>

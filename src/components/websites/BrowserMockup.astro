@@ -1,0 +1,49 @@
+---
+// A flat desktop browser window: a bar with three dots and an address pill,
+// then a screenshot. The bar is decoration (hidden from screen readers);
+// the screenshot carries the alt text. 1px borders, no shadows.
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+
+interface Props {
+  src: ImageMetadata;
+  alt: string;
+  /** Text in the address pill, e.g. "ojsolutions.org" */
+  address: string;
+  widths?: number[];
+  sizes?: string;
+  loading?: "eager" | "lazy";
+  class?: string;
+}
+
+const { src, alt, address, widths = [480, 800, 1200], sizes, loading = "lazy", class: className = "" } = Astro.props;
+---
+
+<div class:list={["overflow-hidden rounded-lg border border-white/30 bg-white", className]}>
+  <div class="bar flex h-7 items-center gap-1.5 border-b border-line px-3 sm:h-8" aria-hidden="true">
+    <span class="size-2 rounded-full bg-muted/30"></span>
+    <span class="size-2 rounded-full bg-muted/30"></span>
+    <span class="size-2 rounded-full bg-muted/30"></span>
+    <span
+      class="ml-2 min-w-0 max-w-[15rem] flex-1 truncate rounded-sm border border-line bg-white px-2 py-px text-center text-[0.6875rem] leading-4 text-muted"
+    >
+      {address}
+    </span>
+  </div>
+  <Image
+    src={src}
+    alt={alt}
+    widths={widths}
+    sizes={sizes}
+    format="webp"
+    quality={80}
+    loading={loading}
+    class="block h-auto w-full"
+  />
+</div>
+
+<style>
+  .bar {
+    background: color-mix(in srgb, var(--color-line) 45%, var(--color-white));
+  }
+</style>

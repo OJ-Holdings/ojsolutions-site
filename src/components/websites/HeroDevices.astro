@@ -1,0 +1,36 @@
+---
+// Hero visual for the Websites page: a desktop browser showing the site
+// you're on, with the ojexteriorcare.com phone in front of it. The phone
+// links to the live site. Everything is sized in percentages of the
+// container, so the pair scales together from 375px up.
+import BrowserMockup from "./BrowserMockup.astro";
+import PhoneMockup from "./PhoneMockup.astro";
+import siteDesktop from "../../assets/work/ojsolutions-desktop.jpg";
+import exteriorPhone from "../../assets/work/ojexteriorcare-phone.jpg";
+---
+
+<div class="relative mx-auto w-full max-w-[32rem] pb-[40%] lg:mr-0 lg:ml-[-2.5rem] lg:w-[calc(100%+2.5rem)] lg:max-w-none">
+  <BrowserMockup
+    src={siteDesktop}
+    alt="The top of the OJ Solutions homepage in a desktop browser"
+    address="ojsolutions.org"
+    sizes="(min-width: 640px) 29rem, 90vw"
+    loading="eager"
+    class="w-[90%]"
+  />
+  <a
+    href="https://ojexteriorcare.com"
+    target="_blank"
+    rel="noopener"
+    class="group absolute right-0 bottom-0 block w-[38%]"
+  >
+    <PhoneMockup
+      src={exteriorPhone}
+      alt="The services section of ojexteriorcare.com on a phone"
+      sizes="(min-width: 640px) 12rem, 38vw"
+      loading="eager"
+      class="group-hover:border-gold"
+    />
+    <span class="sr-only">Visit ojexteriorcare.com (opens in a new tab)</span>
+  </a>
+</div>

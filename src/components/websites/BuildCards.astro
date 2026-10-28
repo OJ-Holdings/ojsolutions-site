@@ -1,0 +1,66 @@
+---
+// "Our builds": the only two sites we can show, both our own. Each card is a
+// device on a navy stage, a short line and a live link. The whole card is
+// the link. Sits on a navy section.
+import BrowserMockup from "./BrowserMockup.astro";
+import PhoneMockup from "./PhoneMockup.astro";
+import Icon from "../Icon.astro";
+import exteriorPhone from "../../assets/work/ojexteriorcare-phone.jpg";
+import siteDesktop from "../../assets/work/ojsolutions-desktop.jpg";
+
+const stage =
+  "relative border-b rule-soft bg-[color-mix(in_srgb,var(--color-white)_6%,var(--color-navy))]";
+const cardClass =
+  "rule-soft relative flex flex-col overflow-hidden rounded-lg border hover:border-gold has-[a:focus-visible]:border-gold";
+---
+
+<ul role="list" class="mt-10 grid gap-5 sm:mt-12 md:grid-cols-2 md:gap-6">
+  <li class={cardClass}>
+    <div class:list={[stage, "h-[22rem] overflow-hidden md:h-[26rem]"]}>
+      <PhoneMockup
+        src={exteriorPhone}
+        alt="The services section of ojexteriorcare.com on a phone"
+        sizes="(min-width: 640px) 13rem, 11.5rem"
+        class="absolute top-8 left-1/2 w-[11.5rem] -translate-x-1/2 sm:w-[13rem]"
+      />
+    </div>
+    <div class="flex flex-1 flex-col p-6 sm:p-8">
+      <h3 class="font-heading text-xl font-bold sm:text-2xl">
+        <a href="https://ojexteriorcare.com" target="_blank" rel="noopener" class="after:absolute after:inset-0">
+          ojexteriorcare.com
+          <span class="sr-only">(opens in a new tab)</span>
+        </a>
+      </h3>
+      <p class="text-soft mt-2 text-lg">Our pressure washing and window cleaning company.</p>
+      <p class="mt-5 inline-flex items-center gap-1.5 font-semibold text-gold" aria-hidden="true">
+        Visit the live site
+        <Icon name="arrow-right" class="size-4" />
+      </p>
+    </div>
+  </li>
+
+  <li class={cardClass}>
+    <div class:list={[stage, "flex items-center justify-center px-6 py-10 md:h-[26rem]"]}>
+      <BrowserMockup
+        src={siteDesktop}
+        alt="The top of the OJ Solutions homepage in a desktop browser"
+        address="ojsolutions.org"
+        sizes="(min-width: 768px) 30rem, calc(100vw - 5rem)"
+        class="w-full max-w-[32rem]"
+      />
+    </div>
+    <div class="flex flex-1 flex-col p-6 sm:p-8">
+      <h3 class="font-heading text-xl font-bold sm:text-2xl">
+        <a href="https://ojsolutions.org" target="_blank" rel="noopener" class="after:absolute after:inset-0">
+          ojsolutions.org
+          <span class="sr-only">(opens in a new tab)</span>
+        </a>
+      </h3>
+      <p class="text-soft mt-2 text-lg">The site you're on.</p>
+      <p class="mt-5 inline-flex items-center gap-1.5 font-semibold text-gold" aria-hidden="true">
+        Visit the live site
+        <Icon name="arrow-right" class="size-4" />
+      </p>
+    </div>
+  </li>
+</ul>

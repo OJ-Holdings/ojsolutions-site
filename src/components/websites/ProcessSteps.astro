@@ -1,0 +1,140 @@
+---
+// "How it works" steps with a connector line that draws as you scroll:
+// down the left on phones, across the top from tablet up. Each badge fills
+// in when the line reaches it. Works on white and navy sections.
+//
+// The finished state is the default (no JS, or prefers-reduced-motion): the
+// line is complete and every badge is filled. A tiny script arms the start
+// state and feeds the scroll position in as --p (0 to 1). The fill moves with
+// transform only.
+interface Props {
+  steps: { title: string; body: string }[];
+  tone?: "white" | "navy";
+}
+
+const { steps, tone = "white" } = Astro.props;
+---
+
+<ol
+  role="list"
+  class:list={["steps mt-12 grid gap-0 md:grid-cols-3 md:gap-8", tone === "navy" ? "steps-navy" : "steps-white"]}
+  style={`--n: ${steps.length}`}
+  data-steps
+>
+  {
+    steps.map((step, i) => (
+      <li
+        class="step relative grid grid-cols-[2.5rem_1fr] gap-x-5 pb-10 last:pb-0 md:block md:pb-0"
+        style={`--i: ${i}`}
+      >
+        {i < steps.length - 1 && (
+          <span class="track absolute top-10 bottom-0 left-5 w-px overflow-hidden md:top-5 md:right-[-2rem] md:bottom-auto md:left-10 md:h-px md:w-auto" aria-hidden="true">
+            <span class="fill absolute inset-0" />
+          </span>
+        )}
+        <span
+          class="badge relative flex size-10 items-center justify-center rounded-md border font-heading text-lg font-bold"
+          aria-hidden="true"
+        >
+          {i + 1}
+        </span>
+        <div class="md:mt-6">
+          <h3 class="text-xl font-bold sm:text-2xl">
+            <span class="sr-only">Step {i + 1}: </span>
+            {step.title}
+          </h3>
+          <p class:list={["mt-2 text-lg", tone === "navy" ? "text-soft" : "text-muted"]}>{step.body}</p>
+        </div>
+      </li>
+    ))
+  }
+</ol>
+
+<style>
+  .steps-white {
+    --track: var(--color-line);
+    --fill: var(--color-navy);
+    --on-bg: var(--color-navy);
+    --on-fg: var(--color-white);
+    --off-bg: var(--color-white);
+    --off-fg: var(--color-muted);
+    --off-border: var(--color-line);
+  }
+  .steps-navy {
+    --track: color-mix(in srgb, var(--color-white) 16%, var(--color-navy));
+    --fill: var(--color-gold);
+    --on-bg: var(--color-gold);
+    --on-fg: var(--color-navy);
+    --off-bg: var(--color-navy);
+    --off-fg: color-mix(in srgb, var(--color-white) 78%, var(--color-navy));
+    --off-border: color-mix(in srgb, var(--color-white) 16%, var(--color-navy));
+  }
+
+  .track {
+    background: var(--track);
+  }
+  /* How much of this step's segment is drawn, from the page-wide --p. */
+  .step {
+    --f: clamp(0, calc(var(--p, 1) * (var(--n) - 1) - var(--i)), 1);
+  }
+  .fill {
+    background: var(--fill);
+    transform-origin: top;
+    transform: scaleY(var(--f));
+  }
+  @media (min-width: 768px) {
+    .fill {
+      transform-origin: left;
+      transform: scaleX(var(--f));
+    }
+  }
+
+  .badge {
+    background: var(--on-bg);
+    color: var(--on-fg);
+    border-color: var(--on-bg);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .badge {
+      transition:
+        background-color 0.3s ease-out,
+        color 0.3s ease-out,
+        border-color 0.3s ease-out;
+    }
+    /* Armed by the script: badges stay empty until the line reaches them. */
+    [data-armed] .step:not(.is-on) .badge {
+      background: var(--off-bg);
+      color: var(--off-fg);
+      border-color: var(--off-border);
+    }
+  }
+</style>
+
+<script>
+  // Draw the connector as the list scrolls through the screen. Without JS or
+  // with reduced motion, nothing runs and the finished state stays.
+  const lists = document.querySelectorAll<HTMLElement>("[data-steps]");
+  if (lists.length && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    lists.forEach((list) => {
+      const steps = Array.from(list.querySelectorAll<HTMLElement>(".step"));
+      let frame = 0;
+      const update = () => {
+        frame = 0;
+        const rect = list.getBoundingClientRect();
+        const vh = window.innerHeight;
+        // 0 when the list top is 80% down the screen, 1 when its bottom is 60% down.
+        const p = Math.min(1, Math.max(0, (vh * 0.8 - rect.top) / (rect.height + vh * 0.2)));
+        list.style.setProperty("--p", p.toFixed(3));
+        steps.forEach((step, i) => step.classList.toggle("is-on", p > 0 && p * (steps.length - 1) >= i));
+      };
+      const queue = () => {
+        if (!frame) frame = requestAnimationFrame(update);
+      };
+      list.setAttribute("data-armed", "");
+      update();
+      window.addEventListener("scroll", queue, { passive: true });
+      window.addEventListener("resize", queue);
+    });
+  }
+</script>
