@@ -2,23 +2,23 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { EMAIL } from "../config";
 import { filled } from "../lib/site";
-import { RECEPTIONIST_PRICING, RECEPTIONIST_TERMS_NOTICE } from "../lib/receptionist-pricing";
+import { PRICING, money } from "../data/pricing";
 
 const email = filled(EMAIL) ? EMAIL.trim() : "";
 const submitUrl = "https://vgckpcktsfuithqggknd.supabase.co/functions/v1/oj-solutions-consultations";
 ---
 <BaseLayout
   title="Request a 15-Minute Consultation | OJ Solutions"
-  description="Choose a preferred 15-minute consultation time with OJ Solutions. Submit your details and our team will confirm it. No linked external calendar."
+  description="Pick a time for a 15-minute call with OJ Solutions. Tell us about your business and we'll confirm your time."
   hideBookButton
 >
   <section class="on-navy" aria-labelledby="booking-title">
     <div class="container-page pt-12 pb-12 sm:pt-16 sm:pb-16">
-      <p class="mb-3 text-sm font-bold tracking-widest text-gold uppercase">OJ Solutions / Talk to an operator</p>
+      <p class="mb-3 text-sm font-bold tracking-widest text-gold uppercase">OJ Solutions / Book a call</p>
       <h1 class="display-1" id="booking-title">Pick a time. Let's talk.</h1>
       <p class="text-soft mt-5 max-w-2xl text-lg sm:text-xl">
-        Select a preferred 15-minute time, tell us about your business, and submit your request.
-        We'll contact you to confirm. No account or external calendar needed.
+        Pick a 15-minute time, tell us about your business, and send your request.
+        We'll contact you to confirm. No account needed.
       </p>
     </div>
   </section>
@@ -28,20 +28,16 @@ const submitUrl = "https://vgckpcktsfuithqggknd.supabase.co/functions/v1/oj-solu
       <div class="time-panel">
         <p class="book-eyebrow">01 / SELECT A TIME</p>
         <h2 class="font-heading text-3xl font-bold" id="calendar-title">What works for you?</h2>
-        <p class="mt-3 text-muted">Weekdays, 9:00 AM–4:45 PM Central. Choose a date from tomorrow through the next 30 days. Times shown are <strong>preferences, not confirmed availability.</strong></p>
+        <p class="mt-3 text-muted">Weekdays, 9:00 AM to 4:45 PM Central. Choose a date from tomorrow through the next 30 days.</p>
         <label for="booking-date" class="book-label">Preferred date</label>
         <input type="date" id="booking-date" class="book-input" aria-describedby="booking-date-help" required />
-        <p id="booking-date-help" class="mt-2 text-sm text-muted">Monday–Friday only · America/Chicago</p>
+        <p id="booking-date-help" class="mt-2 text-sm text-muted">Monday to Friday only · Central time</p>
         <fieldset class="mt-7">
           <legend class="book-label">Preferred 15-minute start time</legend>
           <div class="slot-grid" id="time-slots" role="group" aria-label="Choose a preferred start time">
             <p class="text-muted">Choose a weekday to see times.</p>
           </div>
         </fieldset>
-        <div class="mt-6 rounded-lg border border-line bg-white p-4 text-sm text-muted">
-          <strong>How confirmation works:</strong> This calendar isn't connected to either founder's schedule.
-          Your time is a request until someone from OJ Solutions confirms it.
-        </div>
       </div>
 
       <div class="details-panel">
@@ -82,23 +78,14 @@ const submitUrl = "https://vgckpcktsfuithqggknd.supabase.co/functions/v1/oj-solu
             <select class="book-input" id="booking-service" name="service">
               <option value="AI receptionist">AI receptionist</option>
               <option value="Websites">Websites</option>
-              <option value="Commercials">Commercials and video ads</option>
+              <option value="Commercials">Video ads</option>
               <option value="Automation">Automation / follow-up systems</option>
               <option value="General consultation">Something else</option>
             </select>
           </div>
           <div id="receptionist-offer-summary" class="mt-2 rounded-lg border border-line bg-white p-4">
-            <p class="font-heading text-lg font-bold">AI Receptionist · Two plans</p>
-            <div class="mt-3 grid gap-3 sm:grid-cols-2">
-              {RECEPTIONIST_PRICING.plans.map(plan => (
-                <div class="rounded-lg border border-line p-3">
-                  <p class="font-bold">{plan.title} · ${plan.price}/month</p>
-                  <p class="mt-1 text-sm text-muted">{plan.tagline}</p>
-                </div>
-              ))}
-            </div>
-            <p class="mt-3 text-sm text-muted">{RECEPTIONIST_PRICING.setup.note}</p>
-            <p class="mt-2 text-sm text-muted">{RECEPTIONIST_TERMS_NOTICE}</p>
+            <p class="font-heading text-lg font-bold">AI Receptionist: {money(PRICING.receptionist.monthly)}/month</p>
+            <p class="mt-1 text-sm text-muted">Plus a {money(PRICING.receptionist.setup)} one-time setup.</p>
           </div>
           <div>
             <label class="book-label" for="booking-notes">What would you like to improve?</label>
@@ -106,7 +93,7 @@ const submitUrl = "https://vgckpcktsfuithqggknd.supabase.co/functions/v1/oj-solu
           </div>
           <p class="text-sm text-muted" id="selected-summary">First select your preferred date and time.</p>
           <button type="submit" id="submit-request" class="submit-book" disabled>Request this 15-minute call ↗</button>
-          <p class="text-sm text-muted">Submitting a request does not reserve a time or automatically sign you up for marketing messages. We will contact you to confirm the request.</p>
+          <p class="text-sm text-muted">Sending a request doesn't sign you up for marketing messages. We'll contact you to confirm your time.</p>
           <div id="booking-feedback" role="status" aria-live="polite" class="booking-feedback" hidden></div>
         </form>
         {email && <p class="mt-8 text-muted">Prefer email? <a href={"mailto:" + email + "?subject=" + encodeURIComponent("15-minute consultation request")} class="link">{email}</a></p>}
@@ -261,7 +248,7 @@ const submitUrl = "https://vgckpcktsfuithqggknd.supabase.co/functions/v1/oj-solu
   <style>
     .booking-grid { display:grid; grid-template-columns: minmax(0,1fr) minmax(0,.95fr); gap:clamp(28px,5vw,85px); }
     .time-panel,.details-panel { min-width:0; }
-    .book-eyebrow { font-size:.75rem; letter-spacing:.13em; color:#98742a; font-weight:800; margin:0 0 16px; }
+    .book-eyebrow { font-size:.75rem; letter-spacing:.13em; color:#4a5568; font-weight:800; margin:0 0 16px; }
     .book-label { display:block; margin:26px 0 8px; font-size:.95rem; font-weight:800; }
     .book-input { display:block; width:100%; border:1px solid #b7bfc8; background:#fff; color:#0c213c; padding:12px 14px; border-radius:7px; min-height:50px; font-size:1rem; }
     .book-input:focus-visible,.slot-button:focus-visible,.submit-book:focus-visible { outline:3px solid #c6a24a; outline-offset:3px; }
@@ -269,7 +256,7 @@ const submitUrl = "https://vgckpcktsfuithqggknd.supabase.co/functions/v1/oj-solu
     .slot-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; padding-top:8px; }
     .slot-button { border:1px solid #c9cdd3; background:white; color:#142a45; border-radius:6px; font-size:.82rem; padding:11px 6px; min-height:44px; text-align:center; cursor:pointer; }
     .slot-button:hover,.slot-button.selected { border-color:#c3a14c; background:#102441; color:#fff; }
-    .submit-book { width:100%; border:0; border-radius:8px; min-height:54px; color:#071d36; background:#c5a44c; padding:13px 18px; font-size:1.05rem; font-weight:800; cursor:pointer; }
+    .submit-book { width:100%; border:0; border-radius:8px; min-height:54px; color:#fff; background:#0b1f3a; padding:13px 18px; font-size:1.05rem; font-weight:800; cursor:pointer; }
     .submit-book:disabled { cursor:not-allowed; opacity:.55; }
     .booking-feedback { border:1px solid #8eab91; color:#123f20; background:#ecf9ef; border-radius:6px; padding:14px; margin-top:18px; font-weight:600; }
     .booking-feedback[role="alert"] { border-color:#bc746e; background:#fff1f0; color:#8b2222; }

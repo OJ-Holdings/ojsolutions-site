@@ -5,11 +5,36 @@ import SectionHeading from "../components/SectionHeading.astro";
 import Steps from "../components/Steps.astro";
 import FeatureGrid from "../components/FeatureGrid.astro";
 import WebsiteExamples from "../components/WebsiteExamples.astro";
-import PriceFrom from "../components/PriceFrom.astro";
+import PricingOptions from "../components/PricingOptions.astro";
 import Icon from "../components/Icon.astro";
 import { Image } from "astro:assets";
 import ourSite from "../assets/work/ojexteriorcare-phone.jpg";
-import { FAQ_ANSWERS, WEBSITE_PRICE_FROM } from "../config";
+import { FAQ_ANSWERS } from "../config";
+import { PRICE_LINES, PRICING, money } from "../data/pricing";
+
+const web = PRICING.website;
+
+const pricingOptions = [
+  {
+    name: "One-time build",
+    price: money(web.build.price),
+    unit: "one time",
+    points: [
+      `Up to ${web.build.pages} pages`,
+      `Optional Care plan: ${money(web.care.monthly)}/month for ${web.care.includes.toLowerCase()}`,
+    ],
+  },
+  {
+    name: "Monthly plan",
+    price: money(web.monthlyPlan.monthly),
+    unit: "/month",
+    points: [
+      `${money(web.monthlyPlan.down)} down, ${web.monthlyPlan.minimumMonths}-month minimum`,
+      web.monthlyPlan.includes,
+      web.monthlyPlan.ownership,
+    ],
+  },
+];
 
 const included = [
   {
@@ -33,8 +58,8 @@ const included = [
     body: "Page titles, descriptions, and a sitemap, so Google can read your site.",
   },
   {
-    title: "Hosting and launch handled",
-    body: "We put it live and handle the hosting. Nothing for you to set up.",
+    title: "Launch handled",
+    body: "We put it live for you. Hosting comes with the Care plan or the monthly plan.",
   },
 ];
 
@@ -49,7 +74,7 @@ const steps = [
   },
   {
     title: "We launch it",
-    body: "We put it live and take care of the hosting.",
+    body: "We put it live. Hosting is covered by the Care plan or the monthly plan.",
   },
 ];
 
@@ -59,6 +84,7 @@ const faq = [
     a: "Yes. We can rebuild the site you have or start from scratch.",
   },
   // TODO(Jacob): answer these two in src/config.ts (FAQ_ANSWERS). Hidden until then.
+  { q: "What does it cost?", a: PRICE_LINES.website },
   { q: "Do I own the site?", a: FAQ_ANSWERS.websitesOwnership },
   { q: "How long does it take?", a: FAQ_ANSWERS.websitesTimeline },
 ];
@@ -84,7 +110,7 @@ const faq = [
       rel="noopener"
       class="group rule-soft relative block rounded-lg border bg-navy px-2.5 pt-6 pb-3 hover:border-gold"
     >
-      <span class="absolute top-2.5 left-1/2 h-1.5 w-11 -translate-x-1/2 rounded-full bg-white/30" aria-hidden="true"
+      <span class="absolute top-2.5 left-1/2 h-1.5 w-11 -translate-x-1/2 rounded-lg bg-white/30" aria-hidden="true"
       ></span>
       <Image
         src={ourSite}
@@ -138,5 +164,10 @@ const faq = [
     <Steps steps={steps} tone="navy" />
   </Section>
 
-  <PriceFrom price={WEBSITE_PRICE_FROM} noun="site" />
+  <PricingOptions
+    service="website"
+    title="Pricing"
+    intro="Pay once, or spread it out. Pick what fits your business."
+    options={pricingOptions}
+  />
 </ServiceLayout>

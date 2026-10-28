@@ -6,13 +6,12 @@ Every answer the site is still waiting on shows as text starting with `PLACEHOLD
 
 Most go away on their own once you fill in the matching value in `src/config.ts`.
 
-## /ai-receptionist (3)
+## /ai-receptionist (2)
 
 | # | What it says (preview) | File | How to replace it | On production |
 |---|---|---|---|---|
 | 1 | PLACEHOLDER: demo call recording (audio player) | `src/pages/ai-receptionist.astro:157` | Put the file in `public/media/` and set `DEMO_AUDIO_SRC`. Optional: `DEMO_AUDIO_TRANSCRIPT`. | Hidden. With no audio and no video, the whole "Hear a real call" panel is hidden. |
 | 2 | PLACEHOLDER: 20 to 30 second screen recording of the booking the call created | `src/pages/ai-receptionist.astro:171` | Put the mp4 in `public/media/` and set `DEMO_VIDEO_SRC`. | Hidden (see #1). |
-| 3 | FAQ "How long does setup take?": PLACEHOLDER: how long setup takes | `src/pages/ai-receptionist.astro:90` | Set `FAQ_ANSWERS.receptionistSetupTime`. | The question isn't shown. |
 
 ## /websites (1)
 
@@ -32,4 +31,4 @@ Most go away on their own once you fill in the matching value in `src/config.ts`
 
 ## Still hidden, not placeholders
 
-These questions stay hidden until answered: "Where are you based?" (home), "Do I need a new phone number?" and "Is there a long contract?" (AI Receptionist), "Do I own the site?" and "How long does it take?" (Websites), "Do you come to us?" and "How long until it's ready?" (Commercials). They're in `FAQ_ANSWERS` in `src/config.ts`.
+These questions stay hidden until answered: "Do I own the site?" and "How long does it take?" (Websites), "Do you come to us?" and "How long until it's ready?" (Commercials). They're in `FAQ_ANSWERS` in `src/config.ts`.

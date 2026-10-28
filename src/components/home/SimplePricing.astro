@@ -1,0 +1,72 @@
+---
+// "Simple pricing": one compact card per service, every number from
+// src/data/pricing.ts. Each card sends visitors to that service's page.
+import Button from "../Button.astro";
+import { SERVICES, type ServiceKey } from "../../lib/site";
+import { PRICING, money } from "../../data/pricing";
+
+const { receptionist: r, website: w, video: v } = PRICING;
+
+const plans: Record<ServiceKey, { price: string; unit: string; note: string; items: string[] }> = {
+  receptionist: {
+    price: money(r.monthly),
+    unit: "/month",
+    note: `Plus ${money(r.setup)} one-time setup`,
+    items: ["Answers 24/7 and identifies itself as AI", "Books estimates on your calendar", "Missed-call text-back"],
+  },
+  website: {
+    price: money(w.build.price),
+    unit: "one-time",
+    note: `Or ${money(w.monthlyPlan.monthly)}/month with ${money(w.monthlyPlan.down)} down`,
+    items: [
+      `Up to ${w.build.pages} pages, built for phones first`,
+      `Optional Care plan: ${money(w.care.monthly)}/month for hosting, security and small edits`,
+      `Monthly plan: hosting and edits included, yours after ${w.monthlyPlan.minimumMonths} months`,
+    ],
+  },
+  commercial: {
+    price: money(v.single),
+    unit: "per ad",
+    note: `Or ${money(v.contentPlan.monthly)}/month for ${v.contentPlan.videos} videos`,
+    items: ["One finished ad, cut from your own clips", `Monthly plan: ${v.contentPlan.videos} edited short videos`, "Monthly plan is month to month"],
+  },
+};
+---
+
+<section id="pricing" class="on-navy py-16 sm:py-20" aria-labelledby="pricing-title">
+  <div class="container-page">
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+      <h2 id="pricing-title" class="display-2">Simple pricing</h2>
+      <p class="text-soft max-w-md text-lg">Clear prices up front for all three services.</p>
+    </div>
+
+    <ul role="list" class="mt-10 grid gap-5 md:grid-cols-3">
+      {
+        SERVICES.map((s) => {
+          const plan = plans[s.key];
+          return (
+            <li class="rule-soft flex flex-col rounded-lg border p-6 sm:p-7">
+              <h3 class="font-heading text-lg font-bold">{s.name}</h3>
+              <p class="mt-4 font-heading text-5xl font-bold tracking-tight">
+                {plan.price}
+                <span class="text-soft ml-1 font-sans text-base font-normal tracking-normal">{plan.unit}</span>
+              </p>
+              <p class="mt-2 font-semibold text-gold">{plan.note}</p>
+              <ul role="list" class="rule-soft mt-6 flex-1 space-y-3 border-t pt-5">
+                {plan.items.map((item) => (
+                  <li class="flex gap-3">
+                    <span class="shrink-0 font-bold text-gold" aria-hidden="true">✓</span>
+                    <span class="text-soft">{item}</span>
+                  </li>
+                ))}
+              </ul>
+              <Button href={s.href} variant="gold" class="mt-7 w-full">
+                See {s.name}
+              </Button>
+            </li>
+          );
+        })
+      }
+    </ul>
+  </div>
+</section>

@@ -78,20 +78,9 @@ export const STATS_SOURCE_URL: string =
 // No guarantee is approved for publication. Keep empty until founders approve any precise terms.
 export const GUARANTEE_TEXT: string = "";
 
-// Pricing for the AI Receptionist. The "What does it cost?" FAQ always
-// uses these two numbers. SHOW_PRICING only turns on the separate
-// Pricing section.
-export const SHOW_PRICING: boolean = true;
-// Legacy values: public pricing now comes from src/lib/receptionist-pricing.ts.
-export const SETUP_PRICE: number = 0;
-export const MONTHLY_PRICE: number = 597;
+// Every price on the site lives in src/data/pricing.ts.
 
 /* ---------- Websites and Commercials pages ---------- */
-
-// "Starting at" prices. Put a number like 1500, or leave null to show
-// "we quote after a quick call" instead.
-export const WEBSITE_PRICE_FROM: number | null = null;
-export const COMMERCIAL_PRICE_FROM: number | null = null;
 
 // Websites we've built. Only list real projects of ours.
 // Example:
@@ -125,14 +114,6 @@ export const FOUNDERS_PHOTO: { file: string; alt: string } = {
 
 // Each question stays hidden until it has an answer.
 export const FAQ_ANSWERS = {
-  // TODO(Jacob): Home page, "Where are you based?"
-  whereBased: "",
-  // TODO(Jacob): AI Receptionist, "Do I need a new phone number?"
-  receptionistNewNumber: "",
-  // TODO(Jacob): AI Receptionist, "How long does setup take?"
-  receptionistSetupTime: "",
-  // TODO(Jacob): AI Receptionist, "Is there a long contract?"
-  receptionistContract: "",
   // TODO(Jacob): Websites, "Do I own the site?"
   websitesOwnership: "",
   // TODO(Jacob): Websites, "How long does it take?"

@@ -10,7 +10,6 @@ import {
   DEMO_AUDIO_SRC,
   DEMO_AUDIO_TRANSCRIPT,
   DEMO_VIDEO_SRC,
-  SHOW_PRICING,
   STATS_SOURCE_URL,
 } from "../config";
 import { SHOW_PLACEHOLDERS, filled } from "../lib/site";
@@ -21,7 +20,6 @@ import FrontDeskPricing from "../components/home/FrontDeskPricing.astro";
 const hasAudio = mediaAvailable(DEMO_AUDIO_SRC);
 const hasVideo = mediaAvailable(DEMO_VIDEO_SRC);
 const hasStats = /^https?:\/\//i.test(STATS_SOURCE_URL.trim());
-const showPricing = SHOW_PRICING;
 // iOS Safari shows a blank box for local videos unless a start time is set.
 const videoSrc = hasVideo && DEMO_VIDEO_SRC.trim().startsWith("/") && !DEMO_VIDEO_SRC.includes("#")
   ? `${DEMO_VIDEO_SRC.trim()}#t=0.1`
@@ -34,11 +32,11 @@ const steps = [
   },
   {
     title: "It answers, captures, and books",
-    body: "The AI picks up, identifies itself, captures the caller's details, and books an available on-site estimate.",
+    body: "The AI picks up, identifies itself, captures the caller's details, and books an available time on your calendar.",
   },
   {
     title: "It lands where you work",
-    body: "The estimate appears on your calendar and the contact in your CRM. Human callbacks can be flagged as urgent.",
+    body: "The appointment appears on your calendar and the contact in your CRM. Calls it can't handle are flagged for you or your staff.",
   },
 ];
 
@@ -50,11 +48,11 @@ const steps = [
 <ServiceLayout
   service="receptionist"
   title="AI Receptionist That Answers Your Calls | OJ Solutions"
-  description="An AI receptionist that answers your calls, captures leads, and books available on-site estimates. Hear the live demo."
+  description="An AI receptionist that answers your calls, captures lead details, and books appointments on your calendar. Call our live AI demo."
   eyebrow="AI Receptionist"
   heading="Your marketing isn't broken. Your phone is."
   highlight="Your phone is."
-  subhead="An AI receptionist that answers calls around the clock, captures customer details, and books on-site estimates while you are busy doing the work."
+  subhead="An AI receptionist that answers calls around the clock, captures customer details, and books appointments while you are busy running your business."
   problemHeading="Every missed call is a lead you already paid for."
   faq={RECEPTIONIST_FAQ}
   ctaHeading="See it answer a call"
@@ -65,7 +63,7 @@ const steps = [
       <a href="tel:+12624010826" class="link inline-flex min-h-11 items-center text-lg font-bold">
         Call our AI: (262) 401-0826
       </a>
-      <p class="text-soft mt-2 max-w-sm text-sm">It simulates a customer estimate call. Use fake details; the call may be recorded.</p>
+      <p class="text-soft mt-2 max-w-sm text-sm">It plays a customer booking a service. Use fake details. Calls may be recorded.</p>
     </div>
     {hasAudio && (
       <a href="#hear-it" class="link inline-flex min-h-11 items-center text-lg">Hear the recorded demo</a>
@@ -155,9 +153,8 @@ const steps = [
   <Section id="included" labelledby="included-title" border={false}>
     <SectionHeading id="included-title" title="What's included" />
     <FeatureGrid items={RECEPTIONIST_CORE.map(({ title, description }) => ({ title, body: description }))} />
-    <p class="mt-6 max-w-3xl text-muted">Starter includes answering, lead capture, alerts and call history. Pro adds scheduling, missed-call text-back, review requests, follow-up workflows and reporting. Advanced CRM integrations are quoted separately.</p>
   </Section>
 
-  {showPricing && <FrontDeskPricing />}
+  <FrontDeskPricing />
 
 </ServiceLayout>

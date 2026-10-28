@@ -1,0 +1,321 @@
+---
+// Small version of the hero demo for the AI Receptionist card: a call comes
+// in, the AI answers, and the estimate lands on the calendar.
+//
+// Without JavaScript, or with reduced motion, it shows the finished state.
+// GSAP (homepage only) loops it while it is on screen, with a pause button.
+const chat = [
+  { who: "ai", text: "Hi, I'm the AI receptionist. How can I help?" },
+  { who: "caller", text: "Can someone look at my driveway?" },
+  { who: "ai", text: "Thursday at 10 works. You're booked." },
+];
+const days = ["M", "T", "W", "T", "F"];
+// Time already taken: [day index, row index]
+const busy = [[0, 0], [1, 2], [2, 1], [4, 0], [4, 2]];
+---
+
+<div class="mini-call" data-mini-call>
+  <p class="sr-only">Example: a call comes in, the AI receptionist answers, and an estimate is booked on the calendar.</p>
+  <div class="mini-stage" aria-hidden="true">
+    <div class="mini-phone">
+      <p class="mini-status"><span class="mini-dot"></span>AI on the line</p>
+      <div class="mini-screen">
+        <div class="mini-ring" data-ring>
+          <span class="mini-avatar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+              ><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"></path></svg
+            >
+          </span>
+          <span class="mini-caller">New caller</span>
+          <span class="mini-sub">Incoming call</span>
+        </div>
+        <ol class="mini-chat" data-chat>
+          {chat.map((line) => <li class:list={["mini-bubble", line.who]}>{line.text}</li>)}
+        </ol>
+      </div>
+    </div>
+
+    <div class="mini-cal">
+      <p class="mini-cal-head">This week</p>
+      <div class="mini-grid">
+        {days.map((d) => <span class="mini-day">{d}</span>)}
+        {
+          [0, 1, 2].map((row) =>
+            days.map((_, col) => (
+              <span class:list={["mini-slot", busy.some(([c, r]) => c === col && r === row) && "busy"]}>
+                {col === 3 && row === 1 && <span class="mini-event" data-event />}
+              </span>
+            )),
+          )
+        }
+      </div>
+      <p class="mini-booked" data-booked>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"
+          ><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg
+        >
+        Estimate booked
+      </p>
+    </div>
+  </div>
+
+  <button type="button" class="mini-toggle" data-mini-toggle hidden aria-pressed="false">
+    <svg class="icon-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"
+      ><rect x="6" y="5" width="4" height="14" rx="1"></rect><rect x="14" y="5" width="4" height="14" rx="1"></rect></svg
+    >
+    <svg class="icon-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"></path></svg>
+    <span class="sr-only" data-label>Pause the example call</span>
+  </button>
+</div>
+
+<style>
+  .mini-call {
+    position: relative;
+    height: 100%;
+    display: grid;
+    place-items: center;
+    padding: 1.25rem 1rem;
+  }
+  .mini-stage {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+    max-width: 19rem;
+  }
+
+  /* Phone: flat, 1px lines, 8px corners like the hero demo. */
+  .mini-phone {
+    flex: 0 0 9.25rem;
+    height: 14.5rem;
+    padding: 0.625rem 0.5rem;
+    border: 1px solid color-mix(in srgb, var(--color-white) 34%, var(--color-navy));
+    border-radius: 8px;
+    background: var(--color-navy);
+    display: flex;
+    flex-direction: column;
+  }
+  .mini-status {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-gold);
+  }
+  .mini-dot {
+    width: 0.375rem;
+    height: 0.375rem;
+    border-radius: 50%;
+    background: var(--color-gold);
+  }
+  .mini-screen {
+    position: relative;
+    flex: 1;
+    margin-top: 0.5rem;
+  }
+  .mini-ring {
+    position: absolute;
+    inset: 0;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: var(--color-white);
+  }
+  .mini-avatar {
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 50%;
+    border: 1px solid var(--color-gold);
+    color: var(--color-gold);
+  }
+  .mini-avatar svg {
+    width: 1.25rem;
+  }
+  .mini-caller {
+    margin-top: 0.625rem;
+    font-weight: 700;
+    font-size: 0.875rem;
+  }
+  .mini-sub {
+    font-size: 0.6875rem;
+    color: color-mix(in srgb, var(--color-white) 70%, var(--color-navy));
+  }
+  .mini-chat {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+  }
+  .mini-bubble {
+    max-width: 92%;
+    padding: 0.375rem 0.5rem;
+    border-radius: 6px;
+    font-size: 0.6875rem;
+    line-height: 1.3;
+  }
+  .mini-bubble.ai {
+    align-self: flex-start;
+    border: 1px solid color-mix(in srgb, var(--color-white) 22%, var(--color-navy));
+    color: var(--color-white);
+  }
+  .mini-bubble.caller {
+    align-self: flex-end;
+    background: var(--color-white);
+    color: var(--color-navy);
+  }
+
+  /* Calendar card */
+  .mini-cal {
+    flex: 1;
+    min-width: 0;
+    padding: 0.625rem;
+    border-radius: 8px;
+    background: var(--color-white);
+    color: var(--color-navy);
+  }
+  .mini-cal-head {
+    font-size: 0.6875rem;
+    font-weight: 700;
+  }
+  .mini-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 3px;
+    margin-top: 0.375rem;
+  }
+  .mini-day {
+    font-size: 0.5625rem;
+    font-weight: 700;
+    text-align: center;
+    color: var(--color-muted);
+  }
+  .mini-slot {
+    position: relative;
+    height: 1.375rem;
+    border: 1px solid var(--color-line);
+    border-radius: 3px;
+  }
+  .mini-slot.busy {
+    background: var(--color-line);
+  }
+  .mini-event {
+    position: absolute;
+    inset: -1px;
+    border-radius: 3px;
+    background: var(--color-gold);
+  }
+  .mini-booked {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    margin-top: 0.5rem;
+    font-size: 0.6875rem;
+    font-weight: 700;
+  }
+  .mini-booked svg {
+    width: 0.875rem;
+    flex-shrink: 0;
+  }
+
+  .mini-toggle {
+    position: absolute;
+    right: 0.5rem;
+    bottom: 0.5rem;
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 8px;
+    color: var(--color-white);
+  }
+  .mini-toggle:hover {
+    color: var(--color-gold);
+  }
+  .mini-toggle svg {
+    width: 1rem;
+  }
+  .mini-toggle[hidden] {
+    display: none;
+  }
+  .mini-toggle .icon-play,
+  .mini-toggle[aria-pressed="true"] .icon-pause {
+    display: none;
+  }
+  .mini-toggle[aria-pressed="true"] .icon-play {
+    display: block;
+  }
+</style>
+
+<script>
+  // Loops the example call while the card is on screen. Reduced motion or
+  // no JavaScript: the finished state stays put.
+  const root = document.querySelector<HTMLElement>("[data-mini-call]");
+  if (root && !window.matchMedia("(prefers-reduced-motion: reduce)").matches && "IntersectionObserver" in window) {
+    const q = <T extends Element = HTMLElement>(s: string) => root.querySelector<T>(s)!;
+    const toggle = q<HTMLButtonElement>("[data-mini-toggle]");
+    const label = q("[data-label]");
+    let tl: gsap.core.Timeline | null = null;
+    let paused = false;
+    let visible = false;
+
+    const sync = () => {
+      if (!tl) return;
+      if (visible && !paused) tl.play();
+      else tl.pause();
+    };
+
+    const build = async () => {
+      const { gsap } = await import("gsap");
+      const ring = q("[data-ring]");
+      const chat = q("[data-chat]");
+      const bubbles = root.querySelectorAll(".mini-bubble");
+      const event = q("[data-event]");
+      const booked = q("[data-booked]");
+      const avatar = q(".mini-avatar");
+
+      gsap.set(ring, { display: "flex" });
+      tl = gsap.timeline({ repeat: -1, repeatDelay: 0.4, paused: true, defaults: { ease: "power2.out" } });
+      tl.set(ring, { autoAlpha: 1 })
+        .set(chat, { autoAlpha: 0 })
+        .set(bubbles, { autoAlpha: 0, y: 6 })
+        .set(event, { scaleX: 0, transformOrigin: "left center" })
+        .set(booked, { autoAlpha: 0 })
+        .fromTo(avatar, { scale: 1 }, { scale: 1.08, duration: 0.3, repeat: 3, yoyo: true, ease: "sine.inOut" })
+        .to(ring, { autoAlpha: 0, duration: 0.25 })
+        .to(chat, { autoAlpha: 1, duration: 0.2 })
+        .to(bubbles, { autoAlpha: 1, y: 0, duration: 0.35, stagger: 0.9 })
+        .to(event, { scaleX: 1, duration: 0.5, ease: "expo.out" }, "+=0.2")
+        .to(booked, { autoAlpha: 1, duration: 0.3 }, "<0.15")
+        .to({}, { duration: 2 });
+      sync();
+    };
+
+    toggle.hidden = false;
+    toggle.addEventListener("click", () => {
+      paused = !paused;
+      toggle.setAttribute("aria-pressed", String(paused));
+      label.textContent = paused ? "Play the example call" : "Pause the example call";
+      sync();
+    });
+
+    let started = false;
+    new IntersectionObserver(
+      (entries) => {
+        visible = entries.some((e) => e.isIntersecting);
+        if (visible && !started) {
+          started = true;
+          build().catch(() => {
+            toggle.hidden = true;
+          });
+        }
+        sync();
+      },
+      { threshold: 0.4 },
+    ).observe(root);
+  }
+</script>

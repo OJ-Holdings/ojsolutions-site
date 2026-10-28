@@ -25,7 +25,7 @@ export const SERVICES: {
   },
   {
     key: "commercial",
-    name: "Commercials",
+    name: "Video Ads",
     href: "/commercials",
     problem: "If you're not posting video, people scroll right past you.",
   },
@@ -53,11 +53,6 @@ export const SHOW_PLACEHOLDERS: boolean = process.env.VERCEL_ENV !== "production
  */
 export function placeholder(what: string): string {
   return SHOW_PLACEHOLDERS ? `<span class="placeholder">PLACEHOLDER: ${what}</span>` : "";
-}
-
-/** 1500 -> "$1,500" */
-export function formatPrice(amount: number): string {
-  return "$" + amount.toLocaleString("en-US", { maximumFractionDigits: 0 });
 }
 
 /**

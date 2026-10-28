@@ -1,0 +1,60 @@
+---
+// Pricing block for the websites and video ads pages: a heading, two or more
+// options side by side, and one Book a call button. Every number comes from
+// src/data/pricing.ts, passed in by the page.
+import Section from "./Section.astro";
+import SectionHeading from "./SectionHeading.astro";
+import BookButton from "./BookButton.astro";
+import Icon from "./Icon.astro";
+import type { ServiceKey } from "../lib/site";
+
+export type PricingOption = {
+  /** e.g. "One-time build" */
+  name: string;
+  /** e.g. "$1,497" */
+  price: string;
+  /** e.g. "one time", "/month", "per ad" */
+  unit: string;
+  /** What you get, one short line each. */
+  points: string[];
+};
+
+interface Props {
+  service: ServiceKey;
+  title?: string;
+  intro?: string;
+  options: PricingOption[];
+}
+
+const { service, title = "Pricing", intro, options } = Astro.props;
+---
+
+<Section id="pricing" labelledby="pricing-title" border={false}>
+  <SectionHeading id="pricing-title" title={title} intro={intro} />
+  <div class="mt-10 grid gap-5 md:grid-cols-2 md:gap-6">
+    {
+      options.map((option) => (
+        <article class="flex flex-col rounded-lg border border-line p-6 sm:p-8">
+          <h3 class="text-sm font-bold tracking-widest text-muted uppercase">{option.name}</h3>
+          <p class="mt-4 font-heading text-5xl font-bold tracking-tight">
+            {option.price}
+            <span class="ml-2 font-sans text-base font-normal tracking-normal text-muted">{option.unit}</span>
+          </p>
+          <ul role="list" class="mt-6 flex-1 space-y-3 border-t border-line pt-6">
+            {option.points.map((point) => (
+              <li class="flex gap-3">
+                <span class="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-md bg-navy text-gold" aria-hidden="true">
+                  <Icon name="check" class="size-4" />
+                </span>
+                <span>{point}</span>
+              </li>
+            ))}
+          </ul>
+        </article>
+      ))
+    }
+  </div>
+  <div class="mt-8">
+    <BookButton service={service} size="lg" />
+  </div>
+</Section>
