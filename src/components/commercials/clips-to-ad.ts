@@ -64,6 +64,9 @@ export function mountSuite(suite: HTMLElement, query: string) {
     list.classList.add("sr-only");
     copy.hidden = false;
     panel.hidden = false;
+    // The suite's images were lazy while hidden; fetch them now so a fast
+    // scroll never reaches an empty viewer.
+    panel.querySelectorAll("img").forEach((img) => (img.loading = "eager"));
 
     const waveLength = wave.getTotalLength();
     gsap.set(beats.slice(1), { autoAlpha: 0, y: 16 });
